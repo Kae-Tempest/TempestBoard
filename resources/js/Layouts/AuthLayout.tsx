@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
-export default function({ children }: PropsWithChildren) {
+import { PropsWithChildren } from "react";
+export default function ({ children }: PropsWithChildren) {
     return (
         <div>
             <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-BgColor">
@@ -8,5 +8,5 @@ export default function({ children }: PropsWithChildren) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

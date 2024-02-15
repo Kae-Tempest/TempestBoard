@@ -1,24 +1,71 @@
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from "@inertiajs/react";
 import AuthLayout from "@/Layouts/AuthLayout";
-export default function() {
+import CustomCheckbox from "@/Componants/checkbox";
+import { FormEventHandler, useEffect } from "react";
+
+export default function () {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        email: "",
+        password: "",
+        remember: false,
+    });
+
+    useEffect(() => {
+        return () => {
+            reset("password");
+        };
+    }, []);
+    const handleSubmit: FormEventHandler = (e) => {
+        e.preventDefault();
+        console.log(data);
+    };
+
     return (
         <AuthLayout>
             <Head title="Login" />
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                     <label className="font-bold">Email</label>
-                    <input type="email" name="email" className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm"/>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={data.email}
+                        onChange={(e) => setData("email", e.target.value)}
+                        className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
+                    />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col mt-4">
                     <label className="font-bold">Password</label>
-                    <input type="password" name="password" className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm"/>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
+                        onChange={(e) => setData("password", e.target.value)}
+                    />
                 </div>
-                <div>
-                    <input type="checkbox" name="remember" className="bg-Tertiary border-[0.5px] border-Quaternary rounded-[5px]"/>
-                    <label className="ml-2">Remember me</label>
+                <CustomCheckbox
+                    label="Remember me"
+                    checked={data.remember}
+                    onChange={(e) => {
+                        data.remember = e.target.checked;
+                    }}
+                />
+                <div className="text-end">
+                    <span className="text-Secondary font-bold text-xs mx-2 hover:underline">
+                        Forgotten password ?
+                    </span>
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="h-7 w-20 bg-Quaternary text-TextColor rounded mt-2 font-bold text-center leading-5"
+                    >
+                        Login
+                    </button>
                 </div>
-                <button type="submit" className="">Login</button>
             </form>
         </AuthLayout>
-    )
+    );
 }
