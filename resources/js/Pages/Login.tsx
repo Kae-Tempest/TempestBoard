@@ -34,6 +34,7 @@ export default function () {
                         onChange={(e) => setData("email", e.target.value)}
                         className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
                     />
+                    {errors.email && <div>{errors.email}</div>}
                 </div>
                 <div className="flex flex-col mt-4">
                     <label className="font-bold">Password</label>
@@ -45,6 +46,7 @@ export default function () {
                         className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
                         onChange={(e) => setData("password", e.target.value)}
                     />
+                    {errors.password && <div>{errors.password}</div>}
                 </div>
                 <CustomCheckbox
                     label="Remember me"
