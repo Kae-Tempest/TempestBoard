@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,6 +20,21 @@ Route::get('/login', function () {
     return Inertia::render('Login');
 })->name('login');
 
+Route::post('login', [AuthController::class, 'store']);
+
 Route::get('/register', function () {
     return Inertia::render('Register');
 })->name('register');
+
+Route::post('register', [RegisterController::class, 'store']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Dashboard');
+    })->name('welcome');
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth'])->name('dashboard');
+
+});
+
