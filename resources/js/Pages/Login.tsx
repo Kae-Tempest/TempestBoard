@@ -17,7 +17,7 @@ export default function () {
     }, []);
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log(data);
+        post("/login");
     };
 
     return (
