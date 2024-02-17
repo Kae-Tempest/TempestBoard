@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,26 +16,13 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/login', function () {
-    return Inertia::render('Login');
-})->name('login');
-
+Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('login', [AuthController::class, 'store']);
-
-Route::get('/register', function () {
-    return Inertia::render('Register');
-})->name('register');
-
+Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('register', [RegisterController::class, 'store']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('welcome');
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->middleware(['auth'])->name('dashboard');
+    Route::get('/', [PageController::class, 'home'])->middleware(['auth'])->name('home');
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
-
 });
 
