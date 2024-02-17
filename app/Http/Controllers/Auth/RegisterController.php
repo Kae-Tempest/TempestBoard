@@ -10,9 +10,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Inertia\Inertia;
 
 class RegisterController extends Controller
 {
+    public function create()
+    {
+        return Inertia::render('Register');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
