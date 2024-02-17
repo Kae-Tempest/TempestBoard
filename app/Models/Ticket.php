@@ -27,12 +27,12 @@ class Ticket extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'creator_id');
     }
 
     public function assigned(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'assigned_id');
     }
 
 }

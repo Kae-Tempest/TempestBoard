@@ -57,8 +57,13 @@ class User extends Authenticatable
         return $this->hasMany(Role::class);
     }
 
-    public function ticket(): HasMany
+    public function CreateTicket(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'creator_id');
+    }
+
+    public function AssignedTicket(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'assigned_id');
     }
 }
