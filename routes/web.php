@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +26,7 @@ Route::post('register', [RegisterController::class, 'store']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [PageController::class, 'home'])->middleware(['auth'])->name('home');
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
+    Route::post('/issue', [TicketController::class, 'store']);
+    Route::post('/project', [ProjectController::class, 'store']);
 });
 

@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        return Inertia::render('Projects',[
+        return Inertia::render('Projects', [
             'Projects' => Project::with('user')->orderBy('created_at', 'DESC')->get(),
             'ConnectUser' => Auth::user(),
         ]);
@@ -33,7 +33,21 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|min:3',
+            'description' => 'required|string|max:500|min:3',
+            'nb_user' => 'required|integer|min:1',
+            'thumbnail' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $project = Project::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'nb_user' => 1,
+            'thumbnail' => $request->thumbnail->store('thumbnails'),
+            'status' => "in_progress",
+        ]);
     }
 
     /**

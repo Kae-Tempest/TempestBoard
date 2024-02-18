@@ -14,8 +14,8 @@ class TicketController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Tickets',[
-            'Tickets' => Ticket::with('user')->orderBy('created_at', 'DESC')->with('project')   ->get(),
+        return Inertia::render('Tickets', [
+            'Tickets' => Ticket::with('user')->orderBy('created_at', 'DESC')->with('project')->get(),
             'ConnectUser' => Auth::user(),
         ]);
     }
@@ -33,7 +33,23 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'project_id' => 'required|integer|min:1',
+            'title' => 'required|string|max:255|min:3',
+            'description' => 'required|string|max:500|min:3',
+            'priority' => 'required|string|max:255|min:3',
+        ]);
+        
+        $ticket = Ticket::create([
+            'creator_id' => Auth::id(),
+            'assigned_id' => Auth::id(),
+            'project_id' => $request->project_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => "open",
+            'priority' => $request->priority,
+        ]);
+
     }
 
     /**
@@ -41,7 +57,7 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('Ticket',[
+        return Inertia::render('Ticket', [
             'Ticket' => Ticket::with('user')->with('project')->find($id),
             'ConnectUser' => Auth::user(),
         ]);
