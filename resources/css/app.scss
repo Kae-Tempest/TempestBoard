@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #F4F3EE;
+  --primary-color: #463F3A;
+  --secondary-color: #8A817C;
+  --tertiary-color: #BCB8B1;
+  --quaternary-color: #E0AFA0;
+  --error-color: #E74C3C;
+  --warning-color: #F39C12;
+  --success-color: #4CAF50;
+  --extra-color: #A3EBF3;
+  --text-color: #1C1B1A;
+}
+
+@import 'bulma/css/bulma.css';
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#navbar {
+  position: fixed;
+  width: 0;
+  background-color: var(--primary-color);
+  @media (min-width: 1023px) {
+    width: 16rem;
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: .5rem 1rem 1.75rem 1rem;
+
+      & > img {
+        border-radius: .25rem;
+      }
+
+      & > h1 {
+        color: var(--tertiary-color);
+        font-weight: 900;
+        margin: 0 .5rem;
+      }
+
+      & > div {
+        & > div > img {
+          border-radius: 100%;
+          border: solid 1px var(--quaternary-color);
+          width: 1.875rem;
+          height: 1.875rem;
+        }
+
+        & > div > div {
+          background-color: var(--primary-color);
+          border: solid 1px var(--quaternary-color);
+          color: var(--tertiary-color);
+          border-radius: .25rem;
+
+          & > ul {
+            display: flex;
+            flex-direction: column;
+
+            :hover {
+              background-color: var(--secondary-color);
+              opacity: 50;
+            }
+
+            & > li {
+              padding: 0.25rem 1.5rem 0.25rem 1.5rem;
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .button-container {
+    margin: 0 .5rem;
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem;
+    color: var(--text-color);
+
+    & > button:first-child {
+      display: flex;
+      width: 100%;
+      text-align: left;
+      background-color: var(--tertiary-color);
+      align-items: center;
+      padding: 0 .5rem;
+      border-radius: .125rem;
+
+      & > .icon {
+        padding: 0 .5rem;
+        align-items: center;
+      }
+    }
+
+    & > button:last-child {
+      text-align: left;
+      background-color: var(--tertiary-color);
+      padding: 0 .5rem;
+      border-radius: .125rem;
+    }
+  }
+
+  & > nav {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--tertiary-color);
+
+    & > ul {
+      display: flex;
+      flex-direction: column;
+      margin: 1.5rem 0;
+      width: 100%;
+
+      & > li:first-child, & > li:last-child, & > li:nth-last-child(2) {
+        width: 100%;
+        padding: .25rem 2.25rem;
+
+        & > a {
+          color: var(--tertiary-color);
+        }
+      }
+
+      li:first-child:hover, li:last-child:hover, li:nth-last-child(2):hover {
+        color: var(--tertiary-color);
+        background-color: var(--secondary-color);
+        opacity: 50;
+      }
+    }
+  }
+
+}

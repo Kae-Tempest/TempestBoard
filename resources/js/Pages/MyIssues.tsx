@@ -14,7 +14,7 @@ export default function ({
                 <div className="bg-blue-300">
                     {CreateIssues.map((issue) => {
                         return (
-                            <div>
+                            <div key={issue.id}>
                                 <div>N° : {issue.id}</div>
                                 <div>Title :{issue.title}</div>
                                 <div>Description : {issue.description}</div>
@@ -25,7 +25,7 @@ export default function ({
                 <div className="bg-red-300">
                     {AssignedIssues.map((issue) => {
                         return (
-                            <div>
+                            <div key={issue.id}>
                                 <div>N° : {issue.id}</div>
                                 <div>Title : {issue.title}</div>
                                 <div>Description : {issue.description}</div>
