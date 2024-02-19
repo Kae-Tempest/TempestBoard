@@ -176,7 +176,7 @@ body {
           }
 
           .is-menu-list {
-            padding: .25rem 0 .25rem 2.5rem;
+            padding: .25rem 0 .25rem 1.5rem;
 
             & > ul {
               & > li:first-child, & > li:last-child {
@@ -184,11 +184,32 @@ body {
                 width: 100%;
 
                 & > ul {
-                  border-left: dashed 1px var(--quaternary-color);
+                  //border-left: solid 1px var(--tertiary-color);
+                  border: none;
+
+                  &:before {
+                    border-left: 1px solid var(--tertiary-color);
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    height: 4.1%;
+                    left: 3.7rem;
+                  }
 
                   & > li {
-                    padding: .25rem 0 .25rem 1.5rem;
+                    padding: .25rem 0 .25rem .25rem;
                     width: 100%;
+
+                    &:before {
+                      border-top: 1px solid;
+                      content: "";
+                      display: block;
+                      height: 100%;
+                      left: 3.75rem;
+                      margin-top: .60rem;
+                      position: absolute;
+                      width: .75rem;
+                    }
 
                     &:hover {
                       background-color: var(--secondary-color);
