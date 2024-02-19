@@ -23,30 +23,32 @@ export default function () {
     return (
         <AuthLayout>
             <Head title="Login" />
-            <form onSubmit={handleSubmit}>
-                <div className="flex flex-col">
-                    <label className="font-bold">Email</label>
+            <form onSubmit={handleSubmit} id="login">
+                <div>
+                    <label>Email</label>
                     <input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
-                        className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
                     />
-                    {errors.email && <div>{errors.email}</div>}
+                    {errors.email && (
+                        <div className="error">{errors.email}</div>
+                    )}
                 </div>
-                <div className="flex flex-col mt-4">
-                    <label className="font-bold">Password</label>
+                <div>
+                    <label>Password</label>
                     <input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="bg-Tertiary border-[0.5px] border-Quaternary rounded-sm h-5 text-TextColor"
                         onChange={(e) => setData("password", e.target.value)}
                     />
-                    {errors.password && <div>{errors.password}</div>}
+                    {errors.password && (
+                        <div className="error">{errors.password}</div>
+                    )}
                 </div>
                 <CustomCheckbox
                     label="Remember me"
@@ -55,15 +57,9 @@ export default function () {
                         data.remember = e.target.checked;
                     }}
                 />
-                <div className="text-end">
-                    <span className="text-Secondary font-bold text-xs mx-2 hover:underline">
-                        Forgotten password ?
-                    </span>
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className="h-7 w-20 bg-Quaternary text-TextColor rounded mt-2 font-bold text-center leading-5"
-                    >
+                <div>
+                    <span>Forgotten password ?</span>
+                    <button type="submit" disabled={processing}>
                         Login
                     </button>
                 </div>

@@ -8,10 +8,10 @@ export default function ({
     User,
 }: MyIssuesProps) {
     return (
-        <div className="w-full">
+        <div id="my_issue">
             <NavBar projects={Projects} user={User} />
-            <div className="lg:pl-64">
-                <div className="bg-blue-300">
+            <div className="content">
+                <div>
                     {CreateIssues.map((issue) => {
                         return (
                             <div key={issue.id}>
@@ -22,7 +22,7 @@ export default function ({
                         );
                     })}
                 </div>
-                <div className="bg-red-300">
+                <div>
                     {AssignedIssues.map((issue) => {
                         return (
                             <div key={issue.id}>
