@@ -10,8 +10,59 @@ import { useState } from "react";
 
 export default function ({ projects, user }: NavBarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [count, setCount] = useState(0);
+
+    const handleCount = (e: any) => {
+        setCount(500 - e.target.value.length);
+    };
+
     return (
         <>
+            <div className={showModal ? "modal is-active" : "modal"}>
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                        <p className="modal-card-title">Create Issue</p>
+                        <button
+                            className="delete"
+                            aria-label="close"
+                            onClick={() => setShowModal(false)}
+                        ></button>
+                    </header>
+                    <section className="modal-card-body">
+                        <div className="field">
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type="text"
+                                    placeholder="Issue Title"
+                                    maxLength={100}
+                                />
+                                <textarea
+                                    className="textarea has-fixed-size"
+                                    placeholder="Issue Description"
+                                    maxLength={500}
+                                    minLength={3}
+                                    onInput={(e) => {
+                                        handleCount(e);
+                                    }}
+                                ></textarea>
+                                <div>{count != 0 ? count : "500"}/500</div>
+                            </div>
+                        </div>
+                    </section>
+                    <footer className="modal-card-foot">
+                        <button className="button btn-success">Create</button>
+                        <button
+                            className="button btn-error"
+                            onClick={() => setShowModal(false)}
+                        >
+                            Cancel
+                        </button>
+                    </footer>
+                </div>
+            </div>
             <div id="navbar">
                 <div>
                     <div>
@@ -43,7 +94,7 @@ export default function ({ projects, user }: NavBarProps) {
                                             <Link
                                                 method="post"
                                                 href={route("logout")}
-                                                as={"button"}
+                                                as={"a"}
                                             >
                                                 Logout
                                             </Link>
@@ -55,8 +106,11 @@ export default function ({ projects, user }: NavBarProps) {
                     </div>
 
                     <div className="button-container">
-                        <button>
-                            <FontAwesomeIcon icon={faPenToSquare} />
+                        <button onClick={() => setShowModal(true)}>
+                            <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="icon"
+                            />
                             New Issue
                         </button>
                         <button>

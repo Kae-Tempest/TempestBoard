@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --bg-color: #F4F3EE;
   --primary-color: #463F3A;
@@ -9,8 +5,10 @@
   --tertiary-color: #BCB8B1;
   --quaternary-color: #E0AFA0;
   --error-color: #E74C3C;
+  --error-color-hover-lighter: #FF6655;
   --warning-color: #F39C12;
   --success-color: #4CAF50;
+  --success-color-hover-lighter: #66BB6A;
   --extra-color: #A3EBF3;
   --text-color: #1C1B1A;
 }
@@ -81,6 +79,12 @@ body {
             & > li {
               padding: 0.25rem 1.5rem 0.25rem 1.5rem;
               width: 100%;
+
+              & > a {
+                color: var(--tertiary-color);
+
+              }
+
             }
           }
         }
@@ -98,15 +102,19 @@ body {
     & > button:first-child {
       display: flex;
       width: 100%;
+      height: 1.25rem;
       text-align: left;
       background-color: var(--tertiary-color);
       align-items: center;
       padding: 0 .5rem;
       border-radius: .125rem;
+      border: none;
+      font-family: Inter, sans-serif;
+      font-weight: 600;
 
       & > .icon {
-        padding: 0 .5rem;
         align-items: center;
+        height: 0.75rem;
       }
     }
 
@@ -115,6 +123,8 @@ body {
       background-color: var(--tertiary-color);
       padding: 0 .5rem;
       border-radius: .125rem;
+      border: none;
+      height: 1.25rem;
     }
   }
 
@@ -184,7 +194,6 @@ body {
                 width: 100%;
 
                 & > ul {
-                  //border-left: solid 1px var(--tertiary-color);
                   border: none;
 
                   &:before {
@@ -192,7 +201,7 @@ body {
                     content: "";
                     display: block;
                     position: absolute;
-                    height: 4.1%;
+                    height: 2.713rem;
                     left: 3.7rem;
                   }
 
@@ -204,7 +213,6 @@ body {
                       border-top: 1px solid;
                       content: "";
                       display: block;
-                      height: 100%;
                       left: 3.75rem;
                       margin-top: .60rem;
                       position: absolute;
@@ -304,6 +312,7 @@ body {
     text-align: center;
     border-radius: 0.25rem;
     line-height: 1.25rem;
+    border: none;
   }
 }
 
@@ -439,3 +448,105 @@ body {
     }
   }
 }
+
+.modal-card {
+  border: 1px solid var(--tertiary-color);
+  border-radius: .5rem;
+}
+
+.modal-card-head, .modal-card-foot {
+  background-color: var(--primary-color);
+  color: var(--tertiary-color);
+}
+
+.modal-card-head {
+  border-bottom: solid 1px var(--tertiary-color);
+
+  .modal-card-title {
+    color: var(--tertiary-color);
+    font-weight: bold;
+  }
+}
+
+.modal-card-body {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+
+  & > .field > .control {
+    & > .input {
+      background-color: var(--secondary-color);
+      border: none;
+      box-shadow: none;
+      color: var(--text-color);
+      cursor: pointer;
+      margin-bottom: .5rem;
+
+      &::placeholder {
+        color: var(--text-color);
+        font-weight: bold;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 1px var(--tertiary-color);
+      }
+    }
+
+    & > .textarea {
+      background-color: var(--secondary-color);
+      border: none;
+      box-shadow: none;
+      color: var(--text-color);
+      height: 5rem;
+      cursor: pointer;
+
+      &::placeholder {
+        color: var(--text-color);
+        opacity: 60%;
+        font-weight: bold;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 1px var(--tertiary-color);
+      }
+
+    }
+
+    & > div {
+      margin-top: .25rem;
+      text-align: end;
+    }
+  }
+}
+
+.modal-card-foot {
+  display: flex;
+  justify-content: end;
+  border-top: solid 1px var(--tertiary-color);
+
+  & > button.button.btn-success {
+    background-color: var(--success-color);
+    color: var(--text-color);
+    border-radius: .25rem;
+    margin: .5rem;
+    border: none;
+
+    &:hover {
+      background-color: var(--success-color-hover-lighter);
+    }
+  }
+
+  & > button.button.btn-error {
+    background-color: var(--error-color);
+    color: var(--text-color);
+    border-radius: .25rem;
+    margin: .5rem;
+    border: none;
+
+    &:hover {
+      background-color: var(--error-color-hover-lighter);
+    }
+  }
+}
+
