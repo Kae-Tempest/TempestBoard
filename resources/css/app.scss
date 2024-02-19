@@ -134,17 +134,101 @@ body {
         width: 100%;
         padding: .25rem 2.25rem;
 
+        &:hover {
+          color: var(--tertiary-color);
+          background-color: var(--secondary-color);
+          opacity: 50;
+        }
+
         & > a {
           color: var(--tertiary-color);
         }
       }
 
-      li:first-child:hover, li:last-child:hover, li:nth-last-child(2):hover {
-        color: var(--tertiary-color);
-        background-color: var(--secondary-color);
-        opacity: 50;
+      & > li > .is-menu {
+        width: 100%;
+
+        & > div {
+          width: 100%;
+
+          .menu-button {
+            padding: .25rem 2.25rem;
+            width: 100%;
+            text-align: left;
+
+            &:hover {
+              background-color: var(--secondary-color);
+              opacity: 50;
+            }
+
+            & > span {
+              padding-right: .5rem;
+            }
+
+            & > .is-menu-open {
+              transform: rotate(90deg);
+            }
+
+          }
+
+          .is-menu-close {
+            display: none;
+          }
+
+          .is-menu-list {
+            padding: .25rem 0 .25rem 2.5rem;
+
+            & > ul {
+              & > li:first-child, & > li:last-child {
+                padding: .25rem 0 .25rem 1.5rem;
+                width: 100%;
+
+                & > ul {
+                  border-left: dashed 1px var(--quaternary-color);
+
+                  & > li {
+                    padding: .25rem 0 .25rem 1.5rem;
+                    width: 100%;
+
+                    &:hover {
+                      background-color: var(--secondary-color);
+                      opacity: 50;
+                    }
+
+                    & > a {
+                      color: var(--tertiary-color);
+                      padding: 0;
+
+                      &:hover {
+                        background-color: transparent;
+                      }
+                    }
+                  }
+                }
+              }
+
+              & > li:nth-child(2) {
+                padding: .25rem 0 .25rem 1.5rem;
+                width: 100%;
+
+                &:hover {
+                  background-color: var(--secondary-color);
+                  opacity: 50;
+                }
+
+                & > a {
+                  color: var(--tertiary-color);
+                  padding: 0;
+
+                  &:hover {
+                    background-color: transparent;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
-
 }

@@ -5,10 +5,11 @@ import {
     faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "@inertiajs/react";
-import { Disclosure } from "@headlessui/react";
 import { NavBarProps, Project } from "@/types";
+import { useState } from "react";
 
 export default function ({ projects, user }: NavBarProps) {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <>
             <div id="navbar">
@@ -72,65 +73,74 @@ export default function ({ projects, user }: NavBarProps) {
                         {projects.map((project: Project) => {
                             return (
                                 <li key={project.id}>
-                                    <Disclosure>
-                                        {({ open }) => (
-                                            <div className="w-full">
-                                                <Disclosure.Button className="py-1 px-9 hover:bg-Secondary/50 w-full text-left">
-                                                    <span className="pr-2">
-                                                        {project.name}
-                                                    </span>
-                                                    <FontAwesomeIcon
-                                                        icon={faChevronRight}
-                                                        className={
-                                                            open
-                                                                ? "rotate-90 transform"
-                                                                : ""
-                                                        }
-                                                    />
-                                                </Disclosure.Button>
-                                                <Disclosure.Panel className="py-1 pl-10">
-                                                    <ul>
-                                                        <li className="py-1 pl-6 w-full">
-                                                            <span>Issues</span>
-                                                            <ul className="border-l border-dashed border-Tertiary">
-                                                                <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                                    <Link href="#">
-                                                                        Active
-                                                                    </Link>
-                                                                </li>
-                                                                <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                                    <Link href="#">
-                                                                        Backlog
-                                                                    </Link>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                        <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                            <Link href="#">
-                                                                Releases
-                                                            </Link>
-                                                        </li>
-                                                        <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                            <span>Repos</span>
-                                                            <ul className="border-l border-dashed border-Tertiary">
-                                                                <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                                    <Link href="#">
-                                                                        Pull
-                                                                        Requests
-                                                                    </Link>
-                                                                </li>
-                                                                <li className="py-1 px-6 hover:bg-Secondary/50 w-full">
-                                                                    <Link href="#">
-                                                                        Issues
-                                                                    </Link>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </Disclosure.Panel>
+                                    <div className="menu is-menu">
+                                        <div className="menu-list">
+                                            <div
+                                                className="menu-button"
+                                                onClick={() =>
+                                                    setIsMenuOpen(!isMenuOpen)
+                                                }
+                                            >
+                                                <span className="">
+                                                    {project.name}
+                                                </span>
+                                                <FontAwesomeIcon
+                                                    icon={faChevronRight}
+                                                    className={
+                                                        isMenuOpen
+                                                            ? "is-menu-open"
+                                                            : ""
+                                                    }
+                                                />
                                             </div>
-                                        )}
-                                    </Disclosure>
+                                            <div
+                                                className={
+                                                    isMenuOpen
+                                                        ? "is-menu-list"
+                                                        : "is-menu-list is-menu-close"
+                                                }
+                                            >
+                                                <ul className="menu-list">
+                                                    <li>
+                                                        <span>Issues</span>
+                                                        <ul>
+                                                            <li>
+                                                                <Link href="#">
+                                                                    Active
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="#">
+                                                                    Backlog
+                                                                </Link>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <Link href="#">
+                                                            Releases
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <span>Repos</span>
+                                                        <ul>
+                                                            <li>
+                                                                <Link href="#">
+                                                                    Pull
+                                                                    Requests
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="#">
+                                                                    Issues
+                                                                </Link>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             );
                         })}
