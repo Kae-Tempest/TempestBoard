@@ -1,6 +1,6 @@
 import { Head, useForm } from "@inertiajs/react";
 import AuthLayout from "@/Layouts/AuthLayout";
-import CustomCheckbox from "@/Componants/checkbox";
+import CustomCheckbox from "@/Componants/Checkbox";
 import { FormEventHandler, useEffect } from "react";
 
 export default function () {
