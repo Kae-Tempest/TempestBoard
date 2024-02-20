@@ -15,7 +15,7 @@ export default function () {
             reset("password", "password_confirmation");
         };
     }, []);
-    const handleSubmit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = e => {
         e.preventDefault();
         post("/register");
     };
@@ -31,11 +31,9 @@ export default function () {
                         type="text"
                         name="username"
                         value={data.username}
-                        onChange={(e) => setData("username", e.target.value)}
+                        onChange={e => setData("username", e.target.value)}
                     />
-                    {errors.username && (
-                        <div className="error">{errors.username}</div>
-                    )}
+                    {errors.username && <div className="error">{errors.username}</div>}
                 </div>
                 <div>
                     <label>Email</label>
@@ -44,11 +42,9 @@ export default function () {
                         type="email"
                         name="email"
                         value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
+                        onChange={e => setData("email", e.target.value)}
                     />
-                    {errors.email && (
-                        <div className="error">{errors.email}</div>
-                    )}
+                    {errors.email && <div className="error">{errors.email}</div>}
                 </div>
                 <div>
                     <label>Password</label>
@@ -57,11 +53,9 @@ export default function () {
                         type="password"
                         name="password"
                         value={data.password}
-                        onChange={(e) => setData("password", e.target.value)}
+                        onChange={e => setData("password", e.target.value)}
                     />
-                    {errors.password && (
-                        <div className="error">{errors.password}</div>
-                    )}
+                    {errors.password && <div className="error">{errors.password}</div>}
                 </div>
                 <div>
                     <label>Confirm Password</label>
@@ -70,15 +64,9 @@ export default function () {
                         type="password"
                         name="confirm_password"
                         value={data.password_confirmation}
-                        onChange={(e) =>
-                            setData("password_confirmation", e.target.value)
-                        }
+                        onChange={e => setData("password_confirmation", e.target.value)}
                     />
-                    {errors.password_confirmation && (
-                        <div className="error">
-                            {errors.password_confirmation}
-                        </div>
-                    )}
+                    {errors.password_confirmation && <div className="error">{errors.password_confirmation}</div>}
                 </div>
                 <div>
                     <Link href={route("login")}>Already registered ?</Link>

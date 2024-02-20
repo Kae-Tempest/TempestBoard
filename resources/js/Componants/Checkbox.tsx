@@ -6,11 +6,7 @@ interface CustomCheckboxProps {
     onChange: (e: { target: { checked: boolean } }) => void;
 }
 
-const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
-    label,
-    checked,
-    onChange,
-}) => {
+const CustomCheckbox: React.FC<CustomCheckboxProps> = ({ label, checked, onChange }) => {
     const [isChecked, setIsChecked] = useState(checked);
     return (
         <div id="checkbox">
@@ -29,8 +25,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
                 stroke="currentColor"
                 strokeWidth="4"
                 strokeLinecap="round"
-                strokeLinejoin="round"
-            >
+                strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
             <label className="ml-2">{label}</label>

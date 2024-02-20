@@ -15,7 +15,7 @@ export default function () {
             reset("password");
         };
     }, []);
-    const handleSubmit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = e => {
         e.preventDefault();
         post("/login");
     };
@@ -31,11 +31,9 @@ export default function () {
                         type="email"
                         name="email"
                         value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
+                        onChange={e => setData("email", e.target.value)}
                     />
-                    {errors.email && (
-                        <div className="error">{errors.email}</div>
-                    )}
+                    {errors.email && <div className="error">{errors.email}</div>}
                 </div>
                 <div>
                     <label>Password</label>
@@ -44,16 +42,14 @@ export default function () {
                         type="password"
                         name="password"
                         value={data.password}
-                        onChange={(e) => setData("password", e.target.value)}
+                        onChange={e => setData("password", e.target.value)}
                     />
-                    {errors.password && (
-                        <div className="error">{errors.password}</div>
-                    )}
+                    {errors.password && <div className="error">{errors.password}</div>}
                 </div>
                 <CustomCheckbox
                     label="Remember me"
                     checked={data.remember}
-                    onChange={(e) => {
+                    onChange={e => {
                         data.remember = e.target.checked;
                     }}
                 />

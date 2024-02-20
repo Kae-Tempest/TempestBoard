@@ -1,20 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Link, useForm } from "@inertiajs/react";
-import {
-    faChevronDown,
-    faChevronRight,
-    faMagnifyingGlass,
-    faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faMagnifyingGlass, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { NavBarProps, Project } from "@/types";
-import {
-    HighPriority,
-    LowPriority,
-    MinorPriority,
-    NeutralPriority,
-    UrgentPriority,
-} from "./Priority";
+import { HighPriority, LowPriority, MinorPriority, NeutralPriority, UrgentPriority } from "./Priority";
 import { priorityEnum } from "@/enums/global";
 
 export default function ({ projects, user }: NavBarProps) {
@@ -30,9 +19,7 @@ export default function ({ projects, user }: NavBarProps) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
-    const [htmlPriority, setHtmlPriority] = useState<React.ReactNode | null>(
-        null,
-    );
+    const [htmlPriority, setHtmlPriority] = useState<React.ReactNode | null>(null);
     const [priority, setPriority] = useState<number | undefined>(undefined);
     const handleSetProject = (projectId: number, projectNameParams: string) => {
         if (projectName == projectNameParams && projectId == data.project_id) {
@@ -46,14 +33,14 @@ export default function ({ projects, user }: NavBarProps) {
         setProjectDropdownOpen(false);
     };
     const handleSetPriority = (priorityValue: number) => {
-        const PE = Object.keys(priorityEnum).filter((v) => isNaN(Number(v)));
+        const PE = Object.keys(priorityEnum).filter(v => isNaN(Number(v)));
         if (priority === priorityValue) {
             setHtmlPriority(null);
             setPriority(undefined);
             setDropdownOpen(false);
             return;
         }
-        PE.forEach((key) => {
+        PE.forEach(key => {
             switch (key) {
                 case "MINOR":
                     if (priorityValue === 0) {
@@ -102,11 +89,7 @@ export default function ({ projects, user }: NavBarProps) {
                 <div className="modal-card">
                     <header className="modal-card-head">
                         <p className="modal-card-title">Create Issue</p>
-                        <button
-                            className="delete"
-                            aria-label="close"
-                            onClick={() => setShowModal(false)}
-                        ></button>
+                        <button className="delete" aria-label="close" onClick={() => setShowModal(false)}></button>
                     </header>
                     <section className="modal-card-body">
                         <div className="field">
@@ -117,170 +100,95 @@ export default function ({ projects, user }: NavBarProps) {
                                     placeholder="Issue Title"
                                     maxLength={100}
                                     minLength={3}
-                                    onChange={(e) =>
-                                        setData("title", e.target.value)
-                                    }
+                                    onChange={e => setData("title", e.target.value)}
                                 />
                                 <textarea
                                     className="textarea has-fixed-size"
                                     placeholder="Issue Description"
                                     maxLength={500}
                                     minLength={3}
-                                    onInput={(e) => {
-                                        setCount(
-                                            500 -
-                                                (e.target as any).value.length,
-                                        );
+                                    onInput={e => {
+                                        setCount(500 - (e.target as any).value.length);
                                     }}
-                                    onChange={(e) =>
-                                        setData("description", e.target.value)
-                                    }
-                                ></textarea>
-                                <div className="count">
-                                    {count != 0 ? count : "500"}/500
-                                </div>
-                                <div
-                                    className={
-                                        dropdownOpen
-                                            ? "dropdown is-active"
-                                            : "dropdown"
-                                    }
-                                >
+                                    onChange={e => setData("description", e.target.value)}></textarea>
+                                <div className="count">{count != 0 ? count : "500"}/500</div>
+                                <div className={dropdownOpen ? "dropdown is-active" : "dropdown"}>
                                     <div className="dropdown-trigger">
                                         <button
                                             className="button"
                                             aria-haspopup="true"
                                             aria-controls="dropdown-priority"
-                                            onClick={() =>
-                                                setDropdownOpen(!dropdownOpen)
-                                            }
-                                        >
+                                            onClick={() => setDropdownOpen(!dropdownOpen)}>
                                             {htmlPriority ? (
                                                 htmlPriority
                                             ) : (
                                                 <div>
                                                     <span>Priority</span>
                                                     <span className="icon">
-                                                        <FontAwesomeIcon
-                                                            icon={faChevronDown}
-                                                        />
+                                                        <FontAwesomeIcon icon={faChevronDown} />
                                                     </span>
                                                 </div>
                                             )}
                                         </button>
                                     </div>
-                                    <div
-                                        className="dropdown-menu"
-                                        id="dropdown-priority"
-                                        role="menu"
-                                    >
+                                    <div className="dropdown-menu" id="dropdown-priority" role="menu">
                                         <div className="dropdown-content">
-                                            <div
-                                                className="dropdown-item"
-                                                onClick={() =>
-                                                    handleSetPriority(4)
-                                                }
-                                            >
+                                            <div className="dropdown-item" onClick={() => handleSetPriority(4)}>
                                                 <UrgentPriority />
                                             </div>
-                                            <div
-                                                className="dropdown-item"
-                                                onClick={() =>
-                                                    handleSetPriority(3)
-                                                }
-                                            >
+                                            <div className="dropdown-item" onClick={() => handleSetPriority(3)}>
                                                 <HighPriority />
                                             </div>
-                                            <div
-                                                className="dropdown-item"
-                                                onClick={() =>
-                                                    handleSetPriority(2)
-                                                }
-                                            >
+                                            <div className="dropdown-item" onClick={() => handleSetPriority(2)}>
                                                 <NeutralPriority />
                                             </div>
-                                            <div
-                                                className="dropdown-item"
-                                                onClick={() =>
-                                                    handleSetPriority(1)
-                                                }
-                                            >
+                                            <div className="dropdown-item" onClick={() => handleSetPriority(1)}>
                                                 <LowPriority />
                                             </div>
-                                            <div
-                                                className="dropdown-item"
-                                                onClick={() =>
-                                                    handleSetPriority(0)
-                                                }
-                                            >
+                                            <div className="dropdown-item" onClick={() => handleSetPriority(0)}>
                                                 <MinorPriority />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div
-                                    className={
-                                        projectDropdownOpen
-                                            ? "dropdown is-active"
-                                            : "dropdown"
-                                    }
-                                >
+                                <div className={projectDropdownOpen ? "dropdown is-active" : "dropdown"}>
                                     <div className="dropdown-trigger">
                                         <button
                                             className="button"
                                             aria-haspopup="true"
                                             aria-controls="dropdown-project"
-                                            onClick={() =>
-                                                setProjectDropdownOpen(
-                                                    !projectDropdownOpen,
-                                                )
-                                            }
-                                        >
+                                            onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}>
                                             {projectName ? (
                                                 <div>
                                                     <span>{projectName}</span>
                                                     <span className="icon">
-                                                        <FontAwesomeIcon
-                                                            icon={faChevronDown}
-                                                        />
+                                                        <FontAwesomeIcon icon={faChevronDown} />
                                                     </span>
                                                 </div>
                                             ) : (
                                                 <div>
                                                     <span>Project</span>
                                                     <span className="icon">
-                                                        <FontAwesomeIcon
-                                                            icon={faChevronDown}
-                                                        />
+                                                        <FontAwesomeIcon icon={faChevronDown} />
                                                     </span>
                                                 </div>
                                             )}
                                         </button>
                                     </div>
-                                    <div
-                                        className="dropdown-menu"
-                                        id="dropdown-project"
-                                        role="menu"
-                                    >
+                                    <div className="dropdown-menu" id="dropdown-project" role="menu">
                                         <div className="dropdown-content">
-                                            {projects.map(
-                                                (project: Project) => {
-                                                    return (
-                                                        <div
-                                                            className="dropdown-item"
-                                                            key={project.id}
-                                                            onClick={() => {
-                                                                handleSetProject(
-                                                                    project.id,
-                                                                    project.name,
-                                                                );
-                                                            }}
-                                                        >
-                                                            {project.name}
-                                                        </div>
-                                                    );
-                                                },
-                                            )}
+                                            {projects.map((project: Project) => {
+                                                return (
+                                                    <div
+                                                        className="dropdown-item"
+                                                        key={project.id}
+                                                        onClick={() => {
+                                                            handleSetProject(project.id, project.name);
+                                                        }}>
+                                                        {project.name}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -294,14 +202,10 @@ export default function ({ projects, user }: NavBarProps) {
                                 post("/issue");
                                 setShowModal(false);
                             }}
-                            disabled={processing}
-                        >
+                            disabled={processing}>
                             Create
                         </button>
-                        <button
-                            className="button btn-error"
-                            onClick={() => setShowModal(false)}
-                        >
+                        <button className="button btn-error" onClick={() => setShowModal(false)}>
                             Cancel
                         </button>
                     </footer>
@@ -321,11 +225,7 @@ export default function ({ projects, user }: NavBarProps) {
                                     aria-controls="user-menu"
                                 />
                             </div>
-                            <div
-                                className="dropdown-menu"
-                                id="user-menu"
-                                role="menu"
-                            >
+                            <div className="dropdown-menu" id="user-menu" role="menu">
                                 <div className="dropdown-content">
                                     <ul>
                                         <li>
@@ -335,11 +235,7 @@ export default function ({ projects, user }: NavBarProps) {
                                             <Link href="#">Settings</Link>
                                         </li>
                                         <li>
-                                            <Link
-                                                method="post"
-                                                href={route("logout")}
-                                                as={"button"}
-                                            >
+                                            <Link method="post" href={route("logout")} as={"button"}>
                                                 Logout
                                             </Link>
                                         </li>
@@ -351,10 +247,7 @@ export default function ({ projects, user }: NavBarProps) {
 
                     <div className="button-container">
                         <button onClick={() => setShowModal(true)}>
-                            <FontAwesomeIcon
-                                icon={faPenToSquare}
-                                className="icon"
-                            />
+                            <FontAwesomeIcon icon={faPenToSquare} className="icon" />
                             New Issue
                         </button>
                         <button>
@@ -373,65 +266,37 @@ export default function ({ projects, user }: NavBarProps) {
                                 <li key={project.id}>
                                     <div className="menu is-menu">
                                         <div className="menu-list">
-                                            <div
-                                                className="menu-button"
-                                                onClick={() =>
-                                                    setIsMenuOpen(!isMenuOpen)
-                                                }
-                                            >
-                                                <span className="">
-                                                    {project.name}
-                                                </span>
+                                            <div className="menu-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                                <span className="">{project.name}</span>
                                                 <FontAwesomeIcon
                                                     icon={faChevronRight}
-                                                    className={
-                                                        isMenuOpen
-                                                            ? "is-menu-open"
-                                                            : ""
-                                                    }
+                                                    className={isMenuOpen ? "is-menu-open" : ""}
                                                 />
                                             </div>
-                                            <div
-                                                className={
-                                                    isMenuOpen
-                                                        ? "is-menu-list"
-                                                        : "is-menu-list is-menu-close"
-                                                }
-                                            >
+                                            <div className={isMenuOpen ? "is-menu-list" : "is-menu-list is-menu-close"}>
                                                 <ul className="menu-list">
                                                     <li>
                                                         <span>Issues</span>
                                                         <ul>
                                                             <li>
-                                                                <Link href="#">
-                                                                    Active
-                                                                </Link>
+                                                                <Link href="#">Active</Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="#">
-                                                                    Backlog
-                                                                </Link>
+                                                                <Link href="#">Backlog</Link>
                                                             </li>
                                                         </ul>
                                                     </li>
                                                     <li>
-                                                        <Link href="#">
-                                                            Releases
-                                                        </Link>
+                                                        <Link href="#">Releases</Link>
                                                     </li>
                                                     <li>
                                                         <span>Repos</span>
                                                         <ul>
                                                             <li>
-                                                                <Link href="#">
-                                                                    Pull
-                                                                    Requests
-                                                                </Link>
+                                                                <Link href="#">Pull Requests</Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="#">
-                                                                    Issues
-                                                                </Link>
+                                                                <Link href="#">Issues</Link>
                                                             </li>
                                                         </ul>
                                                     </li>

@@ -1,18 +1,13 @@
 import NavBar from "@/Componants/NavBar";
 import { MyIssuesProps } from "@/types";
 
-export default function ({
-    CreateIssues,
-    AssignedIssues,
-    Projects,
-    User,
-}: MyIssuesProps) {
+export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIssuesProps) {
     return (
         <div id="my_issue">
             <NavBar projects={Projects} user={User} />
             <div className="content">
                 <div>
-                    {CreateIssues.map((issue) => {
+                    {CreateIssues.map(issue => {
                         return (
                             <div key={issue.id}>
                                 <div>N° : {issue.id}</div>
@@ -23,7 +18,7 @@ export default function ({
                     })}
                 </div>
                 <div>
-                    {AssignedIssues.map((issue) => {
+                    {AssignedIssues.map(issue => {
                         return (
                             <div key={issue.id}>
                                 <div>N° : {issue.id}</div>

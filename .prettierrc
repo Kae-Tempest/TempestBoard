@@ -1,0 +1,6 @@
+{
+  "trailingComma": "all",
+  "bracketSameLine": true,
+  "printWidth": 120,
+  "arrowParens": "avoid"
+}
