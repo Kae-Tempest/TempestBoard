@@ -256,6 +256,10 @@ body {
                 & > a {
                   color: var(--tertiary-color);
                   padding: 0;
+
+                  &:hover {
+                    background-color: transparent;
+                  }
                 }
               }
             }
