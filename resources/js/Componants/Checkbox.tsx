@@ -11,18 +11,18 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
     checked,
     onChange,
 }) => {
-    const [ischecked, setisChecked] = useState(checked);
+    const [isChecked, setIsChecked] = useState(checked);
     return (
         <div id="checkbox">
             <input
                 type="checkbox"
                 name="remember"
-                checked={ischecked}
+                checked={isChecked}
                 onChange={onChange}
-                onClick={() => setisChecked(!ischecked)}
+                onClick={() => setIsChecked(!isChecked)}
             />
             <svg
-                className={ischecked ? "is-active" : ""}
+                className={isChecked ? "is-active" : ""}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
