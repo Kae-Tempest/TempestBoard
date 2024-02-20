@@ -1,20 +1,98 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
+import { Link, useForm } from "@inertiajs/react";
 import {
+    faChevronDown,
     faChevronRight,
     faMagnifyingGlass,
     faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "@inertiajs/react";
 import { NavBarProps, Project } from "@/types";
-import { useState } from "react";
+import {
+    HighPriority,
+    LowPriority,
+    MinorPriority,
+    NeutralPriority,
+    UrgentPriority,
+} from "./Priority";
+import { priorityEnum } from "@/enums/global";
 
 export default function ({ projects, user }: NavBarProps) {
+    const { data, setData, post, processing, errors } = useForm({
+        project_id: 0,
+        title: "",
+        description: "",
+        priority: "NEUTRAL",
+    });
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [count, setCount] = useState(0);
-
-    const handleCount = (e: any) => {
-        setCount(500 - e.target.value.length);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
+    const [projectName, setProjectName] = useState("");
+    const [htmlPriority, setHtmlPriority] = useState<React.ReactNode | null>(
+        null,
+    );
+    const [priority, setPriority] = useState<number | undefined>(undefined);
+    const handleSetProject = (projectId: number, projectNameParams: string) => {
+        if (projectName == projectNameParams && projectId == data.project_id) {
+            setProjectName("");
+            setData("project_id", 0);
+            setProjectDropdownOpen(false);
+            return;
+        }
+        setProjectName(projectNameParams);
+        setData("project_id", projectId);
+        setProjectDropdownOpen(false);
+    };
+    const handleSetPriority = (priorityValue: number) => {
+        const PE = Object.keys(priorityEnum).filter((v) => isNaN(Number(v)));
+        if (priority === priorityValue) {
+            setHtmlPriority(null);
+            setPriority(undefined);
+            setDropdownOpen(false);
+            return;
+        }
+        PE.forEach((key) => {
+            switch (key) {
+                case "MINOR":
+                    if (priorityValue === 0) {
+                        setHtmlPriority(<MinorPriority />);
+                        setPriority(priorityValue);
+                        setData("priority", "MINOR");
+                    }
+                    break;
+                case "LOW":
+                    if (priorityValue === 1) {
+                        setHtmlPriority(<LowPriority />);
+                        setPriority(priorityValue);
+                        setData("priority", "LOW");
+                    }
+                    break;
+                case "NEUTRAL":
+                    if (priorityValue === 2) {
+                        setHtmlPriority(<NeutralPriority />);
+                        setPriority(priorityValue);
+                        setData("priority", "NEUTRAL");
+                    }
+                    break;
+                case "HIGH":
+                    if (priorityValue === 3) {
+                        setHtmlPriority(<HighPriority />);
+                        setPriority(priorityValue);
+                        setData("priority", "HIGH");
+                    }
+                    break;
+                case "URGENT":
+                    if (priorityValue === 4) {
+                        setHtmlPriority(<UrgentPriority />);
+                        setPriority(priorityValue);
+                        setData("priority", "URGENT");
+                    }
+                    break;
+            }
+        });
+        setDropdownOpen(false);
     };
 
     return (
@@ -38,6 +116,10 @@ export default function ({ projects, user }: NavBarProps) {
                                     type="text"
                                     placeholder="Issue Title"
                                     maxLength={100}
+                                    minLength={3}
+                                    onChange={(e) =>
+                                        setData("title", e.target.value)
+                                    }
                                 />
                                 <textarea
                                     className="textarea has-fixed-size"
@@ -45,15 +127,177 @@ export default function ({ projects, user }: NavBarProps) {
                                     maxLength={500}
                                     minLength={3}
                                     onInput={(e) => {
-                                        handleCount(e);
+                                        setCount(
+                                            500 -
+                                                (e.target as any).value.length,
+                                        );
                                     }}
+                                    onChange={(e) =>
+                                        setData("description", e.target.value)
+                                    }
                                 ></textarea>
-                                <div>{count != 0 ? count : "500"}/500</div>
+                                <div className="count">
+                                    {count != 0 ? count : "500"}/500
+                                </div>
+                                <div
+                                    className={
+                                        dropdownOpen
+                                            ? "dropdown is-active"
+                                            : "dropdown"
+                                    }
+                                >
+                                    <div className="dropdown-trigger">
+                                        <button
+                                            className="button"
+                                            aria-haspopup="true"
+                                            aria-controls="dropdown-priority"
+                                            onClick={() =>
+                                                setDropdownOpen(!dropdownOpen)
+                                            }
+                                        >
+                                            {htmlPriority ? (
+                                                htmlPriority
+                                            ) : (
+                                                <div>
+                                                    <span>Priority</span>
+                                                    <span className="icon">
+                                                        <FontAwesomeIcon
+                                                            icon={faChevronDown}
+                                                        />
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div
+                                        className="dropdown-menu"
+                                        id="dropdown-priority"
+                                        role="menu"
+                                    >
+                                        <div className="dropdown-content">
+                                            <div
+                                                className="dropdown-item"
+                                                onClick={() =>
+                                                    handleSetPriority(4)
+                                                }
+                                            >
+                                                <UrgentPriority />
+                                            </div>
+                                            <div
+                                                className="dropdown-item"
+                                                onClick={() =>
+                                                    handleSetPriority(3)
+                                                }
+                                            >
+                                                <HighPriority />
+                                            </div>
+                                            <div
+                                                className="dropdown-item"
+                                                onClick={() =>
+                                                    handleSetPriority(2)
+                                                }
+                                            >
+                                                <NeutralPriority />
+                                            </div>
+                                            <div
+                                                className="dropdown-item"
+                                                onClick={() =>
+                                                    handleSetPriority(1)
+                                                }
+                                            >
+                                                <LowPriority />
+                                            </div>
+                                            <div
+                                                className="dropdown-item"
+                                                onClick={() =>
+                                                    handleSetPriority(0)
+                                                }
+                                            >
+                                                <MinorPriority />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    className={
+                                        projectDropdownOpen
+                                            ? "dropdown is-active"
+                                            : "dropdown"
+                                    }
+                                >
+                                    <div className="dropdown-trigger">
+                                        <button
+                                            className="button"
+                                            aria-haspopup="true"
+                                            aria-controls="dropdown-project"
+                                            onClick={() =>
+                                                setProjectDropdownOpen(
+                                                    !projectDropdownOpen,
+                                                )
+                                            }
+                                        >
+                                            {projectName ? (
+                                                <div>
+                                                    <span>{projectName}</span>
+                                                    <span className="icon">
+                                                        <FontAwesomeIcon
+                                                            icon={faChevronDown}
+                                                        />
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <span>Project</span>
+                                                    <span className="icon">
+                                                        <FontAwesomeIcon
+                                                            icon={faChevronDown}
+                                                        />
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div
+                                        className="dropdown-menu"
+                                        id="dropdown-project"
+                                        role="menu"
+                                    >
+                                        <div className="dropdown-content">
+                                            {projects.map(
+                                                (project: Project) => {
+                                                    return (
+                                                        <div
+                                                            className="dropdown-item"
+                                                            key={project.id}
+                                                            onClick={() => {
+                                                                handleSetProject(
+                                                                    project.id,
+                                                                    project.name,
+                                                                );
+                                                            }}
+                                                        >
+                                                            {project.name}
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
                     <footer className="modal-card-foot">
-                        <button className="button btn-success">Create</button>
+                        <button
+                            className="button btn-success"
+                            onClick={() => {
+                                post("/issue");
+                                setShowModal(false);
+                            }}
+                            disabled={processing}
+                        >
+                            Create
+                        </button>
                         <button
                             className="button btn-error"
                             onClick={() => setShowModal(false)}
@@ -94,7 +338,7 @@ export default function ({ projects, user }: NavBarProps) {
                                             <Link
                                                 method="post"
                                                 href={route("logout")}
-                                                as={"a"}
+                                                as={"button"}
                                             >
                                                 Logout
                                             </Link>

@@ -82,9 +82,17 @@ body {
 
               & > a {
                 color: var(--tertiary-color);
-
               }
 
+              & > button {
+                background-color: transparent;
+                color: var(--tertiary-color);
+                border: none;
+                font-family: Inter, sans-serif;
+                font-size: 1rem;
+                padding: 0;
+                margin: 0;
+              }
             }
           }
         }
@@ -248,10 +256,6 @@ body {
                 & > a {
                   color: var(--tertiary-color);
                   padding: 0;
-
-                  &:hover {
-                    background-color: transparent;
-                  }
                 }
               }
             }
@@ -513,9 +517,50 @@ body {
 
     }
 
-    & > div {
+    & > div.count {
       margin-top: .25rem;
       text-align: end;
+    }
+
+    .dropdown {
+      position: relative;
+      margin: 0 .25rem;
+
+      .priority {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      & > .dropdown-trigger {
+        & > button {
+          background-color: var(--tertiary-color);
+          border: 1px solid var(--bg-color);
+          color: var(--text-color);
+          cursor: pointer;
+        }
+      }
+
+      & > .dropdown-menu {
+        position: fixed;
+        z-index: 60;
+        left: unset;
+        top: unset;
+        margin-top: 2.5rem;
+
+        & > .dropdown-content {
+          background-color: var(--tertiary-color);
+          border: 1px solid var(--text-color);
+
+          & > .dropdown-item {
+            color: var(--text-color);
+            cursor: pointer;
+
+            &:hover {
+              background-color: var(--secondary-color);
+            }
+          }
+        }
+      }
     }
   }
 }
