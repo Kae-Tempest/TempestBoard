@@ -46,3 +46,9 @@ export type NavBarProps = {
     projects: Project[];
     user: User;
 };
+
+export type IssueModalProps = {
+    projects: Project[];
+    showModal: boolean;
+    setShowModal: (showModal: boolean) => void;
+};
