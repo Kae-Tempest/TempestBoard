@@ -1,13 +1,13 @@
 import { HighPriority, LowPriority, MinorPriority, NeutralPriority, UrgentPriority } from "@/Componants/Priority";
 import { IssueModalProps, Project } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { priorityEnum } from "@/enums/global";
 
 export default function ({ projects, showModal, setShowModal }: IssueModalProps) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         project_id: 0,
         title: "",
         description: "",
@@ -38,6 +38,11 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
         setDropdownOpen(false);
     };
 
+    const handleCancel = () => {
+        reset();
+        setShowModal(false);
+    };
+
     const handleSetProject = (projectId: number, projectNameParams: string) => {
         if (projectName == projectNameParams && projectId == data.project_id) {
             setProjectName("");
@@ -49,6 +54,13 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
         setData("project_id", projectId);
         setProjectDropdownOpen(false);
     };
+
+    useEffect(() => {
+        if (errors.title || errors.description) setShowModal(true);
+        return () => {
+            reset();
+        };
+    }, [errors]);
 
     return (
         <div className={showModal ? "modal is-active" : "modal"}>
@@ -67,6 +79,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 placeholder="Issue Title"
                                 maxLength={100}
                                 minLength={3}
+                                value={data.title}
                                 onChange={e => setData("title", e.target.value)}
                             />
                             {errors.title && <p className="help is-danger">{errors.title}</p>}
@@ -75,6 +88,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 placeholder="Issue Description"
                                 maxLength={500}
                                 minLength={3}
+                                value={data.description}
                                 onInput={e => {
                                     setCount(500 - (e.target as any).value.length);
                                 }}
@@ -127,28 +141,20 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                         aria-haspopup="true"
                                         aria-controls="dropdown-project"
                                         onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}>
-                                        {errors.project_id ? (
+                                        {projectName ? (
                                             <div>
-                                                <span>{errors.project_id}</span>
+                                                <span>{projectName}</span>
+                                                <span className="icon">
+                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                                </span>
                                             </div>
                                         ) : (
-                                            <>
-                                                {projectName ? (
-                                                    <div>
-                                                        <span>{projectName}</span>
-                                                        <span className="icon">
-                                                            <FontAwesomeIcon icon={faChevronDown} />
-                                                        </span>
-                                                    </div>
-                                                ) : (
-                                                    <div>
-                                                        <span>Project</span>
-                                                        <span className="icon">
-                                                            <FontAwesomeIcon icon={faChevronDown} />
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </>
+                                            <div>
+                                                <span>Project</span>
+                                                <span className="icon">
+                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                                </span>
+                                            </div>
                                         )}
                                     </button>
                                 </div>
@@ -176,13 +182,21 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                     <button
                         className="button btn-success"
                         onClick={() => {
-                            post("/issue");
-                            if (!errors.title && !errors.description && !errors.project_id) setShowModal(false);
+                            if (errors.title || errors.description) {
+                                setShowModal(true);
+                            }
+                            post("/issue", {
+                                preserveScroll: true,
+                                onSuccess: () => {
+                                    setShowModal(false);
+                                    reset();
+                                },
+                            });
                         }}
                         disabled={processing}>
                         Create
                     </button>
-                    <button className="button btn-error" onClick={() => setShowModal(false)}>
+                    <button className="button btn-error" onClick={() => handleCancel()}>
                         Cancel
                     </button>
                 </footer>
