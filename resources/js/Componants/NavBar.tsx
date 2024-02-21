@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { faChevronRight, faMagnifyingGlass, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { NavBarProps, Project } from "@/types";
@@ -8,6 +8,26 @@ import IssueModal from "@/Componants/IssueModal";
 export default function ({ projects, user }: NavBarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropDownRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handlerCloseDropDown = (e: any) => {
+            if (!dropDownRef.current?.contains(e.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handlerCloseDropDown);
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                setIsDropdownOpen(false);
+                setShowModal(false);
+            }
+        });
+
+        return () => {
+            document.addEventListener("mousedown", handlerCloseDropDown);
+        };
+    }, []);
 
     return (
         <>
@@ -17,14 +37,9 @@ export default function ({ projects, user }: NavBarProps) {
                     <div>
                         <img src="https://placehold.co/30" alt="" />
                         <h1>Tempest Board</h1>
-                        <div className="dropdown is-hoverable is-right">
-                            <div className="dopdown-trigger">
-                                <img
-                                    src={user.thumbnail}
-                                    alt="user thumbnail"
-                                    aria-haspopup="true"
-                                    aria-controls="user-menu"
-                                />
+                        <div className={isDropdownOpen ? "dropdown is-active is-right" : "dropdown is-right"} ref={dropDownRef}>
+                            <div className="dropdown-trigger" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                                <img src={user.thumbnail} alt="user thumbnail" aria-haspopup="true" aria-controls="user-menu" className="dropdown-thumbnail" />
                             </div>
                             <div className="dropdown-menu" id="user-menu" role="menu">
                                 <div className="dropdown-content">
@@ -69,10 +84,7 @@ export default function ({ projects, user }: NavBarProps) {
                                         <div className="menu-list">
                                             <div className="menu-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                                 <span className="">{project.name}</span>
-                                                <FontAwesomeIcon
-                                                    icon={faChevronRight}
-                                                    className={isMenuOpen ? "is-menu-open" : ""}
-                                                />
+                                                <FontAwesomeIcon icon={faChevronRight} className={isMenuOpen ? "is-menu-open" : ""} />
                                             </div>
                                             <div className={isMenuOpen ? "is-menu-list" : "is-menu-list is-menu-close"}>
                                                 <ul className="menu-list">

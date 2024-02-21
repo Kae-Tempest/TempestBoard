@@ -1,6 +1,6 @@
 import { HighPriority, LowPriority, MinorPriority, NeutralPriority, UrgentPriority } from "@/Componants/Priority";
 import { IssueModalProps, Project } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -54,10 +54,26 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
         setData("project_id", projectId);
         setProjectDropdownOpen(false);
     };
+    const modalRef = useRef<HTMLDivElement>(null);
+    const priorityDPRed = useRef<HTMLDivElement>(null);
+    const projectDPRed = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const handlerCloseModal = (e: any) => {
+            if (!modalRef.current?.contains(e.target)) {
+                setShowModal(false);
+            }
+            if (!priorityDPRed.current?.contains(e.target)) {
+                setDropdownOpen(false);
+            }
+            if (!projectDPRed.current?.contains(e.target)) {
+                setProjectDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handlerCloseModal);
         if (errors.title || errors.description) setShowModal(true);
         return () => {
+            document.addEventListener("mousedown", handlerCloseModal);
             reset();
         };
     }, [errors]);
@@ -65,7 +81,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
     return (
         <div className={showModal ? "modal is-active" : "modal"}>
             <div className="modal-background"></div>
-            <div className="modal-card">
+            <div className="modal-card" ref={modalRef}>
                 <header className="modal-card-head">
                     <p className="modal-card-title">Create Issue</p>
                     <button className="delete" aria-label="close" onClick={() => setShowModal(false)}></button>
@@ -73,15 +89,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                 <section className="modal-card-body">
                     <div className="field">
                         <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="Issue Title"
-                                maxLength={100}
-                                minLength={3}
-                                value={data.title}
-                                onChange={e => setData("title", e.target.value)}
-                            />
+                            <input className="input" type="text" placeholder="Issue Title" maxLength={100} minLength={3} value={data.title} onChange={e => setData("title", e.target.value)} />
                             {errors.title && <p className="help is-danger">{errors.title}</p>}
                             <textarea
                                 className="textarea has-fixed-size"
@@ -95,13 +103,9 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 onChange={e => setData("description", e.target.value)}></textarea>
                             {errors.description && <p className="help is-danger">{errors.description}</p>}
                             <div className="count">{count != 0 ? count : "500"}/500</div>
-                            <div className={dropdownOpen ? "dropdown is-active" : "dropdown"}>
+                            <div className={dropdownOpen ? "dropdown is-active" : "dropdown"} ref={priorityDPRed}>
                                 <div className="dropdown-trigger">
-                                    <button
-                                        className="button"
-                                        aria-haspopup="true"
-                                        aria-controls="dropdown-priority"
-                                        onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                    <button className="button" aria-haspopup="true" aria-controls="dropdown-priority" onClick={() => setDropdownOpen(!dropdownOpen)}>
                                         {htmlPriority ? (
                                             htmlPriority
                                         ) : (
@@ -134,13 +138,9 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                     </div>
                                 </div>
                             </div>
-                            <div className={projectDropdownOpen ? "dropdown is-active" : "dropdown"}>
+                            <div className={projectDropdownOpen ? "dropdown is-active" : "dropdown"} ref={projectDPRed}>
                                 <div className="dropdown-trigger">
-                                    <button
-                                        className="button"
-                                        aria-haspopup="true"
-                                        aria-controls="dropdown-project"
-                                        onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}>
+                                    <button className="button" aria-haspopup="true" aria-controls="dropdown-project" onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}>
                                         {projectName ? (
                                             <div>
                                                 <span>{projectName}</span>
