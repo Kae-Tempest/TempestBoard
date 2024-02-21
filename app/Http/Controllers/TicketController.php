@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TicketRequest;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,16 +32,13 @@ class TicketController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TicketRequest $request)
     {
-        $request->validate([
-            'project_id' => 'required|integer|min:1',
-            'title' => 'required|string|max:255|min:3',
-            'description' => 'required|string|max:500|min:3',
-            'priority' => 'required|string|max:255|min:3',
-        ]);
-        
-        $ticket = Ticket::create([
+        $validated = $request->validated();
+
+        $validated = $request->safe()->only(['project_id', 'title', 'description', 'priority']);
+
+        Ticket::create([
             'creator_id' => Auth::id(),
             'assigned_id' => Auth::id(),
             'project_id' => $request->project_id,
