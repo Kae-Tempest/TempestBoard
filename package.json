@@ -30,7 +30,7 @@
   "prettier": {
     "trailingComma": "all",
     "bracketSameLine": true,
-    "printWidth": 120,
+    "printWidth": 200,
     "arrowParens": "avoid"
   }
 }
