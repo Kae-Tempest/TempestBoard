@@ -11,9 +11,6 @@ interface IssueListProps {
 }
 
 const IssueIcon: React.FC<{ state: string }> = ({ state }) => {
-    console.log(state);
-    console.log(issueStateEnum.OPEN);
-    // console.log(state === issueStateEnum.OPEN);
     if (state === issueStateEnum.OPEN) {
         return (
             <>
@@ -64,16 +61,16 @@ export const IssueList: React.FC<IssueListProps> = ({ issueArray, Projects, stat
                                 return (
                                     <div key={project.id} className="issue-info">
                                         <div className="issue-content">
-                                            <div>
+                                            <div className="priority">
                                                 <FontAwesomeIcon icon={faAnglesUp} />
                                             </div>
-                                            <div>
+                                            <div className="tag-number">
                                                 {project.name.substring(0, 3)}-{issue.id}
                                             </div>
-                                            <div>
+                                            <div className="state">
                                                 <IssueIcon state={state} />
                                             </div>
-                                            <div>{issue.title}</div>
+                                            <div className="title-issue">{issue.title}</div>
                                         </div>
                                         <div className="project-content">
                                             <div className="tag">{project.id == issue.project_id && project.name}</div>

@@ -5,6 +5,8 @@
   --tertiary-color: #457b9d;
   --text-color: #1D3557;
 
+  --white: #f3f9ff;
+
   --error-color: #E74C3C;
   --error-color-hover-lighter: #FF6655;
   --warning-color: #F39C12;
@@ -56,7 +58,7 @@ body {
       }
 
       & > h1 {
-        color: var(--secondary-color);
+        color: var(--white);
         font-weight: 900;
         margin: 0 .5rem;
       }
@@ -72,7 +74,6 @@ body {
         & > div > div {
           background-color: var(--primary-color);
           border: solid 1px var(--tertiary-color);
-          color: var(--tertiary-color);
           border-radius: .25rem;
 
           & > ul {
@@ -89,12 +90,12 @@ body {
               width: 100%;
 
               & > a {
-                color: var(--tertiary-color);
+                color: var(--white);
               }
 
               & > button {
                 background-color: transparent;
-                color: var(--tertiary-color);
+                color: var(--white);
                 border: none;
                 font-family: Inter, sans-serif;
                 font-size: 1rem;
@@ -113,7 +114,6 @@ body {
     display: flex;
     justify-content: space-between;
     gap: .5rem;
-    color: var(--text-color);
 
     & > button:first-child {
       display: flex;
@@ -148,7 +148,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    color: var(--secondary-color);
+    color: var(--white);
 
     & > ul {
       display: flex;
@@ -161,13 +161,13 @@ body {
         padding: .25rem 2.25rem;
 
         &:hover {
-          color: var(--secondary-color);
+          color: var(--white);
           background-color: var(--tertiary-color);
           opacity: 50;
         }
 
         & > a {
-          color: var(--secondary-color);
+          color: var(--white);
         }
       }
 
@@ -242,7 +242,7 @@ body {
                     }
 
                     & > a {
-                      color: var(--secondary-color);
+                      color: var(--white);
                       padding: 0;
 
                       &:hover {
@@ -263,7 +263,7 @@ body {
                 }
 
                 & > a {
-                  color: var(--secondary-color);
+                  color: var(--white);
                   padding: 0;
 
                   &:hover {
@@ -597,10 +597,14 @@ body {
 
               & > div {
                 margin: 0 .25rem;
+              }
 
-                &:last-child {
-                  text-align: end;
-                }
+              & > .priority {
+                width: 1.5rem;
+              }
+
+              & > .tag-number {
+                width: 3.75rem;
               }
             }
 
@@ -781,14 +785,20 @@ body {
 
 .canceled-issue-icon {
   color: var(--error-color);
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .completed-issue-icon {
   color: var(--success-color);
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .open-issue-icon {
-  color: var(--primary-color)
+  color: var(--primary-color);
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .inprogress-issue-icon {
