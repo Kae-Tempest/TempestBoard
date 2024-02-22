@@ -1,10 +1,11 @@
-import { HighPriority, LowPriority, MinorPriority, NeutralPriority, UrgentPriority } from "@/Componants/Priority";
+import { CustomPriority } from "@/Componants/Priority";
 import { IssueModalProps, Project } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faAnglesUp, faChevronDown, faChevronUp, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { priorityEnum } from "@/enums/global";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export default function ({ projects, showModal, setShowModal }: IssueModalProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -19,7 +20,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
     const [priority, setPriority] = useState<string>("");
     const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
-    const handleSetPriority = (priorityValue: string) => {
+    const handleSetPriority = (priorityValue: string, iconName: IconProp) => {
         const PE = Object.keys(priorityEnum).filter(v => v === priorityValue)[0];
         if (priority === priorityValue) {
             setHtmlPriority(null);
@@ -27,13 +28,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
             setDropdownOpen(false);
             return;
         }
-
-        if (PE === priorityEnum.MINOR) setHtmlPriority(<MinorPriority />);
-        if (PE === priorityEnum.LOW) setHtmlPriority(<LowPriority />);
-        if (PE === priorityEnum.NEUTRAL) setHtmlPriority(<NeutralPriority />);
-        if (PE === priorityEnum.HIGH) setHtmlPriority(<HighPriority />);
-        if (PE === priorityEnum.URGENT) setHtmlPriority(<UrgentPriority />);
-
+        setHtmlPriority(<CustomPriority label={PE} iconName={iconName} />);
         setPriority(priorityValue);
         setDropdownOpen(false);
     };
@@ -120,20 +115,20 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 </div>
                                 <div className="dropdown-menu" id="dropdown-priority" role="menu">
                                     <div className="dropdown-content">
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("URGENT")}>
-                                            <UrgentPriority />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("URGENT", faAnglesUp)}>
+                                            <CustomPriority label="URGENT" iconName={faAnglesUp} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("HIGH")}>
-                                            <HighPriority />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("HIGH", faChevronUp)}>
+                                            <CustomPriority label="HIGH" iconName={faChevronUp} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("NEUTRAL")}>
-                                            <NeutralPriority />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("NEUTRAL", faMinus)}>
+                                            <CustomPriority label="NEUTRAL" iconName={faMinus} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("LOW")}>
-                                            <LowPriority />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("LOW", faChevronDown)}>
+                                            <CustomPriority label="LOW" iconName={faChevronDown} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("MINOR")}>
-                                            <MinorPriority />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("MINOR", faAnglesDown)}>
+                                            <CustomPriority label="MINOR" iconName={faAnglesDown} />
                                         </div>
                                     </div>
                                 </div>

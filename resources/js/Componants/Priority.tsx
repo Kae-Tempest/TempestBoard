@@ -1,55 +1,22 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesDown, faAnglesUp, faChevronDown, faChevronUp, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-export const UrgentPriority: React.FC = () => {
+export const CustomPriority: React.FC<{ iconName: IconProp; label: string }> = ({ iconName, label }) => {
     return (
         <div className="priority">
-            <span>Urgent</span>
+            <span>{label}</span>
             <span className="icon">
-                <FontAwesomeIcon icon={faAnglesUp} />
-            </span>
-        </div>
-    );
-};
-export const HighPriority: React.FC = () => {
-    return (
-        <div className="priority">
-            <span>High</span>
-            <span className="icon">
-                <FontAwesomeIcon icon={faChevronUp} />
+                <FontAwesomeIcon icon={iconName} />
             </span>
         </div>
     );
 };
 
-export const NeutralPriority: React.FC = () => {
+export const CustomPriorityIcon: React.FC<{ iconName: IconProp }> = ({ iconName }) => {
     return (
-        <div className="priority">
-            <span>Neutral</span>
-            <span className="icon">
-                <FontAwesomeIcon icon={faMinus} />
-            </span>
-        </div>
-    );
-};
-export const LowPriority: React.FC = () => {
-    return (
-        <div className="priority">
-            <span>Low</span>
-            <span className="icon">
-                <FontAwesomeIcon icon={faChevronDown} />
-            </span>
-        </div>
-    );
-};
-export const MinorPriority: React.FC = () => {
-    return (
-        <div className="priority">
-            <span>Minor</span>
-            <span className="icon">
-                <FontAwesomeIcon icon={faAnglesDown} />
-            </span>
-        </div>
+        <>
+            <FontAwesomeIcon icon={iconName} />
+        </>
     );
 };

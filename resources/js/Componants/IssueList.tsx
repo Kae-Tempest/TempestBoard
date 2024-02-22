@@ -1,8 +1,10 @@
 import { Issue, Project } from "@/types";
-import { issueStateEnum } from "@/enums/global";
+import { issueStateEnum, priorityIconEnum } from "@/enums/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesUp, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { CanceledIssueIcon, CompletedIssueIcon, InProgressIssueIcon, OpenIssueIcon } from "@/Componants/StateIcon";
+import { CustomPriorityIcon } from "@/Componants/Priority";
+import { faAnglesDown, faAnglesUp, faChevronDown, faChevronUp, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface IssueListProps {
     issueArray: Issue[];
@@ -40,6 +42,16 @@ const IssueIcon: React.FC<{ state: string }> = ({ state }) => {
         );
     }
 };
+const PriorityIcon: React.FC<{ priority: string }> = ({ priority }) => {
+    const ListIcon: IconDefinition[] = [faAnglesDown, faChevronDown, faMinus, faChevronUp, faAnglesUp];
+    const indexOfState = Object.values(priorityIconEnum).indexOf(priority as unknown as priorityIconEnum);
+    const key = Object.keys(priorityIconEnum)[indexOfState];
+    return (
+        <>
+            <CustomPriorityIcon iconName={ListIcon[Number(key)]} />
+        </>
+    );
+};
 
 export const IssueList: React.FC<IssueListProps> = ({ issueArray, Projects, state }) => {
     const indexOfState = Object.values(issueStateEnum).indexOf(state as unknown as issueStateEnum);
@@ -62,7 +74,7 @@ export const IssueList: React.FC<IssueListProps> = ({ issueArray, Projects, stat
                                     <div key={project.id} className="issue-info">
                                         <div className="issue-content">
                                             <div className="priority">
-                                                <FontAwesomeIcon icon={faAnglesUp} />
+                                                <PriorityIcon priority={issue.priority} />
                                             </div>
                                             <div className="tag-number">
                                                 {project.name.substring(0, 3)}-{issue.id}

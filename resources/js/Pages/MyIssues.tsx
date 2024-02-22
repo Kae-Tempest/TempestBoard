@@ -12,7 +12,7 @@ export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIss
         mergedArray.forEach(issue => {
             uniqueMap.set(issue.id, issue);
         });
-        return Array.from(uniqueMap.values());
+        return Array.from(uniqueMap.values()).sort((a, b) => a.id - b.id);
     }
 
     const issueArray = mergeIssuesWithoutDuplicates(CreateIssues, AssignedIssues);

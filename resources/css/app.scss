@@ -1,9 +1,16 @@
 :root {
   --bg-color: #F4F3EE;
-  --primary-color: #003b73; // may be en + pastel
+  --primary-color: #003b73;
   --secondary-color: #a8dadc;
   --tertiary-color: #457b9d;
   --text-color: #1D3557;
+
+
+  --bg-color-rgb: 244, 243, 238; // #F4F3EE
+  --primary-color-rgb: 0, 59, 115; // #003b73
+  --secondary-color-rgb: 168, 218, 220; // #a8dadc
+  --tertiary-color-rgb: 69, 123, 157; // #457b9d
+  --text-color-rgb: 29, 53, 87; // #1D3557
 
   --white: #f3f9ff;
 
@@ -584,6 +591,7 @@ body {
         & > .issue-list {
           width: 100%;
 
+
           & > .issue-info {
             width: 100%;
             display: flex;
@@ -592,15 +600,20 @@ body {
             border-bottom: 1px solid var(--primary-color);
             height: 1.75rem;
 
+            &:hover {
+              background-color: rgba(var(--secondary-color-rgb), 0.5);
+            }
+
             & > .issue-content {
               display: flex;
 
               & > div {
-                margin: 0 .25rem;
+                margin: 0 .125rem;
               }
 
               & > .priority {
-                width: 1.5rem;
+                margin-left: 0.25rem;
+                width: 1rem;
               }
 
               & > .tag-number {
