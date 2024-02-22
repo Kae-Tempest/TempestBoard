@@ -7,6 +7,8 @@ export interface Issue {
     description: string;
     status: string;
     priority: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Project {
@@ -17,6 +19,8 @@ export interface Project {
     nb_user: number;
     thumbnail: string;
     status: string;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export interface Role {
@@ -33,6 +37,8 @@ export interface User {
     last_name: string;
     email: string;
     thumbnail: string;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export type MyIssuesProps = {

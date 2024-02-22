@@ -1,25 +1,33 @@
 :root {
   --bg-color: #F4F3EE;
-  --primary-color: #463F3A;
-  --secondary-color: #8A817C;
-  --tertiary-color: #BCB8B1;
-  --quaternary-color: #E0AFA0;
+  --primary-color: #003b73; // may be en + pastel
+  --secondary-color: #a8dadc;
+  --tertiary-color: #457b9d;
+  --text-color: #1D3557;
+
   --error-color: #E74C3C;
   --error-color-hover-lighter: #FF6655;
   --warning-color: #F39C12;
   --success-color: #4CAF50;
   --success-color-hover-lighter: #66BB6A;
   --extra-color: #A3EBF3;
-  --text-color: #1C1B1A;
 }
 
-@import 'bulma/css/bulma.css';
+@import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
 
+@mixin SeiraFont($weigth) {
+  font-family: "Saira", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: $weigth;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
 
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
+  height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -41,14 +49,14 @@ body {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: .5rem 1rem 1.75rem 1rem;
+      margin: .5rem 1rem .75rem 1rem;
 
       & > img {
         border-radius: .25rem;
       }
 
       & > h1 {
-        color: var(--tertiary-color);
+        color: var(--secondary-color);
         font-weight: 900;
         margin: 0 .5rem;
       }
@@ -56,14 +64,14 @@ body {
       & > div {
         & > div > img {
           border-radius: 100%;
-          border: solid 1px var(--quaternary-color);
+          border: solid 2px var(--secondary-color);
           width: 1.875rem;
           height: 1.875rem;
         }
 
         & > div > div {
           background-color: var(--primary-color);
-          border: solid 1px var(--quaternary-color);
+          border: solid 1px var(--tertiary-color);
           color: var(--tertiary-color);
           border-radius: .25rem;
 
@@ -112,7 +120,7 @@ body {
       width: 100%;
       height: 1.25rem;
       text-align: left;
-      background-color: var(--tertiary-color);
+      background-color: var(--secondary-color);
       align-items: center;
       padding: 0 .5rem;
       border-radius: .125rem;
@@ -128,7 +136,7 @@ body {
 
     & > button:last-child {
       text-align: left;
-      background-color: var(--tertiary-color);
+      background-color: var(--secondary-color);
       padding: 0 .5rem;
       border-radius: .125rem;
       border: none;
@@ -140,7 +148,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    color: var(--tertiary-color);
+    color: var(--secondary-color);
 
     & > ul {
       display: flex;
@@ -153,13 +161,13 @@ body {
         padding: .25rem 2.25rem;
 
         &:hover {
-          color: var(--tertiary-color);
-          background-color: var(--secondary-color);
+          color: var(--secondary-color);
+          background-color: var(--tertiary-color);
           opacity: 50;
         }
 
         & > a {
-          color: var(--tertiary-color);
+          color: var(--secondary-color);
         }
       }
 
@@ -175,7 +183,7 @@ body {
             text-align: left;
 
             &:hover {
-              background-color: var(--secondary-color);
+              background-color: var(--tertiary-color);
               opacity: 50;
             }
 
@@ -203,9 +211,10 @@ body {
 
                 & > ul {
                   border: none;
+                  margin: 0 .75rem;
 
                   &:before {
-                    border-left: 1px solid var(--tertiary-color);
+                    border-left: 1px solid var(--secondary-color);
                     content: "";
                     display: block;
                     position: absolute;
@@ -218,7 +227,7 @@ body {
                     width: 100%;
 
                     &:before {
-                      border-top: 1px solid;
+                      border-top: 1px solid var(--secondary-color);
                       content: "";
                       display: block;
                       left: 3.75rem;
@@ -228,12 +237,12 @@ body {
                     }
 
                     &:hover {
-                      background-color: var(--secondary-color);
+                      background-color: var(--tertiary-color);
                       opacity: 50;
                     }
 
                     & > a {
-                      color: var(--tertiary-color);
+                      color: var(--secondary-color);
                       padding: 0;
 
                       &:hover {
@@ -249,12 +258,12 @@ body {
                 width: 100%;
 
                 &:hover {
-                  background-color: var(--secondary-color);
+                  background-color: var(--tertiary-color);
                   opacity: 50;
                 }
 
                 & > a {
-                  color: var(--tertiary-color);
+                  color: var(--secondary-color);
                   padding: 0;
 
                   &:hover {
@@ -299,19 +308,20 @@ body {
 
 #login, #register {
   input {
-    background-color: var(--tertiary-color);
-    border: solid .5px var(--quaternary-color);
+    background-color: var(--secondary-color);
+    border: solid .5px var(--tertiary-color);
     color: var(--text-color);
     border-radius: 0.125rem;
     height: 1.25rem;
   }
 
   label {
+    color: var(--secondary-color);
     font-weight: 900;
   }
 
   button {
-    background-color: var(--quaternary-color);
+    background-color: var(--secondary-color);
     color: var(--text-color);
     height: 1.75rem;
     width: 5rem;
@@ -340,7 +350,7 @@ body {
     text-align: end;
 
     & > span {
-      color: var(--secondary-color);
+      color: var(--tertiary-color);
       font-weight: bold;
       font-size: 0.75rem;
       line-height: 1rem;
@@ -348,6 +358,7 @@ body {
 
       &:hover {
         text-decoration: underline;
+        color: var(--secondary-color);
       }
     }
   }
@@ -369,7 +380,7 @@ body {
     text-align: end;
 
     & > a {
-      color: var(--secondary-color);
+      color: var(--tertiary-color);
       font-weight: bold;
       font-size: 0.75rem;
       line-height: 1rem;
@@ -377,6 +388,7 @@ body {
 
       &:hover {
         text-decoration: underline;
+        color: var(--secondary-color);
       }
     }
   }
@@ -396,14 +408,14 @@ body {
     position: relative;
     width: 1rem;
     height: 1rem;
-    border: solid .5px var(--quaternary-color);
-    background-color: var(--tertiary-color);
+    border: solid .5px var(--tertiary-color);
+    background-color: var(--secondary-color);
     border-radius: 5px;
     margin-top: .25rem;
 
     &:checked {
-      background-color: #3b82f6;
-      border: solid .5px var(--quaternary-color);
+      background-color: var(--tertiary-color);
+      border: solid .5px var(--tertiary-color);
     }
 
     &:focus {
@@ -441,12 +453,180 @@ body {
   & > div.content {
     padding-left: 16rem;
 
-    & > div:first-child {
-      background-color: #93c5fd;
+    & > .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 3.125rem;
+      border-bottom: 1px solid var(--primary-color);
+
+      & > .breadcrumb {
+        &:not(:last-child) {
+          margin: 0;
+        }
+
+        & > ul {
+          margin: 0;
+
+          & > li {
+            margin: 0;
+
+            &:first-child {
+              margin-left: .5rem
+            }
+
+            &:before {
+              color: var(--text-color);
+              padding: 0 .25rem;
+            }
+          }
+        }
+      }
+
+      & > .tabs.is-toggle {
+        border: 1.5px solid var(--tertiary-color);
+        border-radius: 4px;
+
+        & a {
+          border: none;
+          border-left: 1px solid var(--tertiary-color);
+          border-right: 1px solid var(--tertiary-color);
+          color: var(--tertiary-color);
+
+          & > svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        & > ul {
+          margin: 0;
+          background-color: var(--secondary-color);
+          border-color: var(--tertiary-color);
+          border-radius: 4px;
+
+          & > li {
+            &:is(:first-child) {
+              &.is-active, & > a {
+                border-left: none;
+              }
+
+              &.is-active > a {
+                border-left: none;
+              }
+
+            }
+
+            &:is(:last-child) {
+              &.is-active, & > a {
+                border-right: none;
+              }
+            }
+
+            &.is-active {
+              border-radius: 2px 0 0 2px;
+
+              & > a {
+                background-color: var(--primary-color);
+                color: var(--secondary-color);
+                border: none;
+                border-left: 1px solid var(--tertiary-color);
+                border-right: 1px solid var(--tertiary-color);
+
+                & > .tabs-icon {
+                  color: var(--secondary-color);
+                }
+              }
+            }
+
+            &:hover {
+              & > a {
+                background-color: var(--primary-color);
+                color: var(--secondary-color);
+
+                & > svg {
+                  fill: var(--secondary-color);
+                }
+              }
+            }
+          }
+        }
+      }
+
     }
 
-    & > div:last-child {
-      background-color: #fca5a5;
+    & > .issues {
+      h2 {
+        margin: 0 .5rem
+      }
+
+      & > div {
+        @include SeiraFont(400);
+
+        & > .issue-header {
+          background-color: var(--secondary-color);
+          height: 2.25rem;
+          border-bottom: 1px solid var(--primary-color);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          @include SeiraFont(600);
+
+          & > div {
+            display: flex;
+          }
+
+          & > div, svg {
+            margin: 0 .25rem;
+          }
+        }
+
+        & > .issue-list {
+          width: 100%;
+
+          & > .issue-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--primary-color);
+            height: 1.75rem;
+
+            & > .issue-content {
+              display: flex;
+
+              & > div {
+                margin: 0 .25rem;
+
+                &:last-child {
+                  text-align: end;
+                }
+              }
+            }
+
+            & > .project-content {
+              display: flex;
+              align-items: center;
+
+              & > div {
+                margin: 0 .25rem;
+
+                &:last-child {
+                  width: 3.5rem;
+                }
+              }
+
+              & > .tag {
+                @include SeiraFont(600);
+                border-radius: 5px;
+                background-color: var(--secondary-color);
+                border: 1px solid var(--tertiary-color);
+                color: var(--text-color);
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -599,3 +779,22 @@ body {
   }
 }
 
+.canceled-issue-icon {
+  color: var(--error-color);
+}
+
+.completed-issue-icon {
+  color: var(--success-color);
+}
+
+.open-issue-icon {
+  color: var(--primary-color)
+}
+
+.inprogress-issue-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
