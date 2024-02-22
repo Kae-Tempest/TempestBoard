@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PageController extends Controller
@@ -12,7 +13,7 @@ class PageController extends Controller
             'CreateIssues' => auth()->user()->CreateTicket()->with('project')->get(),
             'AssignedIssues' => auth()->user()->AssignedTicket()->with('project')->get(),
             'Projects' => auth()->user()->project()->with('role')->get(),
-            'User' => auth()->user()->only('username', 'first_name', 'last_name', 'email', 'thumbnail'),
+            'User' => Auth::user()
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -65,5 +66,10 @@ class User extends Authenticatable
     public function AssignedTicket(): HasMany
     {
         return $this->hasMany(Ticket::class, 'assigned_id');
+    }
+
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d M');
     }
 }
