@@ -3,7 +3,7 @@ import { IssueModalProps, Project } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesDown, faAnglesUp, faChevronDown, faChevronUp, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesUp, faChevronDown, faCircleExclamation, faMinus, faPause } from "@fortawesome/free-solid-svg-icons";
 import { priorityEnum } from "@/enums/global";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -25,16 +25,20 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
         if (priority === priorityValue) {
             setHtmlPriority(null);
             setPriority("");
+            setData("priority", "NEUTRAL");
             setDropdownOpen(false);
             return;
         }
         setHtmlPriority(<CustomPriority label={PE} iconName={iconName} />);
         setPriority(priorityValue);
+        setData("priority", priorityValue);
         setDropdownOpen(false);
     };
 
     const handleCancel = () => {
         reset();
+        setHtmlPriority(null);
+        setProjectName("");
         setShowModal(false);
     };
 
@@ -56,7 +60,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
     useEffect(() => {
         const handlerCloseModal = (e: any) => {
             if (!modalRef.current?.contains(e.target)) {
-                setShowModal(false);
+                if (showModal) handleCancel();
             }
             if (!priorityDPRed.current?.contains(e.target)) {
                 setDropdownOpen(false);
@@ -71,7 +75,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
             document.addEventListener("mousedown", handlerCloseModal);
             reset();
         };
-    }, [errors]);
+    }, [errors, showModal]);
 
     return (
         <div className={showModal ? "modal is-active" : "modal"}>
@@ -115,20 +119,20 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 </div>
                                 <div className="dropdown-menu" id="dropdown-priority" role="menu">
                                     <div className="dropdown-content">
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("URGENT", faAnglesUp)}>
-                                            <CustomPriority label="URGENT" iconName={faAnglesUp} />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("URGENT", faCircleExclamation)}>
+                                            <CustomPriority label="URGENT" iconName={faCircleExclamation} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("HIGH", faChevronUp)}>
-                                            <CustomPriority label="HIGH" iconName={faChevronUp} />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("HIGH", faAnglesUp)}>
+                                            <CustomPriority label="HIGH" iconName={faAnglesUp} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("NEUTRAL", faMinus)}>
-                                            <CustomPriority label="NEUTRAL" iconName={faMinus} />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("NEUTRAL", faPause)}>
+                                            <CustomPriority label="NEUTRAL" iconName={faPause} rotate={90} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("LOW", faChevronDown)}>
-                                            <CustomPriority label="LOW" iconName={faChevronDown} />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("LOW", faMinus)}>
+                                            <CustomPriority label="LOW" iconName={faMinus} />
                                         </div>
-                                        <div className="dropdown-item" onClick={() => handleSetPriority("MINOR", faAnglesDown)}>
-                                            <CustomPriority label="MINOR" iconName={faAnglesDown} />
+                                        <div className="dropdown-item" onClick={() => handleSetPriority("MINOR", faChevronDown)}>
+                                            <CustomPriority label="MINOR" iconName={faChevronDown} />
                                         </div>
                                     </div>
                                 </div>
