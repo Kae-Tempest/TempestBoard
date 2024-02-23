@@ -1,22 +1,24 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IconProp, RotateProp } from "@fortawesome/fontawesome-svg-core";
 
-export const CustomPriority: React.FC<{ iconName: IconProp; label: string }> = ({ iconName, label }) => {
+export const CustomPriority: React.FC<{ iconName: IconProp; label: string; rotate?: number }> = ({ iconName, label, rotate }) => {
+    let rotation = 0;
+    if (rotate) rotation = 90;
     return (
         <div className="priority">
             <span>{label}</span>
             <span className="icon">
-                <FontAwesomeIcon icon={iconName} />
+                <FontAwesomeIcon icon={iconName} rotation={rotation as RotateProp} />
             </span>
         </div>
     );
 };
 
-export const CustomPriorityIcon: React.FC<{ iconName: IconProp }> = ({ iconName }) => {
+export const CustomPriorityIcon: React.FC<{ iconName: IconProp; rotate: number }> = ({ iconName, rotate }) => {
     return (
         <>
-            <FontAwesomeIcon icon={iconName} />
+            <FontAwesomeIcon icon={iconName} rotation={rotate as RotateProp} />
         </>
     );
 };
