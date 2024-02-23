@@ -1,4 +1,4 @@
-import { CustomPriority } from "@/Componants/Priority";
+import { CustomPriority } from "@/Componants/Icons/Priority";
 import { IssueModalProps, Project } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@inertiajs/react";
@@ -6,42 +6,53 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesUp, faChevronDown, faCircleExclamation, faMinus, faPause } from "@fortawesome/free-solid-svg-icons";
 import { priorityEnum } from "@/enums/global";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { CanceledIssueIcon, CompletedIssueIcon, InProgressIssueIcon, OpenIssueIcon } from "@/Componants/Icons/StateIcon";
 
-export default function ({ projects, showModal, setShowModal }: IssueModalProps) {
+export default function ({ projects, showModal, setShowModal, state }: IssueModalProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         project_id: 0,
         title: "",
         description: "",
         priority: "NEUTRAL",
+        status: "open",
     });
     const [count, setCount] = useState(0);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [htmlPriority, setHtmlPriority] = useState<React.ReactNode | null>(null);
-    const [priority, setPriority] = useState<string>("");
+    const [htmlState, setHtmlState] = useState<React.ReactNode | null>(null);
     const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
+    const [stateDropdownOpen, setStateDropdownOpen] = useState(false);
     const handleSetPriority = (priorityValue: string, iconName: IconProp) => {
         const PE = Object.keys(priorityEnum).filter(v => v === priorityValue)[0];
-        if (priority === priorityValue) {
+        if (data.priority === priorityValue) {
             setHtmlPriority(null);
-            setPriority("");
             setData("priority", "NEUTRAL");
             setDropdownOpen(false);
             return;
         }
         setHtmlPriority(<CustomPriority label={PE} iconName={iconName} />);
-        setPriority(priorityValue);
         setData("priority", priorityValue);
         setDropdownOpen(false);
     };
-
+    const handleSetState = (stateValue: string, iconComponant: React.ReactNode) => {
+        if (data.status === stateValue && stateDropdownOpen) {
+            console.log("if state");
+            setHtmlState(null);
+            setData("status", "open");
+            setStateDropdownOpen(false);
+            return;
+        }
+        setHtmlState(iconComponant);
+        setData("status", stateValue);
+        setStateDropdownOpen(false);
+    };
     const handleCancel = () => {
         reset();
         setHtmlPriority(null);
         setProjectName("");
         setShowModal(false);
     };
-
     const handleSetProject = (projectId: number, projectNameParams: string) => {
         if (projectName == projectNameParams && projectId == data.project_id) {
             setProjectName("");
@@ -53,23 +64,74 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
         setData("project_id", projectId);
         setProjectDropdownOpen(false);
     };
+
     const modalRef = useRef<HTMLDivElement>(null);
-    const priorityDPRed = useRef<HTMLDivElement>(null);
-    const projectDPRed = useRef<HTMLDivElement>(null);
+    const priorityDPRef = useRef<HTMLDivElement>(null);
+    const projectDPRef = useRef<HTMLDivElement>(null);
+    const stateDPRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        switch (state) {
+            case "open":
+                console.log(1);
+                handleSetState(
+                    "open",
+                    <div className="dropdown-icon">
+                        Open <OpenIssueIcon />
+                    </div>,
+                );
+                break;
+            case "in_progress":
+                console.log(2);
+                handleSetState(
+                    "in_progress",
+                    <div className="dropdown-icon">
+                        In Progress <InProgressIssueIcon />
+                    </div>,
+                );
+                break;
+            case "completed":
+                console.log(3);
+                handleSetState(
+                    "completed",
+                    <div className="dropdown-icon">
+                        Completed <CompletedIssueIcon />
+                    </div>,
+                );
+                break;
+            case "canceled":
+                console.log(4);
+                handleSetState(
+                    "canceled",
+                    <div className="dropdown-icon">
+                        Canceled <CanceledIssueIcon />
+                    </div>,
+                );
+                break;
+            default:
+                console.log(5);
+                break;
+        }
         const handlerCloseModal = (e: any) => {
             if (!modalRef.current?.contains(e.target)) {
                 if (showModal) handleCancel();
             }
-            if (!priorityDPRed.current?.contains(e.target)) {
+            if (!priorityDPRef.current?.contains(e.target)) {
                 setDropdownOpen(false);
             }
-            if (!projectDPRed.current?.contains(e.target)) {
+            if (!projectDPRef.current?.contains(e.target)) {
                 setProjectDropdownOpen(false);
+            }
+            if (!stateDPRef.current?.contains(e.target)) {
+                setStateDropdownOpen(false);
             }
         };
         document.addEventListener("mousedown", handlerCloseModal);
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                setShowModal(false);
+            }
+        });
         if (errors.title || errors.description) setShowModal(true);
         return () => {
             document.addEventListener("mousedown", handlerCloseModal);
@@ -102,7 +164,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                 onChange={e => setData("description", e.target.value)}></textarea>
                             {errors.description && <p className="help is-danger">{errors.description}</p>}
                             <div className="count">{count != 0 ? count : "500"}/500</div>
-                            <div className={dropdownOpen ? "dropdown is-active" : "dropdown"} ref={priorityDPRed}>
+                            <div className={dropdownOpen ? "dropdown is-active" : "dropdown"} ref={priorityDPRef}>
                                 <div className="dropdown-trigger">
                                     <button className="button" aria-haspopup="true" aria-controls="dropdown-priority" onClick={() => setDropdownOpen(!dropdownOpen)}>
                                         {htmlPriority ? (
@@ -137,7 +199,7 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                     </div>
                                 </div>
                             </div>
-                            <div className={projectDropdownOpen ? "dropdown is-active" : "dropdown"} ref={projectDPRed}>
+                            <div className={projectDropdownOpen ? "dropdown is-active" : "dropdown"} ref={projectDPRef}>
                                 <div className="dropdown-trigger">
                                     <button className="button" aria-haspopup="true" aria-controls="dropdown-project" onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}>
                                         {projectName ? (
@@ -171,6 +233,78 @@ export default function ({ projects, showModal, setShowModal }: IssueModalProps)
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={stateDropdownOpen ? "dropdown is-active" : "dropdown"} ref={stateDPRef}>
+                                <div className="dropdown-trigger">
+                                    <button className="button" aria-haspopup="true" aria-controls="dropdown-state" onClick={() => setStateDropdownOpen(!projectDropdownOpen)}>
+                                        {htmlState ? (
+                                            htmlState
+                                        ) : (
+                                            <>
+                                                <span>State</span>
+                                                <span className="icon">
+                                                    <FontAwesomeIcon icon={faChevronDown} />
+                                                </span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                                <div className="dropdown-menu" id="dropdown-project" role="menu">
+                                    <div className="dropdown-content">
+                                        <div
+                                            className="dropdown-item dropdown-icon"
+                                            onClick={() =>
+                                                handleSetState(
+                                                    "open",
+                                                    <div className="dropdown-icon">
+                                                        Open <OpenIssueIcon />
+                                                    </div>,
+                                                )
+                                            }>
+                                            Open
+                                            <OpenIssueIcon />
+                                        </div>
+                                        <div
+                                            className="dropdown-item dropdown-icon"
+                                            onClick={() =>
+                                                handleSetState(
+                                                    "in_progress",
+                                                    <div className="dropdown-icon">
+                                                        In Progress <InProgressIssueIcon />
+                                                    </div>,
+                                                )
+                                            }>
+                                            In Progress
+                                            <InProgressIssueIcon />
+                                        </div>
+                                        <div
+                                            className="dropdown-item dropdown-icon"
+                                            onClick={() =>
+                                                handleSetState(
+                                                    "completed",
+                                                    <div className="dropdown-icon">
+                                                        Completed <CompletedIssueIcon />
+                                                    </div>,
+                                                )
+                                            }>
+                                            Completed
+                                            <CompletedIssueIcon />
+                                        </div>
+                                        <div
+                                            className="dropdown-item dropdown-icon"
+                                            onClick={() =>
+                                                handleSetState(
+                                                    "canceled",
+                                                    <div className="dropdown-icon">
+                                                        Canceled <CanceledIssueIcon />
+                                                    </div>,
+                                                )
+                                            }>
+                                            Canceled
+                                            <CanceledIssueIcon />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

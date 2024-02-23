@@ -517,7 +517,6 @@ body {
         & > ul {
           margin: 0;
           background-color: var(--secondary-color);
-          border-color: var(--tertiary-color);
           border-radius: 4px;
 
           & > li {
@@ -572,6 +571,59 @@ body {
         }
       }
 
+    }
+
+    & > .typeview-tabs {
+      border-bottom: 1px solid;
+
+      & > .tabs.is-toggle {
+        width: fit-content;
+
+        & a {
+          border: none;
+          border-left: 1px solid var(--tertiary-color);
+          border-right: 1px solid var(--tertiary-color);
+          color: var(--tertiary-color);
+        }
+
+        & > ul {
+          border: 1.5px solid var(--tertiary-color);
+          border-radius: 4px;
+          margin: .5rem .5rem;
+
+          & > li {
+            background-color: var(--secondary-color);
+
+            &:is(:first-child) {
+              &.is-active, & > a {
+                border-left: none;
+              }
+
+              &.is-active > a {
+                border-left: none;
+              }
+            }
+
+            &.is-active > a {
+              color: var(--secondary-color);
+              background-color: var(--primary-color);
+            }
+
+            &:is(:last-child) {
+              &.is-active, & > a {
+                border-right: none;
+              }
+            }
+
+            &:hover {
+              & > a {
+                background-color: var(--primary-color);
+                color: var(--secondary-color);
+              }
+            }
+          }
+        }
+      }
     }
 
     & > .issues {
@@ -701,6 +753,7 @@ body {
   .modal-card-title {
     color: var(--white);
     font-weight: bold;
+    margin: 0;
   }
 }
 
@@ -773,6 +826,31 @@ body {
           &:hover {
             background-color: rgba(var(--primary-color-rgb), 0.8);
           }
+
+          & .dropdown-icon {
+            width: 100%;
+            display: flex;
+
+            & > div {
+              margin-left: .25rem;
+
+              &.open-issue-icon {
+                color: var(--secondary-color);
+              }
+
+              &.inprogress-issue-icon {
+                & > svg {
+                  & > circle {
+                    stroke: var(--secondary-color);
+                  }
+
+                  & > path {
+                    fill: var(--secondary-color);
+                  }
+                }
+              }
+            }
+          }
         }
       }
 
@@ -794,6 +872,15 @@ body {
 
             &:hover {
               background-color: var(--tertiary-color);
+            }
+          }
+
+          & .dropdown-item.dropdown-icon {
+            width: 100%;
+            display: flex;
+
+            & > div {
+              margin-left: .25rem;
             }
           }
         }

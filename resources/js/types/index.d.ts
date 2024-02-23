@@ -57,4 +57,5 @@ export type IssueModalProps = {
     projects: Project[];
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
+    state?: string;
 };

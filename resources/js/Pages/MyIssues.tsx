@@ -1,7 +1,7 @@
 import NavBar from "@/Componants/NavBar";
 import { Issue, MyIssuesProps } from "@/types";
 import { issueStateEnum } from "@/enums/global";
-import { IssueList } from "@/Componants/IssueList";
+import { IssueList } from "@/Componants/Issue/IssueList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faGripVertical } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -19,6 +19,8 @@ function mergeIssuesWithoutDuplicates(arr1: Issue[], arr2: Issue[]): Issue[] {
 export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIssuesProps) {
     const issueArray = mergeIssuesWithoutDuplicates(CreateIssues, AssignedIssues);
     const [viewMode, setViewMode] = useState<string>("list");
+    const [typeView, setTypeView] = useState<string>("all");
+    const viewTitle = typeView.charAt(0).toUpperCase() + typeView.slice(1);
     return (
         <div id="my_issue">
             <Head title="My Issues" />
@@ -31,7 +33,7 @@ export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIss
                                 <div>My Issue</div>
                             </li>
                             <li className="is-active">
-                                <div aria-current="page">All</div>
+                                <div aria-current="page">{viewTitle}</div>
                             </li>
                         </ul>
                     </nav>
@@ -60,11 +62,26 @@ export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIss
                         </ul>
                     </div>
                 </div>
+                <div className="typeview-tabs">
+                    <div className="tabs is-toggle">
+                        <ul>
+                            <li className={typeView === "all" ? "is-active" : ""} onClick={() => setTypeView("all")}>
+                                <a>All</a>
+                            </li>
+                            <li className={typeView === "created" ? "is-active" : ""} onClick={() => setTypeView("created")}>
+                                <a>Created</a>
+                            </li>
+                            <li className={typeView === "assigned" ? "is-active" : ""} onClick={() => setTypeView("assigned")}>
+                                <a>Assigned</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div className="issues">
                     {Object.values(issueStateEnum).map(state => {
                         return (
                             <div key={self.crypto.randomUUID()}>
-                                <IssueList issueArray={issueArray} Projects={Projects} state={state} />
+                                <IssueList issueArray={issueArray} Projects={Projects} state={state} assignedIssue={AssignedIssues} createdIssue={CreateIssues} typeView={typeView} />
                             </div>
                         );
                     })}
