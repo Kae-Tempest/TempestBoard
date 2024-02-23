@@ -74,7 +74,7 @@ export default function ({ projects, user }: NavBarProps) {
 
                 <nav>
                     <ul>
-                        <li>
+                        <li className="is-active">
                             <Link href="#">My Issues</Link>
                         </li>
                         {projects.map((project: Project) => {
