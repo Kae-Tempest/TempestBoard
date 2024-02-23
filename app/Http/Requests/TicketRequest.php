@@ -26,6 +26,7 @@ class TicketRequest extends FormRequest
             'title' => ['required', 'string', 'max:255', 'min:3'],
             'description' => ['required', 'string', 'max:500', 'min:3'],
             'priority' => ['string'],
+            'state' => ['string']
         ];
     }
 }
