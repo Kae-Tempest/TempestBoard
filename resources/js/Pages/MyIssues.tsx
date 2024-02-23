@@ -4,6 +4,7 @@ import { issueStateEnum } from "@/enums/global";
 import { IssueList } from "@/Componants/IssueList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 import { Head } from "@inertiajs/react";
 
 function mergeIssuesWithoutDuplicates(arr1: Issue[], arr2: Issue[]): Issue[] {
@@ -17,6 +18,7 @@ function mergeIssuesWithoutDuplicates(arr1: Issue[], arr2: Issue[]): Issue[] {
 
 export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIssuesProps) {
     const issueArray = mergeIssuesWithoutDuplicates(CreateIssues, AssignedIssues);
+    const [viewMode, setViewMode] = useState<string>("list");
     return (
         <div id="my_issue">
             <Head title="My Issues" />
@@ -35,17 +37,17 @@ export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIss
                     </nav>
                     <div className="tabs is-toggle is-small">
                         <ul>
-                            <li className="is-active">
+                            <li className={viewMode === "list" ? "is-active" : ""} onClick={() => setViewMode("list")}>
                                 <a>
                                     <FontAwesomeIcon icon={faBars} />
                                 </a>
                             </li>
-                            <li>
+                            <li className={viewMode === "kaban" ? "is-active" : ""} onClick={() => setViewMode("kaban")}>
                                 <a>
                                     <FontAwesomeIcon icon={faGripVertical} />
                                 </a>
                             </li>
-                            <li>
+                            <li className={viewMode === "details" ? "is-active" : ""} onClick={() => setViewMode("details")}>
                                 <a>
                                     <svg width="18" height="18" viewBox="0 0 18 18" fill="#457b9d" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="2.5" cy="4.5" r="1.5" />
