@@ -16,9 +16,11 @@
 
   --error-color: #E74C3C;
   --error-color-hover-lighter: #FF6655;
+  --error-color-hover-darker: #C53728;
   --warning-color: #F39C12;
   --success-color: #4CAF50;
   --success-color-hover-lighter: #66BB6A;
+  --success-color-hover-darker: #388E3C;
   --extra-color: #A3EBF3;
 }
 
@@ -88,7 +90,7 @@ body {
             flex-direction: column;
 
             :hover {
-              background-color: var(--secondary-color);
+              background-color: var(--tertiary-color);
               opacity: 50;
             }
 
@@ -176,6 +178,12 @@ body {
         & > a {
           color: var(--white);
         }
+      }
+
+      & > li.is-active {
+        color: var(--white);
+        background-color: var(--tertiary-color);
+        opacity: 50;
       }
 
       & > li > .is-menu {
@@ -586,6 +594,19 @@ body {
           & > div, svg {
             margin: 0 .25rem;
           }
+
+          & > .issue-add {
+            width: 1.5rem;
+            height: 1.5rem;
+
+            &:hover {
+              border: 1px solid (var(--text-color));
+              border-radius: 20%;
+              width: 1.5rem;
+              height: 1.5rem;
+              box-shadow: 0 0.5em 1em -0.125em rgba(var(--text-color-rgb), 0.6), 0 0px 0 1px rgba(var(--text-color-rgb), 0.02);
+            }
+          }
         }
 
         & > .issue-list {
@@ -600,20 +621,27 @@ body {
             border-bottom: 1px solid var(--primary-color);
             height: 1.75rem;
 
+
             &:hover {
               background-color: rgba(var(--secondary-color-rgb), 0.5);
             }
 
             & > .issue-content {
               display: flex;
+              margin-left: .25rem;
+
 
               & > div {
                 margin: 0 .125rem;
               }
 
               & > .priority {
-                margin-left: 0.25rem;
-                width: 1rem;
+                margin-left: .25rem;
+                width: 1.25rem;
+
+                & > .tooltip > svg.fa-rotate-90 {
+                  transform: translateX(1.5px) rotate(90deg);
+                }
               }
 
               & > .tag-number {
@@ -661,14 +689,13 @@ body {
 
 .modal-card-head, .modal-card-foot {
   background-color: var(--primary-color);
-  color: var(--tertiary-color);
 }
 
 .modal-card-head {
   border-bottom: solid 1px var(--tertiary-color);
 
   .modal-card-title {
-    color: var(--tertiary-color);
+    color: var(--white);
     font-weight: bold;
   }
 }
@@ -734,10 +761,14 @@ body {
 
       & > .dropdown-trigger {
         & > button {
-          background-color: var(--tertiary-color);
+          background-color: var(--primary-color);
           border: 1px solid var(--bg-color);
-          color: var(--text-color);
+          color: var(--white);
           cursor: pointer;
+
+          &:hover {
+            background-color: rgba(var(--primary-color-rgb), 0.8);
+          }
         }
       }
 
@@ -749,15 +780,16 @@ body {
         margin-top: 2.5rem;
 
         & > .dropdown-content {
-          background-color: var(--tertiary-color);
+          background-color: var(--secondary-color);
           border: 1px solid var(--text-color);
+          box-shadow: 0 0.5em 1em -0.125em rgba(var(--tertiary-color-rgb), 0.3), 0 0px 0 1px rgba(var(--tertiary-color-rgb), 0.02);
 
           & > .dropdown-item {
             color: var(--text-color);
             cursor: pointer;
 
             &:hover {
-              background-color: var(--secondary-color);
+              background-color: var(--tertiary-color);
             }
           }
         }
@@ -779,7 +811,7 @@ body {
     border: none;
 
     &:hover {
-      background-color: var(--success-color-hover-lighter);
+      background-color: var(--success-color-hover-darker);
     }
   }
 
@@ -791,7 +823,7 @@ body {
     border: none;
 
     &:hover {
-      background-color: var(--error-color-hover-lighter);
+      background-color: var(--error-color-hover-darker);
     }
   }
 }
@@ -820,4 +852,28 @@ body {
   align-items: center;
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 3.75rem;
+  background-color: var(--tertiary-color);
+  border: 1px solid var(--secondary-color);
+  color: var(--white);
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  margin-left: .5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
