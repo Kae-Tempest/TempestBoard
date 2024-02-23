@@ -17,6 +17,6 @@ export enum priorityIconEnum {
 export enum issueStateEnum {
     OPEN = "open",
     "IN PROGRESS" = "in_progress",
+    COMPLETED = "completed",
     CANCELED = "canceled",
-    COMPLETED = "compeleted",
 }
