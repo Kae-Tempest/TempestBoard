@@ -4,20 +4,22 @@ import { issueStateEnum } from "@/enums/global";
 import { IssueList } from "@/Componants/IssueList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import { Head } from "@inertiajs/react";
+
+function mergeIssuesWithoutDuplicates(arr1: Issue[], arr2: Issue[]): Issue[] {
+    const mergedArray = arr1.concat(arr2);
+    const uniqueMap = new Map<number, Issue>();
+    mergedArray.forEach(issue => {
+        uniqueMap.set(issue.id, issue);
+    });
+    return Array.from(uniqueMap.values()).sort((a, b) => a.id - b.id);
+}
 
 export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIssuesProps) {
-    function mergeIssuesWithoutDuplicates(arr1: Issue[], arr2: Issue[]): Issue[] {
-        const mergedArray = arr1.concat(arr2);
-        const uniqueMap = new Map<number, Issue>();
-        mergedArray.forEach(issue => {
-            uniqueMap.set(issue.id, issue);
-        });
-        return Array.from(uniqueMap.values()).sort((a, b) => a.id - b.id);
-    }
-
     const issueArray = mergeIssuesWithoutDuplicates(CreateIssues, AssignedIssues);
     return (
         <div id="my_issue">
+            <Head title="My Issues" />
             <NavBar projects={Projects} user={User} />
             <div className="content">
                 <div className="header">
