@@ -23,24 +23,18 @@ export const IssueList: React.FC<IssueListProps> = ({ issueArray, Projects, stat
     return (
         <>
             <IssueModal projects={Projects} setShowModal={setShowModal} showModal={showModal} state={state} />
-            <div className="issue-header">
-                <div>
-                    <IssueIcon state={state} /> {key}
-                </div>
-                <FontAwesomeIcon icon={faPlus} onClick={() => setShowModal(true)} className="issue-add" />
-            </div>
 
             {typeView === "all" ? (
                 <>
-                    <IssueListDetails issueArray={issueArray} Projects={Projects} state={state} />
+                    <IssueListDetails issueArray={issueArray} Projects={Projects} state={state} setShowModal={setShowModal} enumKey={key} />
                 </>
             ) : typeView === "created" ? (
                 <>
-                    <IssueListDetails issueArray={createdIssue} Projects={Projects} state={state} />
+                    <IssueListDetails issueArray={createdIssue} Projects={Projects} state={state} setShowModal={setShowModal} enumKey={key} />
                 </>
             ) : (
                 <>
-                    <IssueListDetails issueArray={assignedIssue} Projects={Projects} state={state} />
+                    <IssueListDetails issueArray={assignedIssue} Projects={Projects} state={state} setShowModal={setShowModal} enumKey={key} />
                 </>
             )}
         </>
