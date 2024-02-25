@@ -665,7 +665,7 @@ body {
           }
         }
 
-        & > .issue-list {
+        & > div > .issue-list {
           width: 100%;
 
 
@@ -680,6 +680,9 @@ body {
 
             &:hover {
               background-color: rgba(var(--secondary-color-rgb), 0.5);
+              box-shadow: 0 .25rem 1rem -0.125em rgba(var(--text-color-rgb), 0.6), 0 0px 0 1px rgba(var(--text-color-rgb), 0.02);
+              position: relative;
+              z-index: 1;
             }
 
             & > .issue-content {

@@ -37,7 +37,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
     };
     const handleSetState = (stateValue: string, iconComponant: React.ReactNode) => {
         if (data.status === stateValue && stateDropdownOpen) {
-            console.log("if state");
             setHtmlState(null);
             setData("status", "open");
             setStateDropdownOpen(false);
@@ -73,7 +72,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
     useEffect(() => {
         switch (state) {
             case "open":
-                console.log(1);
                 handleSetState(
                     "open",
                     <div className="dropdown-icon">
@@ -82,7 +80,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                 );
                 break;
             case "in_progress":
-                console.log(2);
                 handleSetState(
                     "in_progress",
                     <div className="dropdown-icon">
@@ -91,7 +88,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                 );
                 break;
             case "completed":
-                console.log(3);
                 handleSetState(
                     "completed",
                     <div className="dropdown-icon">
@@ -100,7 +96,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                 );
                 break;
             case "canceled":
-                console.log(4);
                 handleSetState(
                     "canceled",
                     <div className="dropdown-icon">
@@ -109,7 +104,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                 );
                 break;
             default:
-                console.log(5);
                 break;
         }
         const handlerCloseModal = (e: any) => {
