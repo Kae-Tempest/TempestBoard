@@ -41,6 +41,22 @@ export interface User {
     updated_at: Date;
 }
 
+interface IssueListDetailsProps {
+    issueArray: Issue[];
+    Projects: Project[];
+    state: string;
+    enumKey: string;
+    setShowModal: (showModal: boolean) => void;
+}
+
+interface IssueDetailsTemplateProps {
+    issue: Issue;
+    projects: Project[];
+    state: string;
+    enumKey: string;
+    setShowModal: (showModal: boolean) => void;
+}
+
 export type MyIssuesProps = {
     CreateIssues: Issue[];
     AssignedIssues: Issue[];

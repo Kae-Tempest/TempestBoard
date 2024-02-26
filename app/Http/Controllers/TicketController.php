@@ -74,7 +74,15 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $request->validate([
+            "status" => 'required|string'
+        ]);
+
+        $issue = Ticket::find($id);
+        $issue->status = $request->status;
+        $issue->save();
+
     }
 
     /**

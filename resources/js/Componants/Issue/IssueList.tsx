@@ -1,10 +1,7 @@
 import { Issue, Project } from "@/types";
 import { issueStateEnum } from "@/enums/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import IssueModal from "@/Componants/Issue/IssueModal";
 import { useState } from "react";
-import { IssueIcon } from "@/Componants/Icons/IssueIcon";
 import { IssueListDetails } from "@/Componants/Issue/IssueListDetails";
 
 interface IssueListProps {
