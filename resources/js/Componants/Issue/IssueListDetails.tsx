@@ -73,7 +73,6 @@ export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, 
         if (state === "in_progress") issue.status = "in_progress";
         if (state === "completed") issue.status = "completed";
         if (state === "canceled") issue.status = "canceled";
-        setData("status", "open");
         patch(`/issue/${issueID}`, {
             onSuccess: () => reset(),
         });
