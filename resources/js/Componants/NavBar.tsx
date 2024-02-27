@@ -5,8 +5,53 @@ import { faChevronRight, faMagnifyingGlass, faPenToSquare } from "@fortawesome/f
 import { NavBarProps, Project } from "@/types";
 import IssueModal from "@/Componants/Issue/IssueModal";
 
-export default function ({ projects, user }: NavBarProps) {
+const ProjectMenu = ({ project }: { project: Project }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    return (
+        <li key={project.id}>
+            <div className="menu is-menu">
+                <div className="menu-list">
+                    <div className="menu-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        <span className="">{project.name}</span>
+                        <FontAwesomeIcon icon={faChevronRight} className={isMenuOpen ? "is-menu-open" : ""} />
+                    </div>
+                    <div className={isMenuOpen ? "is-menu-list" : "is-menu-list is-menu-close"}>
+                        <ul className="menu-list">
+                            <li>
+                                <span>Issues</span>
+                                <ul>
+                                    <li>
+                                        <Link href="#">Active</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="#">Backlog</Link>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <Link href="#">Releases</Link>
+                            </li>
+                            <li>
+                                <span>Repos</span>
+                                <ul>
+                                    <li>
+                                        <Link href="#">Pull Requests</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="#">Issues</Link>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+    );
+};
+
+export default function ({ projects, user }: NavBarProps) {
     const [showModal, setShowModal] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropDownRef = useRef<HTMLDivElement>(null);
@@ -77,50 +122,9 @@ export default function ({ projects, user }: NavBarProps) {
                         <li className="is-active">
                             <Link href="#">My Issues</Link>
                         </li>
-                        {projects.map((project: Project) => {
-                            return (
-                                <li key={project.id}>
-                                    <div className="menu is-menu">
-                                        <div className="menu-list">
-                                            <div className="menu-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                                <span className="">{project.name}</span>
-                                                <FontAwesomeIcon icon={faChevronRight} className={isMenuOpen ? "is-menu-open" : ""} />
-                                            </div>
-                                            <div className={isMenuOpen ? "is-menu-list" : "is-menu-list is-menu-close"}>
-                                                <ul className="menu-list">
-                                                    <li>
-                                                        <span>Issues</span>
-                                                        <ul>
-                                                            <li>
-                                                                <Link href="#">Active</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Backlog</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <Link href="#">Releases</Link>
-                                                    </li>
-                                                    <li>
-                                                        <span>Repos</span>
-                                                        <ul>
-                                                            <li>
-                                                                <Link href="#">Pull Requests</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Issues</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            );
+                        {projects.map((project: Project, index) => {
+                            return <ProjectMenu project={project} key={index} />;
                         })}
-
                         <li>
                             <Link href="#">Roadmap</Link>
                         </li>
