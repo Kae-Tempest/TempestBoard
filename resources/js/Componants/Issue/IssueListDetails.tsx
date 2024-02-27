@@ -1,6 +1,6 @@
 import { Issue, IssueDetailsTemplateProps, IssueListDetailsProps } from "@/types";
 import { IssueIcon, PriorityIcon } from "@/Componants/Icons/IssueIcon";
-import { ReactSortable } from "react-sortablejs";
+import { ReactSortable, SortableEvent } from "react-sortablejs";
 import React, { forwardRef, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -65,9 +65,9 @@ export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, 
     const [listStateCompleted, setListStateCompleted] = useState<Issue[]>(completedArray);
     const [listStateCanceled, setListStateCanceled] = useState<Issue[]>(canceledArray);
 
-    const handleOnAdd = (e: any, state: string) => {
+    const handleOnAdd = (e: SortableEvent, state: string) => {
         const issueID = e.item.dataset.id;
-        let issue = issueArray.find(i => i.id == issueID);
+        let issue = issueArray.find(i => i.id == Number(issueID));
         if (!issue) return;
         if (state === "open") issue.status = "open";
         if (state === "in_progress") issue.status = "in_progress";
