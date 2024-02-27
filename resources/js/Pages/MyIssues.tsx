@@ -1,6 +1,5 @@
 import NavBar from "@/Componants/NavBar";
 import { Issue, MyIssuesProps } from "@/types";
-import { issueStateEnum } from "@/enums/global";
 import { IssueList } from "@/Componants/Issue/IssueList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faGripVertical } from "@fortawesome/free-solid-svg-icons";
@@ -78,13 +77,9 @@ export default function ({ CreateIssues, AssignedIssues, Projects, User }: MyIss
                     </div>
                 </div>
                 <div className="issues">
-                    {Object.values(issueStateEnum).map(state => {
-                        return (
-                            <div key={self.crypto.randomUUID()}>
-                                <IssueList issueArray={issueArray} Projects={Projects} state={state} assignedIssue={AssignedIssues} createdIssue={CreateIssues} typeView={typeView} />
-                            </div>
-                        );
-                    })}
+                    <div>
+                        <IssueList issueArray={issueArray} Projects={Projects} assignedIssue={AssignedIssues} createdIssue={CreateIssues} typeView={typeView} />
+                    </div>
                 </div>
             </div>
         </div>

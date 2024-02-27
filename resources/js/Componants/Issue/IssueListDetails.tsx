@@ -1,7 +1,7 @@
-import { Issue, IssueDetailsTemplateProps, IssueListDetailsProps } from "@/types";
+import { Issue, IssueDetailsTemplateProps, IssueListDetailsProps, IssueListDraggableProps } from "@/types";
 import { IssueIcon, PriorityIcon } from "@/Componants/Icons/IssueIcon";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
@@ -38,98 +38,61 @@ const IssueDetailsTemplate: React.FC<IssueDetailsTemplateProps> = ({ issue, proj
     );
 };
 
-export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, Projects, state, setShowModal, enumKey }) => {
+const IssueListDraggable: React.FC<IssueListDraggableProps> = ({ issueArray, Projects, setShowModal, status, handleOnAdd, setData }) => {
+    const [list, setlist] = useState<Issue[]>([]);
+
+    useEffect(() => {
+        setlist(issueArray);
+    }, [issueArray]);
+
+    return (
+        <React.Fragment>
+            <div className="issue-header">
+                <div>
+                    <IssueIcon state={status} /> {status.toUpperCase()}
+                </div>
+                <FontAwesomeIcon icon={faPlus} onClick={() => setShowModal(true)} className="issue-add" />
+            </div>
+            <ReactSortable list={list} setList={setlist} group="group-issue" tag={CustomComponent} onAdd={e => handleOnAdd(e, status)} onChange={() => setData("status", status)}>
+                {list.map((issue, index) => {
+                    return (
+                        <div key={index}>
+                            <IssueDetailsTemplate issue={issue} projects={Projects} setShowModal={setShowModal} />
+                        </div>
+                    );
+                })}
+            </ReactSortable>
+        </React.Fragment>
+    );
+};
+
+export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, Projects, setShowModal }) => {
     const { setData, patch, reset } = useForm<{ status: string }>({
         status: "",
     });
-    const { openArray, inProgressArray, completedArray, canceledArray } = useMemo(() => {
-        return issueArray.reduce(
-            (acc, issue) => {
-                if (state === "open") acc.openArray.push(issue);
-                if (state === "in_progress") acc.inProgressArray.push(issue);
-                if (state === "completed") acc.completedArray.push(issue);
-                if (state === "canceled") acc.canceledArray.push(issue);
-                return acc;
-            },
-            {
-                openArray: [] as Issue[],
-                inProgressArray: [] as Issue[],
-                completedArray: [] as Issue[],
-                canceledArray: [] as Issue[],
-            },
-        );
-    }, [issueArray]);
-
-    const [listStateOpen, setListStateOpen] = useState<Issue[]>(openArray);
-    const [listStateInProgress, setListStateInProgress] = useState<Issue[]>(inProgressArray);
-    const [listStateCompleted, setListStateCompleted] = useState<Issue[]>(completedArray);
-    const [listStateCanceled, setListStateCanceled] = useState<Issue[]>(canceledArray);
-
+    const stateArray = ["open", "in_progress", "completed", "canceled", "abandoned"];
     const handleOnAdd = (e: SortableEvent, state: string) => {
+        console.log(state, "state");
         const issueID = e.item.dataset.id;
         let issue = issueArray.find(i => i.id == Number(issueID));
         if (!issue) return;
-        if (state === "open") issue.status = "open";
-        if (state === "in_progress") issue.status = "in_progress";
-        if (state === "completed") issue.status = "completed";
-        if (state === "canceled") issue.status = "canceled";
+        issue.status = state;
         patch(`/issue/${issueID}`, {
             onSuccess: () => reset(),
         });
     };
 
-    return (
-        <>
-            <div className="issue-header">
-                <div>
-                    <IssueIcon state={state} /> {enumKey}
-                </div>
-                <FontAwesomeIcon icon={faPlus} onClick={() => setShowModal(true)} className="issue-add" />
-            </div>
-            <ReactSortable list={listStateOpen} setList={setListStateOpen} group="group-issue" tag={CustomComponent} onAdd={e => handleOnAdd(e, "open")} onChange={() => setData("status", "open")}>
-                {listStateOpen
-                    .filter(i => i.status === state)
-                    .map(issue => {
-                        return (
-                            <div key={issue.id}>
-                                <IssueDetailsTemplate issue={issue} projects={Projects} state={state} setShowModal={setShowModal} enumKey={enumKey} />
-                            </div>
-                        );
-                    })}
-            </ReactSortable>
-            <ReactSortable list={listStateInProgress} setList={setListStateInProgress} group="group-issue" onAdd={e => handleOnAdd(e, "in_progress")} onChange={() => setData("status", "in_progress")}>
-                {listStateInProgress
-                    .filter(i => i.status === state)
-                    .map(issue => {
-                        return (
-                            <div key={issue.id}>
-                                <IssueDetailsTemplate issue={issue} projects={Projects} state={state} setShowModal={setShowModal} enumKey={enumKey} />
-                            </div>
-                        );
-                    })}
-            </ReactSortable>
-            <ReactSortable list={listStateCompleted} setList={setListStateCompleted} group="group-issue" onAdd={e => handleOnAdd(e, "completed")} onChange={() => setData("status", "completed")}>
-                {listStateCompleted
-                    .filter(i => i.status === state)
-                    .map(issue => {
-                        return (
-                            <div key={issue.id}>
-                                <IssueDetailsTemplate issue={issue} projects={Projects} state={state} setShowModal={setShowModal} enumKey={enumKey} />
-                            </div>
-                        );
-                    })}
-            </ReactSortable>
-            <ReactSortable list={listStateCanceled} setList={setListStateCanceled} group="group-issue" onAdd={e => handleOnAdd(e, "canceled")} onChange={() => setData("status", "canceled")}>
-                {listStateCanceled
-                    .filter(i => i.status === state)
-                    .map(issue => {
-                        return (
-                            <div key={issue.id}>
-                                <IssueDetailsTemplate issue={issue} projects={Projects} state={state} setShowModal={setShowModal} enumKey={enumKey} />
-                            </div>
-                        );
-                    })}
-            </ReactSortable>
-        </>
-    );
+    return stateArray.map((status, index) => {
+        return (
+            <IssueListDraggable
+                issueArray={issueArray.filter(i => i.status === status)}
+                Projects={Projects}
+                status={status}
+                setShowModal={setShowModal}
+                setData={setData}
+                handleOnAdd={handleOnAdd}
+                key={index}
+            />
+        );
+    });
 };

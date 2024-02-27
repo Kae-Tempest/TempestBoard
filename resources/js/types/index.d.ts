@@ -1,3 +1,5 @@
+import { SortableEvent } from "react-sortablejs";
+
 export interface Issue {
     id: number;
     creator_id: number;
@@ -44,16 +46,21 @@ export interface User {
 interface IssueListDetailsProps {
     issueArray: Issue[];
     Projects: Project[];
-    state: string;
-    enumKey: string;
     setShowModal: (showModal: boolean) => void;
+}
+
+interface IssueListDraggableProps {
+    issueArray: Issue[];
+    Projects: Project[];
+    setShowModal: (showModal: boolean) => void;
+    status: string;
+    handleOnAdd: (e: SortableEvent, status: string) => void;
+    setData: (key: string, value: string) => void;
 }
 
 interface IssueDetailsTemplateProps {
     issue: Issue;
     projects: Project[];
-    state: string;
-    enumKey: string;
     setShowModal: (showModal: boolean) => void;
 }
 
