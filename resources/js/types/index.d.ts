@@ -22,8 +22,8 @@ export interface Project {
     nb_user: number;
     thumbnail: string;
     status: string;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Role {
@@ -40,8 +40,8 @@ export interface User {
     last_name: string;
     email: string;
     thumbnail: string;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
 }
 
 interface IssueListDetailsProps {
@@ -79,4 +79,9 @@ export type IssueModalProps = {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
     state?: string;
+};
+
+export type ProjectProps = {
+    projects: Project[];
+    user: User;
 };
