@@ -42,4 +42,8 @@ class Ticket extends Model
         return Carbon::parse($date)->format('d M');
     }
 
+    public function getUpdatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d M');
+    }
 }

@@ -38,6 +38,11 @@ class Project extends Model
 
     public function getCreatedAtAttribute($date)
     {
-        return Carbon::parse($date)->format('d M');
+        return Carbon::parse($date)->format('d M Y');
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d M Y');
     }
 }

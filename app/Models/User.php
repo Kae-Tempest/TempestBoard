@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return Carbon::parse($date)->format('d M');
     }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d ');
+    }
 }
