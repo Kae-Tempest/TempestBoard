@@ -22,6 +22,10 @@
   --success-color-hover-lighter: #66BB6A;
   --success-color-hover-darker: #388E3C;
   --extra-color: #A3EBF3;
+  --extra-color-hover-lighter: #B7F3FA;
+  --extra-color-hover-darker: #8ADAE1;
+  --secondary-color-hover-lighter: #BCE1E1;
+  --secondary-color-hover-darker: #8DBFC1;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
@@ -740,6 +744,108 @@ body {
     }
   }
 }
+
+#project {
+  width: 100%;
+
+  & > div.content {
+    padding: 1rem 1rem 0 17rem;
+    height: 100vh;
+
+    & > div {
+      display: flex;
+      width: 100%;
+
+      & > .card {
+        margin: 0 1rem;
+        width: 600px;
+        height: fit-content;
+
+        & > .card-content {
+          width: 100%;
+          height: 250px;
+          padding: .5rem;
+
+          & > .media {
+            & > .media-content {
+              & > h2 {
+                text-align: center;
+              }
+            }
+
+            &:not(last-child) {
+              margin-bottom: .5rem;
+            }
+
+            & > .media-left {
+              & > img {
+                width: 3.125rem;
+                height: 3.125rem;
+                border-radius: 5px;
+              }
+            }
+          }
+
+          & > .content {
+            height: 11.25rem;
+
+            & > p {
+              overflow-y: auto;
+              height: 82%;
+              margin: 0;
+            }
+
+            & > .content-footer {
+              display: flex;
+              justify-content: space-between;
+
+              & > .btn-action {
+                display: flex;
+
+                & > button {
+                  border-radius: 5px;
+                  border: 1px solid var(--text-color);
+                  width: 2rem;
+                  height: 2rem;
+                  margin: -.5rem .25rem 1rem .25rem;
+
+                  &.del {
+                    background-color: var(--error-color);
+
+                    &:hover {
+                      background-color: var(--error-color-hover-lighter);
+                    }
+                  }
+
+                  &.edit {
+                    background-color: var(--secondary-color);
+
+                    &:hover {
+                      background-color: var(--secondary-color-hover-darker);
+                    }
+                  }
+
+                  & > svg {
+                    color: var(--text-color);
+                    width: 1.125rem;
+                    height: 1.125rem;
+                  }
+                }
+
+
+              }
+
+              & > .date > time {
+                padding: 0 .25rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 
 .modal-card {
   border: 1px solid var(--tertiary-color);

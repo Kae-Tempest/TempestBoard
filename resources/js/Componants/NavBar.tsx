@@ -96,6 +96,9 @@ export default function ({ projects, user }: NavBarProps) {
                                             <Link href="#">Settings</Link>
                                         </li>
                                         <li>
+                                            <Link href={route("projects")}>Project</Link>
+                                        </li>
+                                        <li>
                                             <Link method="post" href={route("logout")} as={"button"}>
                                                 Logout
                                             </Link>
@@ -120,7 +123,7 @@ export default function ({ projects, user }: NavBarProps) {
                 <nav>
                     <ul>
                         <li className="is-active">
-                            <Link href="#">My Issues</Link>
+                            <Link href={route("home")}>My Issues</Link>
                         </li>
                         {projects.map((project: Project, index) => {
                             return <ProjectMenu project={project} key={index} />;

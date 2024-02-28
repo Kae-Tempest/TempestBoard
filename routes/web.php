@@ -25,6 +25,8 @@ Route::post('register', [RegisterController::class, 'store']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [PageController::class, 'home'])->middleware(['auth'])->name('home');
+    Route::get('/projets', [PageController::class, 'projects'])->name('projects');
+
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
     Route::post('/issue', [TicketController::class, 'store']);
     Route::patch('/issue/{id}', [TicketController::class, 'update']);
