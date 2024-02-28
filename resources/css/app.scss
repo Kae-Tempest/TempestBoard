@@ -867,12 +867,12 @@ body {
 }
 
 .modal-card-body {
-  background-color: var(--secondary-color);
+  background-color: var(--white);
   color: var(--text-color);
 
   & > .field > .control {
     & > .input {
-      background-color: var(--secondary-color);
+      background-color: var(--white);
       border: none;
       box-shadow: none;
       color: var(--text-color);
@@ -891,7 +891,7 @@ body {
     }
 
     & > .textarea {
-      background-color: var(--secondary-color);
+      background-color: var(--white);
       border: none;
       box-shadow: none;
       color: var(--text-color);

@@ -307,6 +307,9 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                     </div>
                 </section>
                 <footer className="modal-card-foot">
+                    <button className="button btn-error" onClick={() => handleCancel()}>
+                        Cancel
+                    </button>
                     <button
                         className="button btn-success"
                         onClick={() => {
@@ -323,9 +326,6 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                         }}
                         disabled={processing}>
                         Create
-                    </button>
-                    <button className="button btn-error" onClick={() => handleCancel()}>
-                        Cancel
                     </button>
                 </footer>
             </div>
