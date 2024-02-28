@@ -14,7 +14,7 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
         title: "",
         description: "",
         priority: "NEUTRAL",
-        status: "open",
+        status: "",
     });
     const [count, setCount] = useState(0);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -49,6 +49,7 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
     const handleCancel = () => {
         reset();
         setHtmlPriority(null);
+        setHtmlState(null);
         setProjectName("");
         setShowModal(false);
     };

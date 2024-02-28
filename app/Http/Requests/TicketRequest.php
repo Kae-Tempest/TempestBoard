@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TicketRequest extends FormRequest
@@ -17,14 +18,14 @@ class TicketRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'project_id' => ['required', 'integer', 'different:0'],
             'title' => ['required', 'string', 'max:255', 'min:3'],
-            'description' => ['required', 'string', 'max:500', 'min:3'],
+            'description' => ['required', 'string', 'max:500'],
             'priority' => ['string'],
             'state' => ['string']
         ];

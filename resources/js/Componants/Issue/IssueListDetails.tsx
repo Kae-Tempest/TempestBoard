@@ -5,6 +5,7 @@ import React, { forwardRef, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
+import IssueModal from "@/Componants/Issue/IssueModal";
 
 const CustomComponent = forwardRef<HTMLDivElement, any>((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
@@ -23,12 +24,12 @@ const IssueDetailsTemplate: React.FC<IssueDetailsTemplateProps> = ({ issue, proj
                                     <PriorityIcon priority={issue.priority} />
                                 </div>
                                 <div className="tag-number">
-                                    {project.name.substring(0, 3)}-{issue.id}
+                                    {project.name.substring(0, 3).toUpperCase()}-{issue.ticket_id}
                                 </div>
                                 <div className="title-issue">{issue.title}</div>
                             </div>
                             <div className="project-content">
-                                <div className="tag">{project.id == issue.project_id && project.name}</div>
+                                <div className="tag">{project.name}</div>
                                 <div>{issue.created_at}</div>
                             </div>
                         </div>
@@ -38,15 +39,16 @@ const IssueDetailsTemplate: React.FC<IssueDetailsTemplateProps> = ({ issue, proj
     );
 };
 
-const IssueListDraggable: React.FC<IssueListDraggableProps> = ({ issueArray, Projects, setShowModal, status, handleOnAdd, setData }) => {
+const IssueListDraggable: React.FC<IssueListDraggableProps> = ({ issueArray, Projects, status, handleOnAdd, setData }) => {
     const [list, setlist] = useState<Issue[]>([]);
-
+    const [showModal, setShowModal] = useState<boolean>(false);
     useEffect(() => {
         setlist(issueArray);
     }, [issueArray]);
 
     return (
         <React.Fragment>
+            <IssueModal projects={Projects} setShowModal={setShowModal} showModal={showModal} state={status} />
             <div className="issue-header">
                 <div>
                     <IssueIcon state={status} /> {status.toUpperCase()}
@@ -57,7 +59,7 @@ const IssueListDraggable: React.FC<IssueListDraggableProps> = ({ issueArray, Pro
                 {list.map((issue, index) => {
                     return (
                         <div key={index}>
-                            <IssueDetailsTemplate issue={issue} projects={Projects} setShowModal={setShowModal} />
+                            <IssueDetailsTemplate issue={issue} projects={Projects} />
                         </div>
                     );
                 })}
@@ -66,13 +68,12 @@ const IssueListDraggable: React.FC<IssueListDraggableProps> = ({ issueArray, Pro
     );
 };
 
-export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, Projects, setShowModal }) => {
+export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, Projects }) => {
     const { setData, patch, reset } = useForm<{ status: string }>({
         status: "",
     });
-    const stateArray = ["open", "in_progress", "completed", "canceled", "abandoned"];
+    const stateArray = ["open", "in_progress", "completed", "canceled"];
     const handleOnAdd = (e: SortableEvent, state: string) => {
-        console.log(state, "state");
         const issueID = e.item.dataset.id;
         let issue = issueArray.find(i => i.id == Number(issueID));
         if (!issue) return;
@@ -83,16 +84,6 @@ export const IssueListDetails: React.FC<IssueListDetailsProps> = ({ issueArray, 
     };
 
     return stateArray.map((status, index) => {
-        return (
-            <IssueListDraggable
-                issueArray={issueArray.filter(i => i.status === status)}
-                Projects={Projects}
-                status={status}
-                setShowModal={setShowModal}
-                setData={setData}
-                handleOnAdd={handleOnAdd}
-                key={index}
-            />
-        );
+        return <IssueListDraggable issueArray={issueArray.filter(i => i.status === status)} Projects={Projects} status={status} setData={setData} handleOnAdd={handleOnAdd} key={index} />;
     });
 };

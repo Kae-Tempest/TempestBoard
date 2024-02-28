@@ -15,6 +15,7 @@ class Ticket extends Model
         'creator_id',
         'assigned_id',
         'project_id',
+        'ticket_id',
         'title',
         'description',
         'status',

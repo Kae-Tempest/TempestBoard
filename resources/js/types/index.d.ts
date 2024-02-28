@@ -5,6 +5,7 @@ export interface Issue {
     creator_id: number;
     assigned_id: number;
     project_id: number;
+    ticket_id: number;
     title: string;
     description: string;
     status: string;
@@ -46,13 +47,11 @@ export interface User {
 interface IssueListDetailsProps {
     issueArray: Issue[];
     Projects: Project[];
-    setShowModal: (showModal: boolean) => void;
 }
 
 interface IssueListDraggableProps {
     issueArray: Issue[];
     Projects: Project[];
-    setShowModal: (showModal: boolean) => void;
     status: string;
     handleOnAdd: (e: SortableEvent, status: string) => void;
     setData: (key: string, value: string) => void;
@@ -61,7 +60,6 @@ interface IssueListDraggableProps {
 interface IssueDetailsTemplateProps {
     issue: Issue;
     projects: Project[];
-    setShowModal: (showModal: boolean) => void;
 }
 
 export type MyIssuesProps = {

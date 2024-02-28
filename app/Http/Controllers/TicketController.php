@@ -34,20 +34,23 @@ class TicketController extends Controller
      */
     public function store(TicketRequest $request)
     {
+
         $validate = $request->validated();
 
         $request->safe()->only(['project_id', 'title', 'description', 'status', 'priority']);
-
+        if ($request->status == null) $request->status = 'open';
+        $ticketList = Ticket::where('project_id', $request->project_id)->get();
+        if ($ticketList->count() == 0) $ticketList = collect(0);
         Ticket::create([
             'creator_id' => Auth::id(),
             'assigned_id' => Auth::id(),
+            'ticket_id' => $ticketList->count() + 1,
             'project_id' => $request->project_id,
             'title' => $request->title,
             'description' => $request->description,
             'status' => $request->status,
             'priority' => $request->priority,
         ]);
-
     }
 
     /**

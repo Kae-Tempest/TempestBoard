@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticket>
+ * @extends Factory<Ticket>
  */
 class TicketFactory extends Factory
 {
@@ -20,6 +21,8 @@ class TicketFactory extends Factory
         return [
             'creator_id' => User::factory()->create()->id,
             'assigned_id' => User::factory()->create()->id,
+            'project_id' => User::factory()->create()->id,
+            'ticket_id' => $this->faker->randomNumber(2),
             'title' => $this->faker->name,
             'description' => $this->faker->text,
             'status' => $this->faker->randomElement(['open', 'in_progress', 'completed', 'abandoned']),
