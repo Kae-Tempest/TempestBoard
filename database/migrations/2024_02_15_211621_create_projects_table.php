@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('description');
             $table->integer('nb_user');
-            $table->string('thumbnail');
+            $table->string('thumbnail')->nullable();
             $table->string('status');
             $table->timestamps();
         });

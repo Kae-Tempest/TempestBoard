@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
+use App\Models\Role;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         return Inertia::render('Projects', [
             'Projects' => Project::with('user')->orderBy('created_at', 'DESC')->get(),
@@ -31,21 +35,22 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|min:3',
-            'description' => 'required|string|max:500|min:3',
-            'nb_user' => 'required|integer|min:1',
-            'thumbnail' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
 
-        $project = Project::create([
+        $validate = $request->validated();
+
+        $request->safe()->only(['name', 'description', 'thumbnail']);
+
+        if ($request->thumbnail) $thumbnail = $request->thumbnail->store('thumbnails');
+        else $thumbnail = null;
+
+        Project::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
             'description' => $request->description,
             'nb_user' => 1,
-            'thumbnail' => $request->thumbnail->store('thumbnails'),
+            'thumbnail' => $thumbnail,
             'status' => "in_progress",
         ]);
     }
@@ -79,6 +84,8 @@ class ProjectController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Role::all()->where('project_id', $id)->each->delete();
+        Ticket::all()->where('project_id', $id)->each->delete();
+        Project::find($id)->delete();
     }
 }

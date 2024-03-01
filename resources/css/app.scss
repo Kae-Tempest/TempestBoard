@@ -749,9 +749,42 @@ body {
 #project {
   width: 100%;
 
+  & > header {
+    padding: .5rem 0 0 16rem;
+    width: 100%;
+    height: 3.125rem;
+    border-bottom: 1px solid var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+    & > nav {
+      margin-left: .5rem;
+      margin-bottom: 0;
+
+      & > ul {
+        margin: 0;
+      }
+    }
+
+    & > button {
+      margin: 0 .5rem .5rem 0;
+      background-color: var(--secondary-color);
+      border: 1px solid var(--tertiary-color);
+      border-radius: 5px;
+      font-weight: 500;
+      padding: .25rem;
+
+      &:hover {
+        background-color: var(--secondary-color-hover-darker);
+      }
+    }
+  }
+
   & > div.content {
     padding: 1rem 1rem 0 17rem;
-    height: 100vh;
+    height: 100%;
 
     & > div {
       display: flex;
@@ -843,10 +876,72 @@ body {
           }
         }
       }
+
+      .del-box {
+        & > .btn-action {
+          display: flex;
+          justify-content: space-between;
+
+          & > .del {
+            background-color: var(--error-color);
+            border-radius: 5px;
+            color: var(--white);
+            padding: .25rem .5rem;
+
+            &:hover {
+              background-color: var(--error-color-hover-darker);
+            }
+          }
+
+          & > .cancel {
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            padding: .25rem .5rem;
+
+            &:hover {
+              background-color: var(--secondary-color-hover-darker);
+            }
+          }
+        }
+      }
+
+      .field.field-btn {
+        & > .control {
+          display: flex;
+          justify-content: space-between;
+
+          & > .btn-danger {
+            background-color: var(--error-color);
+            border-radius: 5px;
+            color: var(--white);
+            padding: .25rem .5rem;
+
+            &:hover {
+              background-color: var(--error-color-hover-darker);
+            }
+          }
+
+          & > .btn-create {
+            background-color: var(--success-color);
+            border-radius: 5px;
+            color: var(--white);
+            padding: .25rem .5rem;
+
+            &:hover {
+              background-color: var(--success-color-hover-darker);
+            }
+
+          }
+        }
+      }
     }
   }
 }
 
+.modal-background {
+  background-color: rgba(10, 10, 10, 0.86);
+}
 
 .modal-card {
   border: 1px solid var(--tertiary-color);

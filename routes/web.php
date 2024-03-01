@@ -31,5 +31,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/issue', [TicketController::class, 'store']);
     Route::patch('/issue/{id}', [TicketController::class, 'update']);
     Route::post('/project', [ProjectController::class, 'store']);
+    Route::delete('/project/{id}', [ProjectController::class, 'destroy']);
 });
 
