@@ -71,43 +71,35 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
     const stateDPRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        switch (state) {
-            case "open":
-                handleSetState(
-                    "open",
-                    <div className="dropdown-icon">
-                        Open <OpenIssueIcon />
-                    </div>,
-                );
-                break;
-            case "in_progress":
-                handleSetState(
-                    "in_progress",
-                    <div className="dropdown-icon">
-                        In Progress <InProgressIssueIcon />
-                    </div>,
-                );
-                break;
-            case "completed":
-                handleSetState(
-                    "completed",
-                    <div className="dropdown-icon">
-                        Completed <CompletedIssueIcon />
-                    </div>,
-                );
-                break;
-            case "canceled":
-                handleSetState(
-                    "canceled",
-                    <div className="dropdown-icon">
-                        Canceled <CanceledIssueIcon />
-                    </div>,
-                );
-                break;
-            default:
-                break;
-        }
-        const handlerCloseModal = (e: any) => {
+        if (state === "open")
+            handleSetState(
+                "open",
+                <div className="dropdown-icon">
+                    Open <OpenIssueIcon />
+                </div>,
+            );
+        if (state === "in_progress")
+            handleSetState(
+                "in_progress",
+                <div className="dropdown-icon">
+                    In Progress <InProgressIssueIcon />
+                </div>,
+            );
+        if (state === "completed")
+            handleSetState(
+                "completed",
+                <div className="dropdown-icon">
+                    Completed <CompletedIssueIcon />
+                </div>,
+            );
+        if (state === "canceled")
+            handleSetState(
+                "canceled",
+                <div className="dropdown-icon">
+                    Canceled <CanceledIssueIcon />
+                </div>,
+            );
+        const handleCloseModal = (e: any) => {
             if (!modalRef.current?.contains(e.target)) {
                 if (showModal) handleCancel();
             }
@@ -121,7 +113,7 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
                 setStateDropdownOpen(false);
             }
         };
-        document.addEventListener("mousedown", handlerCloseModal);
+        document.addEventListener("mousedown", handleCloseModal);
         document.addEventListener("keydown", event => {
             if (event.key === "Escape") {
                 setShowModal(false);
@@ -129,7 +121,7 @@ export default function ({ projects, showModal, setShowModal, state }: IssueModa
         });
         if (errors.title || errors.description) setShowModal(true);
         return () => {
-            document.addEventListener("mousedown", handlerCloseModal);
+            document.addEventListener("mousedown", handleCloseModal);
             reset();
         };
     }, [errors, showModal]);

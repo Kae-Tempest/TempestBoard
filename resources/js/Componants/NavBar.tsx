@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { faChevronRight, faMagnifyingGlass, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { NavBarProps, Project } from "@/types";
-import IssueModal from "@/Componants/Issue/IssueModal";
+import IssueModal from "@/Componants/Modals/IssueModal";
 
 const ProjectMenu = ({ project }: { project: Project }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

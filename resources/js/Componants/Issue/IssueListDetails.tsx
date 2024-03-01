@@ -5,7 +5,7 @@ import React, { forwardRef, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
-import IssueModal from "@/Componants/Issue/IssueModal";
+import IssueModal from "@/Componants/Modals/IssueModal";
 
 const CustomComponent = forwardRef<HTMLDivElement, any>((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
