@@ -40,11 +40,13 @@ class TicketController extends Controller
         $request->safe()->only(['project_id', 'title', 'description', 'status', 'priority']);
         if ($request->status == null) $request->status = 'open';
         $ticketList = Ticket::where('project_id', $request->project_id)->get();
-        if ($ticketList->count() == 0) $ticketList = collect(0);
+        if ($ticketList->count() == 0) $ticketList = collect(0)->count();
+        else $ticketList = $ticketList->count() + 1;
+
         Ticket::create([
             'creator_id' => Auth::id(),
             'assigned_id' => Auth::id(),
-            'ticket_id' => $ticketList->count() + 1,
+            'ticket_id' => $ticketList,
             'project_id' => $request->project_id,
             'title' => $request->title,
             'description' => $request->description,
