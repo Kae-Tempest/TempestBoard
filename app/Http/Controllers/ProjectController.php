@@ -76,7 +76,12 @@ class ProjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $project = Project::find($id);
+        if ($request->name) $project->name = $request->name;
+        if ($request->description) $project->description = $request->description;
+        if ($request->thumbnail) $project->thumbnail = $request->thumbnail;
+
+        $project->save();
     }
 
     /**
