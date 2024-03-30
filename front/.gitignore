@@ -24,4 +24,3 @@ logs
 !.env.example
 
 .yarnrc.yml
-.yarn
