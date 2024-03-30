@@ -1,16 +1,28 @@
+from django.contrib.auth import login, logout
 from rest_framework import viewsets, views, status
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer
+
 from .models import User, Project, Issue, Role, Tag
-from django.contrib.auth import login, logout
+from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        print('create user')
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            login(request, serializer.instance)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -18,19 +30,23 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Project.objects.filter(creator_id=self.request.user)
+
 
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = [IsAuthenticated]
 
-
-class CreateIssue(views.APIView):
-    def post(self, request, format=None):
-        serializer = IssueSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = IssueSerializer(data=request.data, )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    def get_queryset(self):
+        return Issue.objects.filter(project__creator_id=self.request.user)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
@@ -48,15 +64,16 @@ class TagViewSet(viewsets.ModelViewSet):
 class LoginView(views.APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
+        user = serializer.validate(request.data)
         login(request, user)
-        return Response(user, status=status.HTTP_202_ACCEPTED)
+        user_serializer = UserSerializer(user, context={"request": request})
+        return Response(user_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class LogoutView(views.APIView):
-    def get(self, request, format=None):
+    def get(self, request):
         logout(request)
         return Response(status=status.HTTP_202_ACCEPTED)

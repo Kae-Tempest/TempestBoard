@@ -1,0 +1,72 @@
+<script setup lang="ts">
+import CustomCheckbox from '~/components/Checkbox/LoginCustomCheckbox.vue';
+import {useUserStore} from "~/stores/useUserStore";
+import type {User} from "~/types/global";
+
+const data = reactive({
+  email: '',
+  password: '',
+  remember: false,
+});
+const errors = reactive({
+  msg: '',
+});
+
+const handleCheckboxChange = (newValue: any) => {
+  data.remember = newValue;
+};
+
+const handleSubmit = async () => {
+  const res = await useCustomFetch('/login/', {
+    method: 'post',
+    body: JSON.stringify(data),
+  });
+  if (res.data.value != null) {
+    const user = res.data.value as User;
+    useUserStore().setUser(user);
+    await navigateTo('/');
+  } else {
+    errors.msg = res.error.value?.data?.msg || 'An error occurred';
+  }
+};
+
+
+</script>
+<template>
+  <div id="Auth">
+    <div>
+      <form @submit.prevent="handleSubmit()" id="login">
+        <div>
+          <label>Email</label>
+          <input
+              id="email"
+              type="email"
+              name="email"
+              v-model="data.email"
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+              id="password"
+              type="password"
+              name="password"
+              v-model="data.password"
+          />
+          <div class="error">{{ errors.msg }}</div>
+        </div>
+        <CustomCheckbox
+            label="Remember me"
+            @update:checked="handleCheckboxChange"
+            v-model="data.remember"
+        />
+        <div>
+          <NuxtLink to="#">Forgotten password ?</NuxtLink>
+          <button type="submit">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
