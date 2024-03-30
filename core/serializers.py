@@ -1,25 +1,44 @@
-from rest_framework import serializers
 from django.contrib.auth import authenticate
+from rest_framework import serializers
+
 from .models import User, Project, Issue, Role, Tag
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'thumbnail', 'created_at', 'updated_at']
+        fields = ['id', 'password', 'confirm_password', 'username', 'email', 'first_name', 'last_name', 'thumbnail', 'created_at', 'updated_at']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        confirm_password = validated_data.pop('confirm_password')
+        email = validated_data.pop('email')
+        if password != confirm_password:
+            raise serializers.ValidationError("Password and Confirm Password does not match")
+        User.objects.create_user(email, password, **validated_data)
+        authenticated_user = authenticate(email=email, password=password)
+        return authenticated_user
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'creator', 'users', 'name', 'description', 'status', 'thumbnail', 'created_at', 'updated_at']
+        extra_kwargs = {'thumbnail': {'required': False}}
 
 
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'project', 'ticket_id', 'title', 'description', 'priority', 'status',
-                  'tags', 'created_at', 'updated_at']
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
+        extra_kwargs = {'ticket_id': {'read_only': True}}
+
+    def validate(self, attrs):
+        attrs.pop('ticket_id', None)
+        return super().validate(attrs)
 
     def create(self, validated_data):
         issue_count = Issue.objects.filter(project=validated_data['project']).count()
@@ -27,7 +46,7 @@ class IssueSerializer(serializers.ModelSerializer):
             issue_count = 1
         else:
             issue_count = issue_count + 1
-        issue = Issue.objects.create(
+        return Issue.objects.create(
             creator=validated_data['creator'],
             assigned=validated_data['assigned'],
             project=validated_data['project'],
@@ -36,9 +55,7 @@ class IssueSerializer(serializers.ModelSerializer):
             description=validated_data['description'],
             priority=validated_data['priority'],
             status=validated_data['status'],
-            tags=validated_data['tags']
         )
-        return issue
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -55,18 +72,12 @@ class TagSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(label="Email", required=True, write_only=True)
-    password = serializers.CharField(style={'input_type': 'password'}, label="Password", write_only=True)
+    password = serializers.CharField(style={'input_type': 'password'}, label="Password", write_only=True, required=True)
 
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        if email and password:
-            user = authenticate(request=self.context.get('request'), email=email, password=password)
-            if not user:
-                msg = 'Unable to log in with provided credentials'
-                raise serializers.ValidationError(msg, code='authorization')
-        else:
-            msg = 'Must provide email and password both'
-            raise serializers.ValidationError(msg)
-        attrs['user'] = user
-        return attrs
+        user = authenticate(email=email, password=password)
+        if not user:
+            raise serializers.ValidationError("Invalid Credentials")
+        return user

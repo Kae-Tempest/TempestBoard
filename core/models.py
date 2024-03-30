@@ -1,17 +1,18 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 from .managers import CustomUserManager
 
 
 class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(_("email address"), unique=True)
-    thumbnail = models.ImageField(upload_to='thumbnails/user/', blank=True)
+    thumbnail = models.ImageField(upload_to='thumbnail/user/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
@@ -25,8 +26,8 @@ class Project(models.Model):
     users = models.ManyToManyField('User', blank=True, related_name='participating_users')
     name = models.CharField(max_length=100)
     description = models.TextField()
-    status = models.CharField(max_length=10)
-    thumbnail = models.ImageField(upload_to='thumbnails/project/', blank=True)
+    status = models.CharField(max_length=20)
+    thumbnail = models.ImageField(upload_to='thumbnail/project/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -42,8 +43,8 @@ class Issue(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     priority = models.CharField(max_length=10)
-    status = models.CharField(max_length=10)
-    tags = models.ManyToManyField('Tag', blank=True, related_name='ags')
+    status = models.CharField(max_length=11)
+    tags = models.ManyToManyField('Tag', blank=True, related_name='tags')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
