@@ -1,0 +1,93 @@
+<script setup lang="ts">
+import {reactive} from 'vue';
+import {useUserStore} from '~/stores/useUserStore';
+import type {User} from "~/types/global";
+import {useCustomFetch} from "~/composables/useCustomFetch";
+
+const data = reactive({
+  username: '',
+  email: '',
+  password: '',
+  confirm_password: '',
+});
+
+const errors = reactive({
+  username: '',
+  email: '',
+  password: '',
+  confirm_password: '',
+});
+
+const handleSubmit = async () => {
+  const res = await useCustomFetch<User>('/users/', {
+    method: 'post',
+    body: JSON.stringify(data),
+  });
+  if (res.data.value != null) {
+    const user = res.data.value;
+    useUserStore().setUser(user);
+    await navigateTo('/');
+  } else if (res.error.value?.data) {
+    if (res.error.value?.data?.username) errors.username = res.error.value?.data?.username[0];
+    if (res.error.value?.data?.email) errors.email = res.error.value?.data?.email[0];
+    if (res.error.value?.data?.password) errors.password = res.error.value?.data?.password[0];
+    if (res.error.value?.data?.confirm_password) errors.confirm_password = res.error.value?.data?.confirm_password[0];
+  } else {
+    console.log('error', 'future toasts');
+  }
+}
+</script>
+<template>
+  <div id="Auth">
+    <div>
+      <form @submit.prevent=handleSubmit() id="register">
+        <div className="flex flex-col">
+          <label>Username</label>
+          <input
+              id="username"
+              type="text"
+              name="username"
+              v-model="data.username"
+          />
+          <div className="error">{{ errors.username }}</div>
+        </div>
+        <div>
+          <label>Email</label>
+          <input
+              id="email"
+              type="email"
+              name="email"
+              v-model="data.email"
+          />
+          <div className="error">{{ errors.email }}</div>
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+              id="password"
+              type="password"
+              name="password"
+              v-model="data.password"
+          />
+          <div className="error">{{ errors.password }}</div>
+        </div>
+        <div>
+          <label>Confirm Password</label>
+          <input
+              id="password_confirmation"
+              type="password"
+              name="confirm_password"
+              v-model="data.confirm_password"
+          />
+          <div className="error">{{ errors.confirm_password }}</div>
+        </div>
+        <div>
+          <NuxtLink to="#">Already registered ?</NuxtLink>
+          <button type="submit">
+            Register
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
