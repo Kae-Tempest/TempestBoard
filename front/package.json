@@ -17,7 +17,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@pinia/nuxt": "^0.5.1",
     "axios": "^1.6.7",
-    "bulma": "^0.9.4",
+    "bulma": "^1.0.0",
     "nuxt": "^3.10.3",
     "sass": "^1.71.1",
     "vue": "^3.4.21",
