@@ -144,7 +144,7 @@ const handleSubmit = async () => {
 <template>
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
-    <div ref={modalRef} class="modal-card">
+    <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">Create Issue</p>
         <button aria-label="close" class="delete" @click="showModal=false"></button>
