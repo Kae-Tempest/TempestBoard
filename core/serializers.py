@@ -29,6 +29,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'creator', 'users', 'name', 'description', 'status', 'thumbnail', 'created_at', 'updated_at']
         extra_kwargs = {'thumbnail': {'required': False}}
 
+    def create(self, validated_data):
+        project = Project.objects.create(
+            creator=validated_data['creator'],
+            name=validated_data['name'],
+            description=validated_data['description'],
+            status=validated_data['status'],
+            thumbnail=validated_data.get('thumbnail')
+        )
+        project.users.add(validated_data['creator'])
+        return project
+
 
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,10 +53,11 @@ class IssueSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         issue_count = Issue.objects.filter(project=validated_data['project']).count()
+        last_issue = Issue.objects.filter(project=validated_data['project']).last()
         if issue_count == 0:
             issue_count = 1
         else:
-            issue_count = issue_count + 1
+            issue_count = last_issue.ticket_id + 1
         return Issue.objects.create(
             creator=validated_data['creator'],
             assigned=validated_data['assigned'],
