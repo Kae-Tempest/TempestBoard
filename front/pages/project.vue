@@ -7,6 +7,9 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import DeleteProjectModal from "~/components/Modals/Project/DeleteProjectModal.vue";
 import CreateProjectModal from "~/components/Modals/Project/CreateProjectModal.vue";
 import EditProjectModal from "~/components/Modals/Project/EditProjectModal.vue";
+import UserProjectModal from "~/components/Modals/Project/UserProjectModal.vue";
+
+useHead({title: 'Project - Tempest Board'})
 
 const user = useUserStore().getUser();
 const projects = ref<Project[]>([]);
@@ -15,6 +18,7 @@ const selectedProject = ref<Project | null>(null)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 const showCreateModal = ref(false)
+const showUserModal = ref(false)
 const {isRefresh} = useRefreshData()
 
 onMounted(async () => {
@@ -40,26 +44,32 @@ const handleOpenDeleteModal = (project: Project) => {
   showDeleteModal.value = true
 }
 
+const handleOpenUserModal = (project: Project) => {
+  selectedProject.value = project
+  showUserModal.value = true
+}
+
 </script>
 <template>
   <div id="project">
-    <Navbar :user="user" :projects="projects"/>
+    <Navbar v-if="user" :user="user" :projects="projects"/>
     <header>
       <nav class="breadcrumb is-medium" aria-label="breadcrumbs">
         <ul>
           <li>Projects</li>
         </ul>
       </nav>
-      <button class="add-project" @click="showCreateModal=true">New Project</button> <!-- Open Creation Modal -->
+      <button class="add-project" @click="showCreateModal=true">New Project</button>
     </header>
     <div class="content">
       <div>
         <!--   Modals   -->
         <CreateProjectModal v-model="showCreateModal"/>
-        <DeleteProjectModal :project="selectedProject" v-model="showDeleteModal"/>
-        <EditProjectModal :project="selectedProject" v-model="showEditModal"/>
+        <DeleteProjectModal v-if="selectedProject" :project="selectedProject" v-model="showDeleteModal"/>
+        <EditProjectModal v-if="selectedProject" :project="selectedProject" v-model="showEditModal"/>
+        <UserProjectModal v-if="selectedProject" :project="selectedProject" v-model="showUserModal"/>
         <!--   Project List   -->
-        <div v-for="project in projects">
+        <div v-for="project in projects.sort((p, p2) => p.id - p2.id)">
           <div class="card">
             <div class="card-content">
               <div class="media">
@@ -73,12 +83,15 @@ const handleOpenDeleteModal = (project: Project) => {
               <div class="content">
                 <p class="">{{ project.description }}</p>
                 <div class="content-footer">
-                  <div class="btn-action">
-                    <button class="del" @click="handleOpenDeleteModal(project)"> <!-- Delete Modal -->
+                  <div v-if="user?.id == project.creator" class="btn-action">
+                    <button class="del" @click="handleOpenDeleteModal(project)">
                       <font-awesome-icon icon="fa-solid fa-trash-can"/>
                     </button>
-                    <button class="edit" @click="handleOpenEditModal(project)"> <!-- Edit Modal -->
+                    <button class="edit" @click="handleOpenEditModal(project)">
                       <font-awesome-icon icon="fa-solid fa-pen"/>
+                    </button>
+                    <button class="add" @click="handleOpenUserModal(project)">
+                      <font-awesome-icon icon="fa-solid fa-plus"/>
                     </button>
                   </div>
                   <div class="date">
