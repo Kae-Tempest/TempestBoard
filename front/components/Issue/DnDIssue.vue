@@ -33,8 +33,9 @@ const onDrop = async (e: DragEvent, state: string) => {
 </script>
 
 <template>
-  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
+  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent @click="Menu = !Menu">
     <div v-for="issue in issues.filter(i => i.status === state).sort((a,b) => a.ticket_id - b.ticket_id)" :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
+         @click="handleMenu(issue, $event)">
       <div class="issue-list">
         <div v-for="project in projects.filter(p => p.id === issue.project)">
           <div class="issue-info">

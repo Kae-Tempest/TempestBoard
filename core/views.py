@@ -31,7 +31,25 @@ class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Project.objects.filter(creator_id=self.request.user)
+        return Project.objects.filter(users=self.request.user)
+
+
+class ProjectUserAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        project = Project.objects.get(pk=pk)
+        serializer = UserSerializer(project.users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        project = Project.objects.get(pk=pk)
+        for user_id in request.data['users']:
+            user = User.objects.get(pk=user_id)
+            project.users.add(user)
+            project.save()
+        serializer = UserSerializer(project.users, many=True)
+        return Response(serializer.data)
 
 
 class IssueViewSet(viewsets.ModelViewSet):
@@ -47,6 +65,16 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Issue.objects.filter(project__creator_id=self.request.user)
+
+
+class MyIssueAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        createdIssues = Issue.objects.filter(creator_id=request.user)
+        assignedIssues = Issue.objects.filter(assigned_id=request.user)
+        serializer = IssueSerializer(createdIssues.union(assignedIssues), many=True)
+        return Response(serializer.data)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
