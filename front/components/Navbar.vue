@@ -13,7 +13,6 @@ interface Props {
 const props = defineProps<Props>()
 
 const isDropDownOpen = ref(false);
-const isMenuOpen = ref(false)
 const isShowModal = ref(false)
 const thumbnail = ref('')
 
