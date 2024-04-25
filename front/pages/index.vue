@@ -18,7 +18,7 @@ const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
-const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/issues/`, {immediate: false})
+const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
 
 onMounted(async () => {
   await refresh()
