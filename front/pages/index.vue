@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import type {Issue, Project} from "~/types/global";
+import type {Issue, Project, User} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import IssueList from "~/components/Issue/IssueList.vue";
@@ -13,7 +13,7 @@ const Title = ref("All");
 const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
 const CreateIssues = ref<Issue[]>([]);
-const user = useUserStore().user;
+const user: User | null = useUserStore().user;
 const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 
@@ -44,7 +44,7 @@ watch(() => isRefresh.value, async (newVal) => {
 </script>
 <template>
   <div id="my_issue">
-    <Navbar :user="user" :projects="projects"/>
+    <Navbar v-if="user" :user="user" :projects="projects"/>
     <div class="content">
       <div class="header">
         <nav class="breadcrumb is-medium" aria-label="breadcrumbs">
