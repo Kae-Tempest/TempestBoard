@@ -135,6 +135,7 @@ const handleSubmit = async () => {
   if (res.data.value !== null) {
     isRefresh.value = true
     showModal.value = false;
+    resetForm();
   }
 };
 
@@ -170,7 +171,7 @@ const handleSubmit = async () => {
                 <button aria-controls="dropdown-priority" aria-haspopup="true" class="button" @click.stop="dropdownOpen=!dropdownOpen">
                   <span>{{ SelectedPriority }}</span>
                   <span class="icon">
-                    <font-awesome-icon :icon="priorityIcon" :rotation="SelectedPriority == 'Neutral' ? 90 : 0"/>
+                    <font-awesome-icon :icon="priorityIcon" :rotation="SelectedPriority == 'Neutral' ? 90 : undefined"/>
                   </span>
                 </button>
               </div>
