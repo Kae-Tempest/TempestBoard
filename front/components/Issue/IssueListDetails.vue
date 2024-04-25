@@ -4,7 +4,7 @@ import type {Issue, Project} from "~/types/global";
 import {ref, watch} from 'vue'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import IssueIcon from "~/components/Icon/IssueIcon.vue";
-import IssueModal from "~/components/Modals/IssueModal.vue";
+import IssueModal from "~/components/Modals/issue/IssueModal.vue";
 import DnDIssue from "~/components/Issue/DnDIssue.vue";
 
 interface Props {
