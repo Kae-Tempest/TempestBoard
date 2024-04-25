@@ -6,6 +6,7 @@ import {useUserStore} from "~/stores/useUserStore";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import IssueList from "~/components/Issue/IssueList.vue";
 
+useHead({title: 'Home - Tempest Board'})
 const viewMode = ref("list");
 const typeView = ref("all");
 const Title = ref("All");

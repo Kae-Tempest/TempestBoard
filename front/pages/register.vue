@@ -4,6 +4,8 @@ import {useUserStore} from '~/stores/useUserStore';
 import type {User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 
+useHead({title: 'Register - Tempest Board'})
+
 const data = reactive({
   username: '',
   email: '',
