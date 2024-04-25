@@ -3,6 +3,8 @@ import CustomCheckbox from '~/components/Checkbox/LoginCustomCheckbox.vue';
 import {useUserStore} from "~/stores/useUserStore";
 import type {User} from "~/types/global";
 
+useHead({title: 'Login - Tempest Board'})
+
 const data = reactive({
   email: '',
   password: '',
