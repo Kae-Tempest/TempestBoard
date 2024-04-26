@@ -84,7 +84,7 @@ const handleSubmit = async () => {
           <div className="error">{{ errors.confirm_password }}</div>
         </div>
         <div>
-          <NuxtLink to="#">Already registered ?</NuxtLink>
+          <NuxtLink to="/login">Already registered ?</NuxtLink>
           <button type="submit">
             Register
           </button>
