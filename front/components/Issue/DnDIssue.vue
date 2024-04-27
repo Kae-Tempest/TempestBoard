@@ -11,6 +11,18 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const IssueModel = defineModel()
+const IssuePos = defineModel('pos')
+
+const handleMenu = (issue: Issue, e: MouseEvent) => {
+  if (IssueModel.value === issue.id) {
+    IssueModel.value = null
+  } else {
+    IssueModel.value = issue.id
+    IssuePos.value = {x: e.offsetX, y: e.clientY}
+  }
+}
+
 const startDrag = (e: DragEvent, item: Issue) => {
   if (!e.dataTransfer) return;
   e.dataTransfer.dropEffect = 'move';
@@ -33,7 +45,7 @@ const onDrop = async (e: DragEvent, state: string) => {
 </script>
 
 <template>
-  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent @click="Menu = !Menu">
+  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
     <div v-for="issue in issues.filter(i => i.status === state).sort((a,b) => a.ticket_id - b.ticket_id)" :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
          @click="handleMenu(issue, $event)">
       <div class="issue-list">

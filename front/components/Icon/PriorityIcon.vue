@@ -20,7 +20,7 @@ if (props.priority === 'URGENT') priorityValue.value = 4
 
 <template>
   <div class="tooltip">
-    <font-awesome-icon :icon="priorityIcon[priorityValue]" :rotation="priorityValue == 2 ? 90 : 0"/>
+    <font-awesome-icon :icon="priorityIcon[priorityValue]" :rotation="priorityValue == 2 ? 90 : undefined"/>
     <span class="tooltip-text">{{ priority.toLowerCase() }}</span>
   </div>
 </template>
