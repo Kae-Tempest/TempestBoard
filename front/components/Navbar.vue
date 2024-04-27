@@ -2,7 +2,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project, User} from "~/types/global";
-import IssueModal from "~/components/Modals/IssueModal.vue";
+import IssueModal from "~/components/Modals/issue/IssueModal.vue";
 import MenuProject from "~/components/Menu/MenuProject.vue";
 
 interface Props {
@@ -13,7 +13,6 @@ interface Props {
 const props = defineProps<Props>()
 
 const isDropDownOpen = ref(false);
-const isMenuOpen = ref(false)
 const isShowModal = ref(false)
 const thumbnail = ref('')
 

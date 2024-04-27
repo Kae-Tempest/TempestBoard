@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import type {Issue, Project} from "~/types/global";
+import type {Issue, Project, User} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import IssueList from "~/components/Issue/IssueList.vue";
 
+useHead({title: 'Home - Tempest Board'})
 const viewMode = ref("list");
 const typeView = ref("all");
 const Title = ref("All");
 const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
 const CreateIssues = ref<Issue[]>([]);
-const user = useUserStore().user;
+const user: User | null = useUserStore().user;
 const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
-const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/issues/`, {immediate: false})
+const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
 
 onMounted(async () => {
   await refresh()
@@ -43,7 +44,7 @@ watch(() => isRefresh.value, async (newVal) => {
 </script>
 <template>
   <div id="my_issue">
-    <Navbar :user="user" :projects="projects"/>
+    <Navbar v-if="user" :user="user" :projects="projects"/>
     <div class="content">
       <div class="header">
         <nav class="breadcrumb is-medium" aria-label="breadcrumbs">

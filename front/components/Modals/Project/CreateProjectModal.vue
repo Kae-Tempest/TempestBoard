@@ -91,7 +91,7 @@ const handleCreate = async () => {
 <template>
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
-    <div class="modal-content" ref={modalRef}>
+    <div class="modal-content">
       <div class="box">
         <h3>Create Project</h3>
         <div class="field">
