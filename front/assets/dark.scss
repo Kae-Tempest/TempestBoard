@@ -1,21 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg-color: #F4F3EE;
+    --bg-color: #1c1c1c;
     --primary-color: #003b73;
-    --secondary-color: #a8dadc;
+    --secondary-color: #1D3557;
     --tertiary-color: #457b9d;
-    --text-color: #1D3557;
+    --text-color: #F4F3EE;
 
-
-    --bg-color-rgb: 244, 243, 238; /*#F4F3EE*/
-    --primary-color-rgb: 0, 59, 115; /*#003b73*/
-    --secondary-color-rgb: 168, 218, 220; /*#a8dadc*/
-    --tertiary-color-rgb: 69, 123, 157; /*#457b9d*/
-    --text-color-rgb: 29, 53, 87; /*#1D3557*/
+    --primary-color-rgb: 0, 38, 74; /*#00264A*/
     --white: #f3f9ff;
-
 
     --error-color: #E74C3C;
     --error-color-hover-lighter: #FF6655;
@@ -24,11 +18,9 @@
     --success-color: #4CAF50;
     --success-color-hover-lighter: #66BB6A;
     --success-color-hover-darker: #388E3C;
-    --extra-color: #A3EBF3;
-    --extra-color-hover-lighter: #B7F3FA;
-    --extra-color-hover-darker: #8ADAE1;
-    --secondary-color-hover-lighter: #BCE1E1;
-    --secondary-color-hover-darker: #8DBFC1;
+
+    --secondary-color-hover-lighter: #8DBFC1;
+    --secondary-color-hover-darker: #314141
   }
 
 
@@ -49,7 +41,6 @@
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    height: 100%;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -142,7 +133,8 @@
         width: 100%;
         height: 1.25rem;
         text-align: left;
-        background-color: var(--secondary-color);
+        background-color: var(--tertiary-color);
+        color: var(--secondary-color);
         align-items: center;
         padding: 0 .5rem;
         border-radius: .125rem;
@@ -160,15 +152,14 @@
 
       & > button:last-child {
         text-align: left;
-        background-color: var(--secondary-color);
+        background-color: var(--tertiary-color);
+        color: var(--secondary-color);
         padding: 0 .5rem;
         border-radius: .125rem;
         border: none;
         height: 1.25rem;
         cursor: pointer;
-
       }
-
     }
 
     & > nav {
@@ -324,11 +315,11 @@
     padding-top: 1.5rem;
 
     & > div {
+      color: var(--text-color);
       width: 100%;
       margin-top: 1.5rem;
       padding: 1rem 1.5rem;
       background-color: var(--primary-color);
-      color: var(--tertiary-color);
       overflow: hidden;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       border-radius: .5rem;
@@ -351,7 +342,7 @@
     }
 
     label {
-      color: var(--secondary-color);
+      color: var(--text-color);
       font-weight: 900;
     }
 
@@ -493,7 +484,7 @@
         justify-content: space-between;
         align-items: center;
         height: 3.125rem;
-        border-bottom: 1px solid var(--primary-color);
+        border-bottom: 1px solid var(--white);
 
         & > .breadcrumb {
           &:not(:last-child) {
@@ -650,10 +641,7 @@
       }
 
       & > .issues {
-
-
         & > div {
-
           & > .menu {
             position: relative;
 
@@ -683,10 +671,9 @@
                 }
 
                 &:hover {
-                  background-color: rgba(79, 79, 79, 0.15);
+                  background-color: rgba(79, 79, 79, 0.6);
                   border-radius: 5px;
                 }
-
               }
             }
           }
@@ -843,9 +830,8 @@
         padding: .25rem;
 
         &:hover {
-          background-color: var(--secondary-color-hover-darker);
+          background-color: var(--secondary-color-hover-lighter);
         }
-
       }
     }
 
@@ -916,14 +902,13 @@
                       &:hover {
                         background-color: var(--error-color-hover-lighter);
                       }
-
                     }
 
                     &.edit {
-                      background-color: var(--secondary-color);
+                      background-color: var(--tertiary-color);
 
                       &:hover {
-                        background-color: var(--secondary-color-hover-darker);
+                        background-color: var(--secondary-color-hover-lighter);
                       }
                     }
 
@@ -941,8 +926,6 @@
                       height: 1.125rem;
                     }
                   }
-
-
                 }
 
                 & > .date > time {
@@ -1050,12 +1033,12 @@
   }
 
   .modal-card-body {
-    background-color: var(--white);
+    background-color: var(--bg-color);
     color: var(--text-color);
 
     & > .field > .control {
       & > .input {
-        background-color: var(--white);
+        background-color: var(--bg-color);
         border: none;
         box-shadow: none;
         color: var(--text-color);
@@ -1074,7 +1057,7 @@
       }
 
       & > .textarea {
-        background-color: var(--white);
+        background-color: var(--bg-color);
         border: none;
         box-shadow: none;
         color: var(--text-color);
@@ -1126,17 +1109,17 @@
                 margin-left: .25rem;
 
                 &.open-issue-icon {
-                  color: var(--secondary-color);
+                  color: var(--tertiary-color);
                 }
 
                 &.inprogress-issue-icon {
                   & > svg {
                     & > circle {
-                      stroke: var(--secondary-color);
+                      stroke: var(--tertiary-color);
                     }
 
                     & > path {
-                      fill: var(--secondary-color);
+                      fill: var(--tertiary-color);
                     }
                   }
                 }
@@ -1153,7 +1136,7 @@
           margin-top: 2.5rem;
 
           & > .dropdown-content {
-            background-color: var(--secondary-color);
+            background-color: var(--primary-color);
             border: 1px solid var(--text-color);
             box-shadow: 0 0.5em 1em -0.125em rgba(var(--tertiary-color-rgb), 0.3), 0 0px 0 1px rgba(var(--tertiary-color-rgb), 0.02);
 
@@ -1216,12 +1199,24 @@
         display: flex;
       }
 
-      & > .dropdown {
-        margin-bottom: 1rem;
-      }
+      & > .double-field {
+        display: flex;
+        justify-content: space-around;
 
-      & > .dropdown.priority-dropdown {
-        margin-right: 1rem;
+        & > .dropdown {
+          margin-bottom: 1rem;
+
+
+          & > .dropdown-menu {
+            position: fixed;
+            z-index: 60;
+            left: unset;
+            top: unset;
+            margin-top: 2.5rem;
+            border: 1px solid var(--text-color);
+            border-radius: 5pxa;
+          }
+        }
       }
 
       & > .field.is-grouped {
@@ -1255,20 +1250,31 @@
     color: var(--error-color);
     width: 1.5rem;
     height: 1.5rem;
+
+    svg {
+      & > path {
+        fill: var(--error-color);
+      }
+    }
   }
 
   .completed-issue-icon {
     color: var(--success-color);
     width: 1.5rem;
     height: 1.5rem;
+
+    svg {
+      & > path {
+        fill: var(--success-color);
+      }
+    }
   }
 
   .open-issue-icon {
-    color: var(--primary-color);
+    color: var(--tertiary-color);
     width: 1.5rem;
     height: 1.5rem;
   }
-
 
   .inprogress-issue-icon {
     display: flex;
@@ -1276,8 +1282,17 @@
     align-items: center;
     width: 1.5rem;
     height: 1.5rem;
-  }
 
+    svg {
+      & > circle {
+        stroke: var(--tertiary-color);
+      }
+
+      & > path {
+        fill: var(--tertiary-color);
+      }
+    }
+  }
 
   .tooltip {
     position: relative;
