@@ -87,8 +87,10 @@ const resetForm = () => {
 
 
 const handleSetPriority = (priority: string) => {
-  if (SelectedPriority.value === priority) SelectedPriority.value = "Priority";
-  else {
+  if (SelectedPriority.value.toLowerCase() === priority.toLowerCase()) {
+    priorityIcon.value = "fa-solid fa-chevron-down";
+    SelectedPriority.value = "Priority";
+  } else {
     data.priority = priority.toUpperCase();
     if (priority === "urgent") priorityIcon.value = "fa-solid fa-circle-exclamation";
     else if (priority === "high") priorityIcon.value = "fa-solid fa-angles-up";
@@ -97,17 +99,21 @@ const handleSetPriority = (priority: string) => {
     else if (priority === "minor") priorityIcon.value = "fa-solid fa-chevron-down";
     SelectedPriority.value = priority.charAt(0).toUpperCase() + priority.slice(1);
   }
+  dropdownOpen.value = false;
 };
 
 const handleSetState = (state: string) => {
-  if (SelectedState.value === state) SelectedState.value = "State";
-  else {
+  if (SelectedState.value.toLowerCase() === state) {
+    stateIcon.value = "fa-solid fa-chevron-down";
+    SelectedState.value = "State";
+  } else {
     data.status = state;
     if (state === "open") stateIcon.value = "fa-regular fa-circle";
     else if (state === "completed") stateIcon.value = "fa-solid fa-circle";
     else if (state === "canceled") stateIcon.value = "fa-solid fa-circle-xmark";
     SelectedState.value = state.charAt(0).toUpperCase() + state.slice(1);
   }
+  stateDropdownOpen.value = false;
 };
 
 const handleSetProject = (id: number, name: string) => {
@@ -118,6 +124,7 @@ const handleSetProject = (id: number, name: string) => {
     data.project = id;
     SelectedProject.value = name;
   }
+  projectDropdownOpen.value = false;
 };
 
 const handleSubmit = async () => {
