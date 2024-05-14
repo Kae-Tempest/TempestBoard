@@ -99,7 +99,8 @@ watch(() => isRefresh.value, async (newVal) => {
       </div>
       <div class="issues">
         <div>
-          <IssueList :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" @isCreated="handleRefresh()"/>
+          <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
+          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects"/>
         </div>
       </div>
     </div>
