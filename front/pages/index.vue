@@ -71,7 +71,7 @@ watch(() => isRefresh.value, async (newVal) => {
             </li>
             <li :class="{ 'is-active': viewMode === 'details' }" @click="viewMode = 'details'">
               <a>
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="#457b9d" xmlns="http://www.w3.org/2000/svg">
+                <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="2.5" cy="4.5" r="1.5"/>
                   <circle cx="2.5" cy="8.5" r="1.5"/>
                   <circle cx="2.5" cy="12.5" r="1.5"/>
@@ -99,7 +99,8 @@ watch(() => isRefresh.value, async (newVal) => {
       </div>
       <div class="issues">
         <div>
-          <IssueList :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" @isCreated="handleRefresh()"/>
+          <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
+          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects"/>
         </div>
       </div>
     </div>

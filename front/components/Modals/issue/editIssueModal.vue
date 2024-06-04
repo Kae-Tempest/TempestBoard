@@ -75,7 +75,7 @@ const handleSetPriority = (priority: string) => {
     else if (priority.toLowerCase() === "neutral") priorityIcon.value = "fa-solid fa-pause";
     else if (priority.toLowerCase() === "low") priorityIcon.value = "fa-solid fa-minus";
     else if (priority.toLowerCase() === "minor") priorityIcon.value = "fa-solid fa-chevron-down";
-    SelectedPriority.value = priority.charAt(0).toUpperCase() + priority.slice(1);
+    SelectedPriority.value = priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
   dropdownOpen.value = false;
 };
@@ -98,22 +98,20 @@ const handleSetState = (state: string) => {
 
 <template>
 
-  <div :class="{'is-active': showModal}" class="modal edit-modal">
+  <div :class="{'is-active': showModal}" class="modal edit-issue-modal">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box">
         <header class="box-header">
-          <h3 class="modal-card-title">Create Issue</h3>
+          <h3 class="modal-card-title">Edit Issue</h3>
           <button aria-label="close" class="delete" @click="showModal=false"></button>
         </header>
         <div class="field">
-          <label class="label">Title</label>
           <div class="control">
             <input v-model="data.title" class="input" placeholder="Title..." type="text">
           </div>
         </div>
         <div class="field">
-          <label class="label">Description</label>
           <div class="control">
             <textarea v-model="data.description" class="textarea" placeholder="Description.."></textarea>
           </div>
@@ -185,7 +183,7 @@ const handleSetState = (state: string) => {
                   </span>
               </button>
             </div>
-            <div id="dropdown-project" class="dropdown-menu" role="menu">
+            <div id="dropdown-state" class="dropdown-menu state" role="menu">
               <div class="dropdown-content">
                 <div class="dropdown-item dropdown-icon" @click="handleSetState('open')">
                   Open

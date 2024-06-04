@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type {Issue, Project} from "~/types/global";
-import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
+import IssueDetails from "~/components/Issue/IssueDetails.vue";
 
 interface Props {
   issues: Issue[];
@@ -13,14 +13,18 @@ const props = defineProps<Props>();
 
 const IssueModel = defineModel()
 const IssuePos = defineModel('pos')
+const IssueAssignedClicked = ref<boolean>(false)
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
-  if (IssueModel.value === issue.id) {
-    IssueModel.value = null
-  } else {
-    IssueModel.value = issue.id
-    IssuePos.value = {x: e.offsetX, y: e.clientY}
+  if(!IssueAssignedClicked.value) {
+    if (IssueModel.value === issue.id) {
+      IssueModel.value = null
+    } else {
+      IssueModel.value = issue.id
+      IssuePos.value = {x: e.offsetX, y: e.clientY}
+    }
   }
+  IssueAssignedClicked.value = false
 }
 
 const startDrag = (e: DragEvent, item: Issue) => {
@@ -37,36 +41,18 @@ const onDrop = async (e: DragEvent, state: string) => {
   if (!item) return;
   item.status = state;
   await useCustomFetch(`/issues/${item.id}/`, {
+    credentials: 'include',
     method: 'PATCH',
     body: JSON.stringify({status: state}),
   });
 }
-
 </script>
 
 <template>
-  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
+  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent class="dnd-issue-wrapper">
     <div v-for="issue in issues.filter(i => i.status === state).sort((a,b) => a.ticket_id - b.ticket_id)" :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
-         @click="handleMenu(issue, $event)">
-      <div class="issue-list">
-        <div v-for="project in projects.filter(p => p.id === issue.project)">
-          <div class="issue-info">
-            <div class="issue-content">
-              <div class="priority">
-                <PriorityIcon :priority="issue.priority"/>
-              </div>
-              <div class="tag-number">
-                {{ project.name.substring(0, 3).toUpperCase() }}-{{ issue.ticket_id }}
-              </div>
-              <div class="title-issue">{{ issue.title }}</div>
-            </div>
-            <div class="project-content">
-              <div class="tag">{{ project.name }}</div>
-              <div>{{ new Date(issue.created_at).toLocaleString('en-GB', {day: 'numeric', month: "short"}) }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+         @click="handleMenu(issue, $event)" class="dnd-issue-list">
+      <IssueDetails :projects="projects" :issue="issue" v-model="IssueAssignedClicked"/>
     </div>
     <div v-if="issues.filter(i => i.status === state).length === 0" class="issue-list">
       <p class="placeholder-issue-list">drop here...</p>

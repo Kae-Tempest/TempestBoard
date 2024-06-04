@@ -38,6 +38,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ["Content-Type", "x-csrftoken"]
 
 # Application definition
 
