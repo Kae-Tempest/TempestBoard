@@ -101,7 +101,7 @@ const handleEdit = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box">
+      <div class="box edit-box">
         <h3>Update Project</h3>
         <div class="field">
           <label class="label">Name</label>
