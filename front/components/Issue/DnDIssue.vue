@@ -13,14 +13,18 @@ const props = defineProps<Props>();
 
 const IssueModel = defineModel()
 const IssuePos = defineModel('pos')
+const IssueAssignedClicked = ref<boolean>(false)
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
-  if (IssueModel.value === issue.id) {
-    IssueModel.value = null
-  } else {
-    IssueModel.value = issue.id
-    IssuePos.value = {x: e.offsetX, y: e.clientY}
+  if(!IssueAssignedClicked.value) {
+    if (IssueModel.value === issue.id) {
+      IssueModel.value = null
+    } else {
+      IssueModel.value = issue.id
+      IssuePos.value = {x: e.offsetX, y: e.clientY}
+    }
   }
+  IssueAssignedClicked.value = false
 }
 
 const startDrag = (e: DragEvent, item: Issue) => {
@@ -37,6 +41,7 @@ const onDrop = async (e: DragEvent, state: string) => {
   if (!item) return;
   item.status = state;
   await useCustomFetch(`/issues/${item.id}/`, {
+    credentials: 'include',
     method: 'PATCH',
     body: JSON.stringify({status: state}),
   });
@@ -44,10 +49,10 @@ const onDrop = async (e: DragEvent, state: string) => {
 </script>
 
 <template>
-  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
+  <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent class="dnd-issue-wrapper">
     <div v-for="issue in issues.filter(i => i.status === state).sort((a,b) => a.ticket_id - b.ticket_id)" :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
-         @click="handleMenu(issue, $event)">
-      <IssueDetails :projects="projects" :issue="issue"/>
+         @click="handleMenu(issue, $event)" class="dnd-issue-list">
+      <IssueDetails :projects="projects" :issue="issue" v-model="IssueAssignedClicked"/>
     </div>
     <div v-if="issues.filter(i => i.status === state).length === 0" class="issue-list">
       <p class="placeholder-issue-list">drop here...</p>

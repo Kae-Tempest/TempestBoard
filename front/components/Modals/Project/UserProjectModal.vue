@@ -50,7 +50,6 @@ const handleUpdate = async () => {
     method: 'POST',
     body: JSON.stringify(data)
   })
-  console.log(res)
   if (res.error.value === null) {
     showModal.value = false
     resetForm()
@@ -63,7 +62,7 @@ const handleUpdate = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box">
+      <div class="box user-box">
         <h3>Add User</h3>
         <div class="field">
           <div class="select is-multiple">
@@ -75,7 +74,7 @@ const handleUpdate = async () => {
         <div class="field field-btn">
           <div class="control">
             <button class="button btn-danger" @click="showModal=false; resetForm()" type="button">Cancel</button>
-            <button class="button btn-create" type="submit" @click="handleUpdate">Create</button>
+            <button class="button btn-create" type="submit" @click="handleUpdate">Add</button>
           </div>
         </div>
       </div>
