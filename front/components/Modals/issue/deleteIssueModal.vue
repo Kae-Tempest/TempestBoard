@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="{'is-active': showModal}" class="modal">
+  <div :class="{'is-active': showModal}" class="modal del-issue">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box del-box">

@@ -28,9 +28,9 @@ watch(() => showModal.value, (newVal) => {
 
 <template>
   <IssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-  <div v-for="state in stateArray" :key="state">
+  <div v-for="state in stateArray" :key="state" class="wrapper-issue-list">
     <div class="issue-header">
-      <div>
+      <div class="issue-state">
         <IssueIcon :state="state"/>
         {{ state.toUpperCase() }}
       </div>

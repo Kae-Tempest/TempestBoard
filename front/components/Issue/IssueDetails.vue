@@ -10,16 +10,38 @@ interface Props {
 
 const props = defineProps<Props>();
 const user = ref<User | null>(null);
+const IssueAssignedClicked = defineModel()
+const IssueAssignedDropDown = ref<boolean>(false)
+const users = ref<User[] | null>([]);
 onMounted(async () => {
   const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned}/`);
   user.value = data.value;
+  const {data: userList } = await useCustomFetch<User[]>(`/users/`)
+  users.value = userList.value
 });
+
+const UpdateAssignedUser = async (u: number) => {
+  const res = await useCustomFetch(`/issues/${props.issue.id}/`, {
+    method: 'PATCH',
+    body: {
+      "assigned" : u
+    }
+  })
+  if (res.error.value) {
+    console.log(res.error, 'error')
+  }
+  if (!res.error.value) {
+    const {data} = await useCustomFetch<User>(`/users/${u}/`);
+    user.value = data.value;
+  }
+  IssueAssignedDropDown.value = false
+}
 
 </script>
 
 <template>
   <div class="issue-list">
-    <div v-for="project in projects.filter(p => p.id === issue.project)">
+    <div v-for="project in projects.filter(p => p.id === issue.project)" class="issue-list-item">
       <div class="issue-info">
         <div class="issue-content">
           <div class="priority">
@@ -30,9 +52,23 @@ onMounted(async () => {
           </div>
           <div class="title-issue">{{ issue.title }}</div>
         </div>
-        <div>
+        <div class="other-info">
           <div class="user-tag">
-            {{ user?.username }}
+            <div class="dropdown" :class="{'is-active': IssueAssignedDropDown}">
+              <div class="dropdown-trigger">
+                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <span @click="IssueAssignedClicked = true; IssueAssignedDropDown = !IssueAssignedDropDown" class="tag">{{ user?.username }}</span> <!-- @click open dropdown -->
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <div class="users-list" v-for="user in project.users.filter(u => u != issue.assigned)">
+                    <span v-if="project.users.length == 0">Any User..</span>
+                    <div @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item"> {{ users?.find(u => u.id === user)?.username }} </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="project-content">
             <div class="tag">{{ project.name }}</div>

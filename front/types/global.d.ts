@@ -16,6 +16,7 @@ export type Project = {
     description: string;
     thumbnail: string;
     status: string;
+    users: number[]
     created_at: Date;
     updated_at: Date;
 }
