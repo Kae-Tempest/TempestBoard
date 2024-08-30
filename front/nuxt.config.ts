@@ -7,7 +7,6 @@ export default defineNuxtConfig({
         '@fortawesome/fontawesome-svg-core/styles.css',
         'assets/bulma.css',
         'assets/app.scss',
-        'assets/dark.scss',
     ],
     build: {
         transpile: ['@fortawesome/vue-fontawesome']

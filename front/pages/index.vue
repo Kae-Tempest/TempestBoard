@@ -57,7 +57,7 @@ watch(() => isRefresh.value, async (newVal) => {
             </li>
           </ul>
         </nav>
-        <div class="tabs is-toggle is-small">
+        <div class="tabs is-small">
           <ul>
             <li :class="{ 'is-active': viewMode === 'list' }" @click="viewMode = 'list'">
               <a>
@@ -83,7 +83,7 @@ watch(() => isRefresh.value, async (newVal) => {
         </div>
       </div>
       <div class="typeview-tabs">
-        <div class="tabs is-toggle">
+        <div class="tabs">
           <ul>
             <li :class="{ 'is-active': typeView === 'all' }" @click="typeView = 'all'; Title = 'All'">
               <a>All</a>
