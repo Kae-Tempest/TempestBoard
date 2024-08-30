@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
 
-@media (prefers-color-scheme: light) {
+//@media (prefers-color-scheme: light) {
 :root {
   --blue-50: #eff6ff;
   --blue-200: #bfdbfe;
@@ -545,75 +545,40 @@ body {
         }
       }
 
-      & > .tabs.is-toggle {
-        border: 1.5px solid var(--blue-600);
-        border-radius: 4px;
+      & > .tabs {
         margin-right: .5rem;
-
         & a {
           border: none;
-          border-left: 1px solid var(--blue-800);
-          border-right: 1px solid var(--blue-800);
-          color: var(--blue-800);
-          fill: var(--blue-800);
-
+          color: var(--blue-200);
+          fill: var(--blue-200);
           & > svg {
             width: 16px;
             height: 16px;
           }
         }
-
         & > ul {
           margin: 0;
-          background-color: var(--blue-200);
-
+          border: none;
           & > li {
-            &:is(:first-child) {
-              &.is-active, & > a {
-                border-left: none;
-                border-radius: 2px 0 0 2px;
-              }
-
-              &.is-active > a {
-                border-left: none;
-                border-radius: 2px 0 0 2px;
-              }
+            & > a {
+              padding: .375rem;
             }
-
-            &:is(:last-child) {
-              &.is-active, & > a {
-                border-right: none;
-                border-radius: 2px 0 0 2px;
-              }
-            }
-
             &.is-active {
-              border-radius: 2px 0 0 2px;
-
               & > a {
-                background-color: var(--blue-500);
-                color: var(--blue-200);
-                border: none;
-                border-left: 1px solid var(--blue-500);
-                border-right: 1px solid var(--blue-500);
-
+                color: var(--blue-600);
                 & > svg {
-                  fill: var(--blue-200);
+                  fill: var(--blue-600);
                 }
-
                 & > .tabs-icon {
-                  color: var(--blue-200);
+                  color: var(--blue-600);
                 }
               }
             }
-
             &:hover {
               & > a {
-                background-color: var(--blue-600);
-                color: var(--blue-200);
-
+                color: var(--blue-600);
                 & > svg {
-                  fill: var(--blue-200);
+                  fill: var(--blue-600);
                 }
               }
             }
@@ -623,59 +588,21 @@ body {
     }
 
     & > .typeview-tabs {
-      & > .tabs.is-toggle {
+      & > .tabs {
         width: fit-content;
 
         & a {
           border: none;
-          border-left: 1px solid var(--blue-500);
-          border-right: 1px solid var(--blue-500);
-          color: var(--neutral-950);
         }
 
         & > ul {
-          border: 1.5px solid var(--blue-500);
-          border-radius: 4px;
-          margin: .5rem .5rem;
+          margin: .375rem .5rem;
+          border: none;
 
           & > li {
-            background-color: var(--blue-200);;
-
-            &:is(:first-child) {
-              &.is-active, & > a {
-                border-left: none;
-                border-radius: 2px 0 0 2px;
-              }
-
-              &.is-active > a {
-                border-left: none;
-                border-radius: 2px 0 0 2px;
-              }
-
-            }
-
-            &:is(:last-child) {
-              &.is-active, & > a {
-                border-right: none;
-                border-radius: 2px 0 0 2px;
-              }
-            }
-
-            &.is-active > a {
-              color: var(--blue-50);
-              background-color: var(--blue-600);
-            }
-
-            &:is(:last-child) {
-              &.is-active, & > a {
-                border-right: none;
-              }
-            }
-
             &:hover {
               & > a {
-                background-color: var(--blue-600);
-                color: var(--blue-50);
+                color: var(--blue-600);
               }
             }
           }
@@ -1622,4 +1549,4 @@ body {
   opacity: 1;
 }
 
-}
+//}
