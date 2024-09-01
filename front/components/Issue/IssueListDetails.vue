@@ -4,8 +4,8 @@ import type {Issue, Project} from "~/types/global";
 import {ref, watch} from 'vue'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import IssueIcon from "~/components/Icon/IssueIcon.vue";
-import IssueModal from "~/components/Modals/issue/IssueModal.vue";
 import DnDIssue from "~/components/Issue/DnDIssue.vue";
+import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 
 interface Props {
   issueArray: Issue[];
@@ -27,7 +27,7 @@ watch(() => showModal.value, (newVal) => {
 </script>
 
 <template>
-  <IssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
+  <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
   <div v-for="state in stateArray" :key="state" class="wrapper-issue-list">
     <div class="issue-header">
       <div class="issue-state">
