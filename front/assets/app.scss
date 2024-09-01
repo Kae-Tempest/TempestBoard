@@ -11,6 +11,7 @@
   --blue-800: #1e40af;
   --blue-950: #172554;
   --sky-700: #0369a1;
+  --broken-white: #fcfcfc;
   --neutral-950: #0a0a0a;
   --neutral-950-rgb: 10, 10, 10;
   --blue-200-rgb: 191, 219, 254;
@@ -35,12 +36,12 @@
 
 html {
   overflow-y: auto;
-  background-color: var(--blue-50);
+  background-color: var(--broken-white);
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--blue-50);
+  background-color: var(--broken-white);
   color: var(--neutral-950);
   height: 100%;
   margin: 0;
@@ -52,7 +53,7 @@ body {
   position: fixed;
   width: 0;
   height: 100vh;
-  background-color: var(--blue-50);
+  background-color: var(--broken-white);
   border-right: solid 2px var(--blue-600);
   @media (min-width: 1023px) {
     width: 16rem;
@@ -596,7 +597,7 @@ body {
         }
 
         & > ul {
-          margin: .375rem .5rem;
+          margin: 0;
           border: none;
 
           & > li {
@@ -623,7 +624,7 @@ body {
             padding: .4rem .6rem;
             pointer-events: none;
             width: fit-content;
-            background-color: var(--blue-50);
+            background-color: var(--broken-white);
             color: var(--neutral-950);
             border: var(--blue-600) solid 1px;
             border-radius: 10px;
@@ -1106,389 +1107,6 @@ body {
   }
 }
 
-.modal-background {
-  background-color: rgba(10, 10, 10, 0.86);
-}
-
-.modal-card {
-  border: 1px solid var(--blue-800);
-  border-radius: .5rem;
-}
-
-.modal-card-head, .modal-card-foot {
-  background-color: var(--blue-50);
-}
-
-.modal-card-head {
-  padding-top: 1.5rem;
-
-  .modal-card-title {
-    color: var(--neutral-950);
-    font-weight: bold;
-    margin: 0;
-  }
-}
-
-.modal-card-body {
-  background-color: var(--blue-50);
-  color: var(--neutral-950);
-  padding-top: 0;
-
-  & > .field > .control {
-    & > .input {
-      background-color: var(--blue-50);
-      border: none;
-      color: var(--neutral-950);
-      cursor: pointer;
-      margin-bottom: 1rem;
-      box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(1px + 0px) rgb(209 213 219 / 1), 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 #0000;
-
-      &::placeholder {
-        color: var(--neutral-950);
-        opacity: 40%;
-      }
-
-      &:focus {
-        outline: 2px transparent;
-        box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(2px + 0px) var(--blue-600), inset 0 0 0 calc(2px + 0px) var(--blue-600), 0 0 #0000;
-      }
-    }
-
-    & > .textarea {
-      background-color: var(--blue-50);
-      border: none;
-      box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(1px + 0px) rgb(209 213 219 / 1), 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 #0000;
-      color: var(--neutral-950);
-      height: 5rem;
-      cursor: pointer;
-
-      &::placeholder {
-        color: var(--neutral-950);
-        opacity: 40%;
-      }
-
-      &:focus {
-        outline: 2px transparent;
-        box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(2px + 0px) var(--blue-600), inset 0 0 0 calc(2px + 0px) var(--blue-600), 0 0 #0000;
-      }
-    }
-
-    & > div.count {
-      margin-top: .25rem;
-      text-align: end;
-    }
-
-    .dropdown {
-      position: relative;
-      margin: 0 .25rem;
-
-      .priority {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      & > .dropdown-trigger {
-        & > button {
-          background-color: var(--blue-500);
-          border: 1px solid var(--blue-800);
-          color: var(--blue-50);
-          cursor: pointer;
-
-          &:hover {
-            background-color: rgba(var(--blue-800-rgb), 0.8);
-          }
-
-          & .dropdown-icon {
-            display: flex;
-
-            & > div, & > span {
-              margin-left: .25rem;
-
-              &.open-issue-icon {
-                color: var(--blue-200);
-              }
-
-              &.inprogress-issue-icon {
-                & > svg {
-                  & > circle {
-                    stroke: var(--blue-200);
-                  }
-
-                  & > path {
-                    fill: var(--blue-200);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
-      & > .dropdown-menu {
-        position: fixed;
-        z-index: 60;
-        left: unset;
-        top: unset;
-        margin-top: 2.5rem;
-
-        & > .dropdown-content {
-          background-color: var(--blue-50);
-          border: solid 1px var(--blue-800);
-          box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(0px + 0px) var(--blue-800), inset 0 0 0 calc(0px + 0px) var(--blue-800), 3px 3px 10px var(--blue-800);
-
-          & > .dropdown-item {
-            color: var(--neutral-950);
-            cursor: pointer;
-
-            &:hover {
-              background-color: var(--blue-200);
-            }
-          }
-
-          & .dropdown-item.dropdown-icon {
-            width: 100%;
-            display: flex;
-
-            & > div {
-              margin-left: .25rem;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.modal-card-foot {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 0;
-  padding-bottom: 1.5rem;
-
-  & > button.button.btn-success {
-    background-color: var(--green-400);
-    color: var(--blue-50);
-    border-radius: .25rem;
-    margin: .5rem;
-    border: none;
-
-    &:hover {
-      background-color: var(--green-500);
-    }
-  }
-
-  & > button.button.btn-error {
-    background-color: var(--red-500);
-    color: var(--blue-50);
-    border-radius: .25rem;
-    margin: .5rem;
-    border: none;
-
-    &:hover {
-      background-color: var(--red-600);
-    }
-  }
-}
-
-.modal.edit-issue-modal {
-  .modal-content {
-    & > .box {
-      background-color: var(--blue-50);
-      color: var(--neutral-950);
-
-      & > .box-header {
-        display: flex;
-
-        & > h3 {
-          color: var(--neutral-950);
-        }
-      }
-
-      & > .field > .control {
-        & > .input {
-          background-color: var(--blue-50);
-          border: none;
-          color: var(--neutral-950);
-          cursor: pointer;
-          margin-bottom: 1rem;
-          box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(1px + 0px) rgb(209 213 219 / 1), 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 #0000;
-
-          &::placeholder {
-            color: var(--neutral-950);
-            opacity: 40%;
-          }
-
-          &:focus {
-            outline: 2px transparent;
-            box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(2px + 0px) var(--blue-600), inset 0 0 0 calc(2px + 0px) var(--blue-600), 0 0 #0000;
-          }
-        }
-
-        & > .textarea {
-          background-color: var(--blue-50);
-          border: none;
-          box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(1px + 0px) rgb(209 213 219 / 1), 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 #0000;
-          color: var(--neutral-950);
-          height: 5rem;
-          cursor: pointer;
-
-          &::placeholder {
-            color: var(--neutral-950);
-            opacity: 40%;
-          }
-
-          &:focus {
-            outline: 2px transparent;
-            box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(2px + 0px) var(--blue-600), inset 0 0 0 calc(2px + 0px) var(--blue-600), 0 0 #0000;
-          }
-        }
-      }
-
-      & > .double-field {
-        display: flex;
-        justify-content: center;
-
-        & > .dropdown {
-          margin: 0 2rem 1rem 2rem;
-
-          & > .dropdown-trigger {
-            & > button {
-              background-color: var(--blue-500);
-              border: 1px solid var(--blue-800);
-              color: var(--blue-50);
-              cursor: pointer;
-
-              &:hover {
-                background-color: rgba(var(--blue-800-rgb), 0.8);
-              }
-
-              & .dropdown-icon {
-                display: flex;
-
-                & > div, & > span {
-                  margin-left: .25rem;
-
-                  &.open-issue-icon {
-                    color: var(--blue-200);
-                  }
-
-                  &.inprogress-issue-icon {
-                    & > svg {
-                      & > circle {
-                        stroke: var(--blue-200);
-                      }
-
-                      & > path {
-                        fill: var(--blue-200);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          & > .dropdown-menu {
-            position: fixed;
-            z-index: 60;
-            left: unset;
-            top: unset;
-            margin-top: 2.5rem;
-
-            & > .dropdown-content {
-              background-color: var(--blue-50);
-              border: solid 1px var(--blue-800);
-              box-shadow: inset 0 0 0 0 #fff, inset 0 0 0 calc(0px + 0px) var(--blue-800), inset 0 0 0 calc(0px + 0px) var(--blue-800), 3px 3px 10px var(--blue-800);
-
-              & > .dropdown-item {
-                color: var(--neutral-950);
-                cursor: pointer;
-
-                &:hover {
-                  background-color: var(--blue-200);
-                }
-              }
-
-              & .dropdown-item.dropdown-icon {
-                width: 100%;
-                display: flex;
-
-                & > div {
-                  margin-left: .25rem;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      & > .field.is-grouped {
-        display: flex;
-        justify-content: space-between;
-
-        & > .control {
-          & > .btn-cancel {
-            background-color: var(--red-500);
-            color: var(--neutral-950);
-
-            &:hover {
-              background-color: var(--red-600);
-            }
-          }
-
-          & > .btn-edit {
-            background-color: var(--green-400);
-            color: var(--neutral-950);
-
-            &:hover {
-              background-color: var(--green-500);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-.modal.del-issue {
-  .del-box{
-    background-color: var(--blue-50);
-    border: solid 2px var(--blue-800);
-
-    & > h3 {
-      color: var(--neutral-950);
-      text-align: center;
-    }
-
-    & > .btn-action {
-      display: flex;
-      justify-content: space-between;
-
-      & > .del {
-        background-color: var(--red-500);
-        border: solid 1px var(--blue-800);
-        border-radius: 5px;
-        color: var(--blue-50);
-        padding: .25rem .5rem;
-
-        &:hover {
-          background-color: var(--red-600);
-        }
-      }
-
-      & > .cancel {
-        background-color: var(--blue-300);
-        border: solid 1px var(--blue-800);
-        border-radius: 5px;
-        color: var(--neutral-950);
-        padding: .25rem .5rem;
-
-        &:hover {
-          background-color: var(--blue-400);
-        }
-      }
-    }
-  }
-}
 .canceled-issue-icon {
   color: var(--red-500);
   width: 1.5rem;
@@ -1525,6 +1143,10 @@ body {
   }
 }
 
+.button.is-danger {
+  background-color: var(--red-500);
+}
+
 .tooltip {
   position: relative;
 }
@@ -1547,6 +1169,48 @@ body {
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.modal {
+ & > .modal-content > .box {
+   .field > .control {
+     input, textarea {
+       box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+       background-color: var(--broken-white);
+       margin: .5rem 0;
+     }
+     .count {
+       text-align: right;
+     }
+
+     .select-group {
+       .select {
+        margin: 0 .5rem;
+         &:nth-child(1){
+           margin-left: 0;
+         }
+       }
+
+     }
+   }
+   .button {
+     color: white;
+     box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+     padding: .25rem .5rem;
+     margin-right: .75rem;
+     margin-top: .375rem
+   }
+
+ }
+}
+
+.modal.del-issue {
+  .modal-content > .box.del-box {
+    background-color: var(--broken-white);
+    .button.is-cancel {
+      color: black;
+    }
+  }
 }
 
 //}

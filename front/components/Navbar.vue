@@ -2,8 +2,8 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project, User} from "~/types/global";
-import IssueModal from "~/components/Modals/issue/IssueModal.vue";
 import MenuProject from "~/components/Menu/MenuProject.vue";
+import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 
 interface Props {
   user: User
@@ -40,7 +40,7 @@ const logout = async () => {
 </script>
 
 <template>
-  <IssueModal :projects="projects" v-model:modal="isShowModal"/>
+  <CreateIssueModal :projects="projects" v-model:modal="isShowModal"/>
   <div id="navbar">
     <div>
       <div>
