@@ -108,10 +108,10 @@ const handleEdit = async () => {
           </div>
         </div>
 
-        <button class="button is-danger" @click="showModal=false; resetForm()">
+        <button class="button" @click="showModal=false; resetForm()">
           Cancel
         </button>
-        <button class="button is-success" @click="handleEdit()">
+        <button class="button is-dark" @click="handleEdit()">
           Submit
         </button>
       </div>
