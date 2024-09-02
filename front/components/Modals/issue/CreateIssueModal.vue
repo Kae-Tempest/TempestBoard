@@ -146,11 +146,11 @@ const handleSubmit = async () => {
         </div>
 
         <!--       Btn action       -->
-        <button class="button is-danger" @click="showModal=false; resetForm()">
+        <button class="button" @click="showModal=false; resetForm()">
           Cancel
         </button>
         <button
-            class="button is-success" @click="handleSubmit()">
+            class="button is-dark" @click="handleSubmit()">
           Create
         </button>
       </div>
