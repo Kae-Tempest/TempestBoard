@@ -46,7 +46,6 @@ onMounted(() => {
     <div class="modal-content">
       <div class="box del-box">
         <h4>Are you sure you want to delete the issue {{ project?.name.substring(0, 3).toUpperCase() }}-{{ issue?.ticket_id }}?</h4>
-        <!--       Btn action       -->
         <button class="button" @click="showModal = false"> <!-- blanc + border gris -->
           Cancel
         </button>
