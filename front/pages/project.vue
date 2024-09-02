@@ -73,25 +73,28 @@ const handleOpenUserModal = (project: Project) => {
           <div class="card">
             <div class="card-content">
               <div class="media">
-                <div class="media-left">
-                  <img v-if="project?.thumbnail" :src="project.thumbnail" alt="Placeholder image"/>
-                </div>
-                <div class="media-content">
-                  <h2>{{ project.name }}</h2>
-                </div>
+                <img v-if="project?.thumbnail" :src="project.thumbnail" alt="Placeholder image"/>
+                <div v-else></div>
               </div>
               <div class="content">
-                <p class="">{{ project.description }}</p>
+                <h2>{{ project.name }}</h2>
+                <p>{{ project.description }}</p>
                 <div class="content-footer">
                   <div v-if="user?.id == project.creator" class="btn-action">
-                    <button class="del" @click="handleOpenDeleteModal(project)">
-                      <font-awesome-icon icon="fa-solid fa-trash-can"/>
+                    <button class="button" @click="handleOpenDeleteModal(project)">
+                      <span class="icon is-small">
+                        <font-awesome-icon icon="fa-solid fa-trash-can"/>
+                      </span>
                     </button>
-                    <button class="edit" @click="handleOpenEditModal(project)">
-                      <font-awesome-icon icon="fa-solid fa-pen"/>
+                    <button class="button" @click="handleOpenEditModal(project)">
+                      <span class="icon is-small">
+                        <font-awesome-icon icon="fa-solid fa-pen"/>
+                      </span>
                     </button>
-                    <button class="add" @click="handleOpenUserModal(project)">
+                    <button class="button" @click="handleOpenUserModal(project)">
+                      <span class="icon is-small">
                       <font-awesome-icon icon="fa-solid fa-plus"/>
+                      </span>
                     </button>
                   </div>
                   <div class="date">
