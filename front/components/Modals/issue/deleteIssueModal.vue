@@ -47,10 +47,10 @@ onMounted(() => {
       <div class="box del-box">
         <h4>Are you sure you want to delete the issue {{ project?.name.substring(0, 3).toUpperCase() }}-{{ issue?.ticket_id }}?</h4>
         <!--       Btn action       -->
-        <button class="button is-cancel" @click="showModal = false"> <!-- blanc + border gris -->
+        <button class="button" @click="showModal = false"> <!-- blanc + border gris -->
           Cancel
         </button>
-        <button class="button is-danger" @click="showModal=false; handleDelete()">
+        <button class="button is-dark" @click="showModal=false; handleDelete()">
           Delete
         </button>
       </div>

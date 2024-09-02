@@ -88,7 +88,7 @@ body {
         }
 
         & > div {
-          background-color: var(--blue-50);
+          background-color: var(--broken-white);
           border: solid 1px var(--blue-600);
           border-radius: .25rem;
 
@@ -771,7 +771,7 @@ body {
                         margin: 0 .25rem;
                       }
                       & > .dropdown-menu > .dropdown-content {
-                        background-color: var(--blue-50);
+                        background-color: var(--broken-white);
                         color: var(--neutral-950);
                         border: 1px solid var(--blue-800);
                         border-radius: 10px;
@@ -1194,7 +1194,7 @@ body {
      }
    }
    .button {
-     color: white;
+     //color: white;
      box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
      padding: .25rem .5rem;
      margin-right: .75rem;
