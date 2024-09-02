@@ -123,10 +123,10 @@ const handleCreate = async () => {
             </label>
           </div>
         </div>
-        <div class="field field-btn">
+        <div class="field">
           <div class="control">
-            <button class="button btn-danger" @click="showModal=false; resetForm()" type="button">Cancel</button>
-            <button class="button btn-create" type="submit" @click="handleCreate">Create</button>
+            <button class="button" @click="showModal=false; resetForm()" type="button">Cancel</button>
+            <button class="button is-dark" type="submit" @click="handleCreate">Create</button>
           </div>
         </div>
       </div>

@@ -132,13 +132,12 @@ const handleEdit = async () => {
             </label>
           </div>
         </div>
-        <div class="field field-btn">
+        <div class="field">
           <div class="control">
-            <button class="button btn-danger" @click="showModal=false; resetForm()">
+            <button class="button" @click="showModal=false; resetForm()">
               Cancel
             </button>
-            <button
-                class="button btn-create" @click="handleEdit">
+            <button class="button is-dark" @click="handleEdit">
               Edit
             </button>
           </div>

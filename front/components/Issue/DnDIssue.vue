@@ -16,7 +16,7 @@ const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
-  if(!IssueAssignedClicked.value) {
+  if (!IssueAssignedClicked.value) {
     if (IssueModel.value === issue.id) {
       IssueModel.value = null
     } else {

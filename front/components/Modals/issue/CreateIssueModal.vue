@@ -96,11 +96,9 @@ const handleSubmit = async () => {
       <div class="box">
         <div class="field">
           <div class="control">
-            <!--       title       -->
             <label for="title">Issue Title</label>
             <input class="input" maxLength=100 minLength=3 placeholder="Issue Title" type="text" v-model="data.title">
             <p v-if="errors.title" class="help is-danger">{{ errors.title }}</p>
-            <!--       TextArea       -->
             <label for="textarea">Issue Content</label>
             <textarea
                 class="textarea has-fixed-size"
@@ -113,7 +111,6 @@ const handleSubmit = async () => {
             <p v-if="errors.description" class="help is-danger">{{ errors.description }}</p>
             <div class="count">{{ count != 0 ? count : 0 }}/500</div>
             <div class="select-group">
-              <!--       Select 1       -->
               <div class="select">
                 <select v-model="SelectedPriority">
                   <option disabled value="">Priority</option>
@@ -124,14 +121,12 @@ const handleSubmit = async () => {
                   <option>Minor</option>
                 </select>
               </div>
-              <!--       Select 2       -->
               <div class="select">
                 <select v-model="SelectedProject">
                   <option disabled value="">Project</option>
                   <option v-for="project in projects">{{ project.name }}</option>
                 </select>
               </div>
-              <!--       Select 3       -->
               <div class="select">
                 <select v-model="SelectedState">
                   <option disabled value="">State</option>
@@ -144,8 +139,6 @@ const handleSubmit = async () => {
             </div>
           </div>
         </div>
-
-        <!--       Btn action       -->
         <button class="button" @click="showModal=false; resetForm()">
           Cancel
         </button>

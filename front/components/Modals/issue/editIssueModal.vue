@@ -83,7 +83,6 @@ const handleEdit = async () => {
                 v-model="data.description"
             ></textarea>
             <div class="count">{{ count != 0 ? count : 0 }}/500</div>
-            <!--    select    -->
             <div class="select-group">
               <div class="select">
                 <select v-model="SelectedPriority">
@@ -107,7 +106,6 @@ const handleEdit = async () => {
             </div>
           </div>
         </div>
-
         <button class="button" @click="showModal=false; resetForm()">
           Cancel
         </button>

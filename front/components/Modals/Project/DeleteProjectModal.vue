@@ -41,10 +41,10 @@ onMounted(() => {
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box del-box">
-        <h3>Are you sure you want to delete {{ project?.name }}?</h3>
+        <h4>Are you sure you want to delete {{ project?.name }}?</h4>
         <div class="btn-action">
-          <button class="cancel" @click="showModal=false">Cancel</button>
-          <button class="del" @click="handleDelete()">Delete</button>
+          <button class="button" @click="showModal=false">Cancel</button>
+          <button class="button is-dark" @click="handleDelete()">Delete</button>
         </div>
       </div>
     </div>

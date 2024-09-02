@@ -548,36 +548,45 @@ body {
 
       & > .tabs {
         margin-right: .5rem;
+
         & a {
           border: none;
           color: var(--blue-200);
           fill: var(--blue-200);
+
           & > svg {
             width: 16px;
             height: 16px;
           }
         }
+
         & > ul {
           margin: 0;
           border: none;
+
           & > li {
             & > a {
               padding: .375rem;
             }
+
             &.is-active {
               & > a {
                 color: var(--blue-600);
+
                 & > svg {
                   fill: var(--blue-600);
                 }
+
                 & > .tabs-icon {
                   color: var(--blue-600);
                 }
               }
             }
+
             &:hover {
               & > a {
                 color: var(--blue-600);
+
                 & > svg {
                   fill: var(--blue-600);
                 }
@@ -762,6 +771,7 @@ body {
                       background-color: var(--blue-300);
                     }
                   }
+
                   & > .user-tag {
                     & > .dropdown {
                       & > .dropdown-trigger > button {
@@ -770,6 +780,7 @@ body {
                         padding: 0;
                         margin: 0 .25rem;
                       }
+
                       & > .dropdown-menu > .dropdown-content {
                         background-color: var(--broken-white);
                         color: var(--neutral-950);
@@ -782,6 +793,7 @@ body {
                             cursor: pointer;
                             padding: 0.5rem;
                             text-align: center;
+
                             &:hover {
                               background-color: rgba(79, 79, 79, 0.15);
                               border-radius: 5px;
@@ -791,6 +803,7 @@ body {
                       }
                     }
                   }
+
                   & > .project-content {
                     display: flex;
                     align-items: center;
@@ -865,100 +878,53 @@ body {
       width: 100%;
 
       & > div > .card {
-        margin: 0 1rem;
-        width: 600px;
-        height: fit-content;
-        background-color: var(--blue-50);
-        border: 2px solid var(--blue-800);
-        color: var(--neutral-950);
+        width: 350px; // petit 350 | grand 600 | moyen 500
+        height: 351px;
+        margin: .25rem 1rem;
+        border-radius: 16px;
+        box-shadow: 0 .5em 1em hsla(221, 14%, 4%, .25);
 
-        & > .card-content {
-          width: 100%;
-          height: 250px;
-          padding: .5rem;
+        .card-content {
+          padding: 0;
 
-          & > .media {
-            & > .media-content {
-              & > h2 {
-                color: var(--neutral-950);
-                text-align: center;
-              }
+          .media {
+            margin-bottom: .25rem;
+
+            img {
+              border-radius: 16px 16px 0 0;
+              width: 100%;
+              height: 206px;
             }
 
-            &:not(last-child) {
-              margin-bottom: .5rem;
-            }
-
-            & > .media-left {
-              & > img {
-                width: 3.125rem;
-                height: 3.125rem;
-                border-radius: 5px;
-              }
+            div {
+              border-radius: 16px 16px 0 0;
+              background-color: #e9e9e9;
+              width: 100%;
+              height: 206px;
             }
           }
 
-          & > .content {
-            height: 11.25rem;
+          .content {
+            margin: 0 .75rem;
 
-            & > p {
-              overflow-y: auto;
-              height: 82%;
-              margin: 0;
-            }
-
-            & > .content-footer {
+            .content-footer {
               display: flex;
               justify-content: space-between;
+              align-items: end;
 
-              & > .btn-action {
-                display: flex;
-
-                & > button {
-                  border-radius: 5px;
-                  border: 1px solid var(--blue-800);
-                  width: 2rem;
-                  height: 2rem;
-                  margin: -.5rem .25rem 1rem .25rem;
-
-                  &.del {
-                    background-color: var(--red-500);
-
-                    &:hover {
-                      background-color: var(--red-400);
-                    }
-
+              .btn-action {
+                button {
+                  &:nth-child(1) {
+                    margin-left: 0
                   }
 
-                  &.edit {
-                    background-color: var(--blue-400);
-
-                    &:hover {
-                      background-color: var(--blue-300);
-
-                    }
-                  }
-
-                  &.add {
-                    background-color: var(--green-500);
-
-                    &:hover {
-                      background-color: var(--green-400);
-                    }
-                  }
-
-                  & > svg {
-                    color: var(--neutral-950);
-                    width: 1.125rem;
-                    height: 1.125rem;
-                  }
+                  margin: 0 .25rem;
                 }
-
-
               }
 
-              & > .date > time {
-                padding: 0 .25rem;
+              .date {
+                display: flex;
+                flex-direction: column;
               }
             }
           }
@@ -995,40 +961,12 @@ body {
       }
 
       .del-box, .user-box {
-        background-color: var(--blue-50);
+        background-color: var(--broken-white);
         border: solid 2px var(--blue-800);
 
-        & > h3 {
+        & > h4, & > h3 {
           color: var(--neutral-950);
-        }
-
-        & > .btn-action {
-          display: flex;
-          justify-content: space-between;
-
-          & > .del {
-            background-color: var(--red-500);
-            border: solid 1px var(--blue-800);
-            border-radius: 5px;
-            color: var(--blue-50);
-            padding: .25rem .5rem;
-
-            &:hover {
-              background-color: var(--red-600);
-            }
-          }
-
-          & > .cancel {
-            background-color: var(--blue-300);
-            border: solid 1px var(--blue-800);
-            border-radius: 5px;
-            color: var(--neutral-950);
-            padding: .25rem .5rem;
-
-            &:hover {
-              background-color: var(--blue-400);
-            }
-          }
+          text-align: center;
         }
       }
 
@@ -1037,7 +975,8 @@ body {
 
         & > select {
           border: 1px solid var(--blue-800);
-          background-color: var(--blue-50);
+          background-color: var(--broken-white);
+          box-shadow: 0 .5em 1em hsla(221, 14%, 4%, .25);
           border-radius: 5px;
           overflow-y: auto;
           width: 100%;
@@ -1051,8 +990,7 @@ body {
       }
 
       .edit-box, .create-box {
-        background-color: var(--blue-50);
-        border: solid 2px var(--blue-800);
+        background-color: var(--broken-white);
 
         & > h3, label {
           color: var(--neutral-950);
@@ -1060,48 +998,22 @@ body {
 
         & > .field > .control {
           input, textarea {
-            background-color: var(--blue-50);
-            border: solid 2px var(--blue-800);
+            background-color: var(--broken-white);
             color: var(--neutral-950);
+            box-shadow: 0 .5em 1em hsla(221, 14%, 4%, .25);
           }
         }
 
         & > .field > .file > .file-label {
+          box-shadow: 0 .5em 1em hsla(221, 14%, 4%, .25);
+          border-radius: 6px;
+
           & > .file-cta {
-            background-color: var(--blue-50);
-            border: solid 2px var(--blue-800);
+            background-color: var(--broken-white);
             color: var(--neutral-950);
-
-            &:hover {
-              background-color: var(--blue-200);
-            }
           }
         }
 
-        & > .field.field-btn > .control {
-          & > .btn-danger {
-            background-color: var(--red-500);
-            border: solid 1px var(--blue-800);
-            border-radius: 5px;
-            color: var(--blue-50);
-            padding: .25rem .5rem;
-
-            &:hover {
-              background-color: var(--red-600);
-            }
-          }
-
-          & > .btn-create {
-            background-color: var(--green-400);
-            border-radius: 5px;
-            color: var(--neutral-950);
-            padding: .25rem .5rem;
-
-            &:hover {
-              background-color: var(--green-500);
-            }
-          }
-        }
       }
     }
   }
@@ -1143,10 +1055,6 @@ body {
   }
 }
 
-.button.is-danger {
-  background-color: var(--red-500);
-}
-
 .tooltip {
   position: relative;
 }
@@ -1172,41 +1080,44 @@ body {
 }
 
 .modal {
- & > .modal-content > .box {
-   .field > .control {
-     input, textarea {
-       box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
-       background-color: var(--broken-white);
-       margin: .5rem 0;
-     }
-     .count {
-       text-align: right;
-     }
+  & > .modal-content > .box {
+    .field > .control {
+      input, textarea {
+        box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+        background-color: var(--broken-white);
+        margin: .5rem 0;
+      }
 
-     .select-group {
-       .select {
-        margin: 0 .5rem;
-         &:nth-child(1){
-           margin-left: 0;
-         }
-       }
+      .count {
+        text-align: right;
+      }
 
-     }
-   }
-   .button {
-     //color: white;
-     box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
-     padding: .25rem .5rem;
-     margin-right: .75rem;
-     margin-top: .375rem
-   }
+      .select-group {
+        .select {
+          margin: 0 .5rem;
 
- }
+          &:nth-child(1) {
+            margin-left: 0;
+          }
+        }
+
+      }
+    }
+
+    .button {
+      box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+      padding: .5rem 1rem;
+      margin-right: .75rem;
+      margin-top: .375rem
+    }
+
+  }
 }
 
 .modal.del-issue {
   .modal-content > .box.del-box {
     background-color: var(--broken-white);
+
     .button.is-cancel {
       color: black;
     }
