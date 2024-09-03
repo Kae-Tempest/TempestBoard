@@ -45,6 +45,7 @@ const handleSubmit = async () => {
               type="email"
               name="email"
               v-model="data.email"
+              class="input"
           />
         </div>
         <div>
@@ -54,6 +55,7 @@ const handleSubmit = async () => {
               type="password"
               name="password"
               v-model="data.password"
+              class="input"
           />
           <div class="error">{{ errors.msg }}</div>
         </div>
