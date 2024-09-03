@@ -43,15 +43,16 @@ const handleSubmit = async () => {
   <div id="Auth">
     <div>
       <form @submit.prevent=handleSubmit() id="register">
-        <div className="flex flex-col">
+        <div class="flex flex-col">
           <label>Username</label>
           <input
               id="username"
               type="text"
               name="username"
               v-model="data.username"
+              class="input"
           />
-          <div className="error">{{ errors.username }}</div>
+          <div class="error">{{ errors.username }}</div>
         </div>
         <div>
           <label>Email</label>
@@ -60,8 +61,9 @@ const handleSubmit = async () => {
               type="email"
               name="email"
               v-model="data.email"
+              class="input"
           />
-          <div className="error">{{ errors.email }}</div>
+          <div class="error">{{ errors.email }}</div>
         </div>
         <div>
           <label>Password</label>
@@ -70,8 +72,9 @@ const handleSubmit = async () => {
               type="password"
               name="password"
               v-model="data.password"
+              class="input"
           />
-          <div className="error">{{ errors.password }}</div>
+          <div class="error">{{ errors.password }}</div>
         </div>
         <div>
           <label>Confirm Password</label>
@@ -80,8 +83,9 @@ const handleSubmit = async () => {
               type="password"
               name="confirm_password"
               v-model="data.confirm_password"
+              class="input"
           />
-          <div className="error">{{ errors.confirm_password }}</div>
+          <div class="error">{{ errors.confirm_password }}</div>
         </div>
         <div>
           <NuxtLink to="/login">Already registered ?</NuxtLink>
