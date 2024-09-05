@@ -772,6 +772,12 @@ body {
                             }
                           }
                         }
+                        & > .any-user {
+                          background-color: transparent;
+                          cursor: pointer;
+                          padding: 0.5rem;
+                          text-align: center;
+                        }
                       }
                     }
                   }
@@ -1108,6 +1114,7 @@ body {
     border-radius: 6px;
     box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
     background-color: var(--broken-white);
+    min-width: 285px;
     max-width: 350px;
 
     & > .header {
