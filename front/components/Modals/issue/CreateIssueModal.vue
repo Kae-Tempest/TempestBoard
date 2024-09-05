@@ -12,9 +12,6 @@ const props = defineProps<Props>()
 
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(500);
-const SelectedProject = ref("");
-const SelectedState = ref("");
-const SelectedPriority = ref("");
 const user = useUserStore().getUser();
 const {isRefresh} = useRefreshData();
 
@@ -53,7 +50,7 @@ const errors = reactive({
 
 
 watch(() => props.state, (newVal) => {
-  if (newVal) SelectedState.value = newVal
+  if (newVal) data.status = newVal
 });
 
 const resetForm = () => {
@@ -62,9 +59,6 @@ const resetForm = () => {
   data.priority = "";
   data.project = 0;
   data.status = "";
-  SelectedProject.value = "";
-  SelectedState.value = "";
-  SelectedPriority.value = "";
 };
 
 const handleSubmit = async () => {
@@ -76,6 +70,7 @@ const handleSubmit = async () => {
       }
   )
   if (res.error.value !== null) {
+    console.log(res.error)
     errors.title = res.error.value?.data.title[0];
     errors.description = res.error.value?.data.description[0];
   }
@@ -112,7 +107,7 @@ const handleSubmit = async () => {
             <div class="count">{{ count != 0 ? count : 0 }}/500</div>
             <div class="select-group">
               <div class="select">
-                <select v-model="SelectedPriority">
+                <select v-model="data.priority">
                   <option disabled value="">Priority</option>
                   <option>Urgent</option>
                   <option>High</option>
@@ -122,13 +117,13 @@ const handleSubmit = async () => {
                 </select>
               </div>
               <div class="select">
-                <select v-model="SelectedProject">
-                  <option disabled value="">Project</option>
-                  <option v-for="project in projects">{{ project.name }}</option>
+                <select v-model="data.project">
+                  <option disabled value="0">Project</option>
+                  <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
                 </select>
               </div>
               <div class="select">
-                <select v-model="SelectedState">
+                <select v-model="data.status">
                   <option disabled value="">State</option>
                   <option value="open">Open</option>
                   <option value="in_progress">In Progress</option>
