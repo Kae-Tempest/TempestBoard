@@ -688,7 +688,7 @@ body {
 
                 & > .issue-content {
                   display: flex;
-                  margin-left: .25rem;
+                  margin-left: .125rem;
 
                   & > div {
                     margin: 0 .125rem;
@@ -702,12 +702,13 @@ body {
                       height: fit-content;
 
                       & > svg.fa-rotate-90 {
-                        transform: rotate(90deg);
+                        padding-left: .5rem;
+                        padding-top: 0;
                       }
 
                       & > svg {
                         height: 1.25rem;
-                        padding: 0 0 0 .5rem;
+                        padding: .5rem 0 0 0;
                       }
                     }
                   }
