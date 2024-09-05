@@ -70,7 +70,6 @@ const handleSubmit = async () => {
       }
   )
   if (res.error.value !== null) {
-    console.log(res.error)
     errors.title = res.error.value?.data.title[0];
     errors.description = res.error.value?.data.description[0];
   }
