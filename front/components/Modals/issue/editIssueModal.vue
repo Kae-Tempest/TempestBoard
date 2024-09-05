@@ -1,23 +1,17 @@
 <script lang="ts" setup>
 import type {Issue} from "~/types/global";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import {ref} from "vue";
-import IssueIcon from "~/components/Icon/IssueIcon.vue";
 
 interface Props {
-  issueId: number
+  issueId: number | null
 }
 
 const props = defineProps<Props>()
 const showModal = defineModel()
 const {isRefresh} = useRefreshData()
-const priorityIcon = ref("fa-solid fa-chevron-down");
-const stateIcon = ref("fa-solid fa-chevron-down")
-const SelectedPriority = ref("Priority");
-const SelectedState = ref("State");
-const dropdownOpen = ref(false);
-const stateDropdownOpen = ref(false);
+const SelectedPriority = ref("");
+const SelectedState = ref("");
+const count = ref(500);
 
 
 onBeforeUnmount(() => {
@@ -36,15 +30,26 @@ onMounted(() => {
   })
 })
 
+const resetForm = () => {
+  data.title = "";
+  data.description = "";
+  data.priority = "";
+  data.status = "";
+};
+
 watch(showModal, async () => {
+  count.value = 500
   const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
   data.title = issue.value?.title || "Any Issue";
   data.description = issue.value?.description || "Any Issue";
   data.priority = issue.value?.priority || "Any Issue";
   data.status = issue.value?.status || "Any Issue";
 
-  handleSetPriority(data.priority);
-  handleSetState(data.status);
+  count.value = count.value - data.description.length
+
+  SelectedPriority.value = data.priority.toLowerCase()
+  SelectedState.value = data.status
+
 })
 
 const data = reactive({
@@ -63,37 +68,6 @@ const handleEdit = async () => {
   showModal.value = false
 }
 
-
-const handleSetPriority = (priority: string) => {
-  if (SelectedPriority.value.toLowerCase() === priority.toLowerCase()) {
-    priorityIcon.value = "fa-solid fa-chevron-down";
-    SelectedPriority.value = "Priority";
-  } else {
-    data.priority = priority.toUpperCase();
-    if (priority.toLowerCase() === "urgent") priorityIcon.value = "fa-solid fa-circle-exclamation";
-    else if (priority.toLowerCase() === "high") priorityIcon.value = "fa-solid fa-angles-up";
-    else if (priority.toLowerCase() === "neutral") priorityIcon.value = "fa-solid fa-pause";
-    else if (priority.toLowerCase() === "low") priorityIcon.value = "fa-solid fa-minus";
-    else if (priority.toLowerCase() === "minor") priorityIcon.value = "fa-solid fa-chevron-down";
-    SelectedPriority.value = priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
-  }
-  dropdownOpen.value = false;
-};
-
-const handleSetState = (state: string) => {
-  if (SelectedState.value.toLowerCase() === state) {
-    stateIcon.value = "fa-solid fa-chevron-down";
-    SelectedState.value = "State";
-  } else {
-    data.status = state;
-    if (state === "open") stateIcon.value = "fa-regular fa-circle";
-    else if (state === "completed") stateIcon.value = "fa-solid fa-circle";
-    else if (state === "canceled") stateIcon.value = "fa-solid fa-circle-xmark";
-    SelectedState.value = state.charAt(0).toUpperCase() + state.slice(1);
-  }
-  stateDropdownOpen.value = false;
-};
-
 </script>
 
 <template>
@@ -102,117 +76,49 @@ const handleSetState = (state: string) => {
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box">
-        <header class="box-header">
-          <h3 class="modal-card-title">Edit Issue</h3>
-          <button aria-label="close" class="delete" @click="showModal=false"></button>
-        </header>
         <div class="field">
           <div class="control">
+            <label for="title">Issue Title</label>
             <input v-model="data.title" class="input" placeholder="Title..." type="text">
-          </div>
-        </div>
-        <div class="field">
-          <div class="control">
-            <textarea v-model="data.description" class="textarea" placeholder="Description.."></textarea>
-          </div>
-        </div>
-        <div class="double-field">
-          <div :class="{'is-active': dropdownOpen}" class="dropdown priority-dropdown">
-            <div class="dropdown-trigger">
-              <button aria-controls="dropdown-priority" aria-haspopup="true" class="button" @click.stop="dropdownOpen=!dropdownOpen">
-                <span>{{ SelectedPriority }}</span>
-                <span class="icon">
-                    <font-awesome-icon :icon="priorityIcon" :rotation="SelectedPriority == 'Neutral' ? 90 : undefined"/>
-                  </span>
-              </button>
-            </div>
-            <div id="dropdown-priority" class="dropdown-menu" role="menu">
-              <div class="dropdown-content">
-                <div class="dropdown-item" @click="handleSetPriority('urgent')">
-                  <div class="priority">
-                    <span>Urgent</span>
-                    <span class="icon">
-                        <PriorityIcon priority="URGENT"/>
-                      </span>
-                  </div>
-                </div>
-                <div class="dropdown-item" @click="handleSetPriority('high')">
-                  <div class="priority">
-                    <span>High</span>
-                    <span class="icon">
-                        <PriorityIcon priority="HIGH"/>
-                      </span>
-                  </div>
-                </div>
-                <div class="dropdown-item" @click="handleSetPriority('neutral')">
-                  <div class="priority">
-                    <span>Neutral</span>
-                    <span class="icon">
-                        <PriorityIcon priority="NEUTRAL"/>
-                      </span>
-                  </div>
-                </div>
-                <div class="dropdown-item" @click="handleSetPriority('low')">
-                  <div class="priority">
-                    <span>Low</span>
-                    <span class="icon">
-                        <PriorityIcon priority="LOW"/>
-                      </span>
-                  </div>
-                </div>
-                <div class="dropdown-item" @click="handleSetPriority('minor')">
-                  <div class="priority">
-                    <span>Minor</span>
-                    <span class="icon">
-                        <PriorityIcon priority="MINOR"/>
-                      </span>
-                  </div>
-                </div>
+            <label for="textarea">Issue Content</label>
+            <textarea
+                class="textarea has-fixed-size"
+                maxLength=500
+                minLength=3
+                placeholder="Issue Description"
+                @input="count = 500 - ($event.target as HTMLTextAreaElement).value.length"
+                v-model="data.description"
+            ></textarea>
+            <div class="count">{{ count != 0 ? count : 0 }}/500</div>
+            <div class="select-group">
+              <div class="select">
+                <select v-model="SelectedPriority">
+                  <option disabled value="">Priority</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="high">High</option>
+                  <option value="neutral">Neutral</option>
+                  <option value="low">Low</option>
+                  <option value="minor">Minor</option>
+                </select>
               </div>
-            </div>
-          </div>
-          <div :class="{'is-active': stateDropdownOpen}" class="dropdown">
-            <div class="dropdown-trigger">
-              <button aria-controls="dropdown-state" aria-haspopup="true" class="button" @click.stop="stateDropdownOpen=!stateDropdownOpen">
-                <span>{{ SelectedState }}</span>
-                <span class="icon dropdown-icon">
-                    <span :class="{'open-issue-icon': SelectedState == 'Open', 'completed-issue-icon': SelectedState == 'Completed', 'canceled-issue-icon': SelectedState == 'Canceled'}">
-                      <font-awesome-icon v-if="SelectedState != 'In_progress'" :icon="stateIcon"/>
-                    </span>
-                    <IssueIcon v-if="SelectedState == 'In_progress'" state="in_progress"/>
-                  </span>
-              </button>
-            </div>
-            <div id="dropdown-state" class="dropdown-menu state" role="menu">
-              <div class="dropdown-content">
-                <div class="dropdown-item dropdown-icon" @click="handleSetState('open')">
-                  Open
-                  <IssueIcon state="open"/>
-                </div>
-                <div class="dropdown-item dropdown-icon" @click="handleSetState('in_progress')">
-                  In Progress
-                  <IssueIcon state="in_progress"/>
-                </div>
-                <div class="dropdown-item dropdown-icon" @click="handleSetState('completed')">
-                  Completed
-                  <IssueIcon state="completed"/>
-                </div>
-                <div class="dropdown-item dropdown-icon" @click="handleSetState('canceled')">
-                  Canceled
-                  <IssueIcon state="canceled"/>
-                </div>
+              <div class="select">
+                <select v-model="SelectedState">
+                  <option disabled value="">State</option>
+                  <option value="open">Open</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="canceled">Canceled</option>
+                </select>
               </div>
             </div>
           </div>
         </div>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button btn-cancel" @click="showModal=false">Cancel</button>
-          </div>
-          <div class="control">
-            <button class="button btn-edit" @click="handleEdit()">Submit</button>
-          </div>
-        </div>
+        <button class="button" @click="showModal=false; resetForm()">
+          Cancel
+        </button>
+        <button class="button is-dark" @click="handleEdit()">
+          Submit
+        </button>
       </div>
     </div>
   </div>

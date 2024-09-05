@@ -1,0 +1,146 @@
+<script lang="ts" setup>
+import {reactive, ref, watch} from 'vue'
+import type {Project} from "~/types/global";
+import {useUserStore} from "~/stores/useUserStore";
+
+interface Props {
+  projects: Project[];
+  state?: string;
+}
+
+const props = defineProps<Props>()
+
+const showModal = defineModel('modal', {type: Boolean, required: true})
+const count = ref(500);
+const user = useUserStore().getUser();
+const {isRefresh} = useRefreshData();
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      showModal.value = false
+    }
+  })
+})
+
+onMounted(() => {
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      showModal.value = false
+      resetForm()
+    }
+  })
+})
+
+const data = reactive({
+  creator: user?.id,
+  assigned: user?.id,
+  title: "",
+  description: "",
+  priority: "",
+  project: 0,
+  status: props.state ? props.state : "",
+  tags: null
+});
+
+const errors = reactive({
+  title: "",
+  description: "",
+});
+
+
+watch(() => props.state, (newVal) => {
+  if (newVal) data.status = newVal
+});
+
+const resetForm = () => {
+  data.title = "";
+  data.description = "";
+  data.priority = "";
+  data.project = 0;
+  data.status = "";
+};
+
+const handleSubmit = async () => {
+  if (data.title.length < 3) errors.title = "Title must be at least 3 characters long";
+  if (data.description.length < 3) errors.description = "Description must be at least 3 characters long";
+  const res = await useCustomFetch('/issues/', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+  )
+  if (res.error.value !== null) {
+    errors.title = res.error.value?.data.title[0];
+    errors.description = res.error.value?.data.description[0];
+  }
+  if (res.data.value !== null) {
+    isRefresh.value = true
+    showModal.value = false;
+    resetForm();
+  }
+};
+
+
+</script>
+
+<template>
+  <div :class="{'is-active': showModal}" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="box">
+        <div class="field">
+          <div class="control">
+            <label for="title">Issue Title</label>
+            <input class="input" maxLength=100 minLength=3 placeholder="Issue Title" type="text" v-model="data.title">
+            <p v-if="errors.title" class="help is-danger">{{ errors.title }}</p>
+            <label for="textarea">Issue Content</label>
+            <textarea
+                class="textarea has-fixed-size"
+                maxLength=500
+                minLength=3
+                placeholder="Issue Description"
+                @input="count = 500 - ($event.target as HTMLTextAreaElement).value.length"
+                v-model="data.description"
+            ></textarea>
+            <p v-if="errors.description" class="help is-danger">{{ errors.description }}</p>
+            <div class="count">{{ count != 0 ? count : 0 }}/500</div>
+            <div class="select-group">
+              <div class="select">
+                <select v-model="data.priority">
+                  <option disabled value="">Priority</option>
+                  <option>Urgent</option>
+                  <option>High</option>
+                  <option>Neutral</option>
+                  <option>Low</option>
+                  <option>Minor</option>
+                </select>
+              </div>
+              <div class="select">
+                <select v-model="data.project">
+                  <option disabled value="0">Project</option>
+                  <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
+                </select>
+              </div>
+              <div class="select">
+                <select v-model="data.status">
+                  <option disabled value="">State</option>
+                  <option value="open">Open</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="canceled">Canceled</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="button" @click="showModal=false; resetForm()">
+          Cancel
+        </button>
+        <button
+            class="button is-dark" @click="handleSubmit()">
+          Create
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

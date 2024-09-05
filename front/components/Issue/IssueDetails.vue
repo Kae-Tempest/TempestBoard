@@ -16,7 +16,7 @@ const users = ref<User[] | null>([]);
 onMounted(async () => {
   const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned}/`);
   user.value = data.value;
-  const {data: userList } = await useCustomFetch<User[]>(`/users/`)
+  const {data: userList} = await useCustomFetch<User[]>(`/users/`)
   users.value = userList.value
 });
 
@@ -24,7 +24,7 @@ const UpdateAssignedUser = async (u: number) => {
   const res = await useCustomFetch(`/issues/${props.issue.id}/`, {
     method: 'PATCH',
     body: {
-      "assigned" : u
+      "assigned": u
     }
   })
   if (res.error.value) {
@@ -63,9 +63,9 @@ const UpdateAssignedUser = async (u: number) => {
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
                   <div class="users-list" v-for="user in project.users.filter(u => u != issue.assigned)">
-                    <span v-if="project.users.length == 0">Any User..</span>
-                    <div @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item"> {{ users?.find(u => u.id === user)?.username }} </div>
+                    <div v-if="project.users.length >= 2" @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item">{{ users?.find(u => u.id === user)?.username }}</div>
                   </div>
+                  <div class="any-user" v-if="project.users.length == 1">Any User..</div>
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Issue, Project, User} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
@@ -27,7 +27,6 @@ onMounted(async () => {
   issueArray.value = issueData.value as Issue[]
   AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned === user?.id)
   CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
-
 });
 
 watch(() => isRefresh.value, async (newVal) => {
@@ -38,6 +37,7 @@ watch(() => isRefresh.value, async (newVal) => {
     CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
     await refresh()
     projects.value = data.value as Project[]
+    isRefresh.value = false
   }
 });
 
@@ -57,7 +57,7 @@ watch(() => isRefresh.value, async (newVal) => {
             </li>
           </ul>
         </nav>
-        <div class="tabs is-toggle is-small">
+        <div class="tabs is-small">
           <ul>
             <li :class="{ 'is-active': viewMode === 'list' }" @click="viewMode = 'list'">
               <a>
@@ -83,7 +83,7 @@ watch(() => isRefresh.value, async (newVal) => {
         </div>
       </div>
       <div class="typeview-tabs">
-        <div class="tabs is-toggle">
+        <div class="tabs">
           <ul>
             <li :class="{ 'is-active': typeView === 'all' }" @click="typeView = 'all'; Title = 'All'">
               <a>All</a>
@@ -100,7 +100,7 @@ watch(() => isRefresh.value, async (newVal) => {
       <div class="issues">
         <div>
           <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
-          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects"/>
+          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
         </div>
       </div>
     </div>
