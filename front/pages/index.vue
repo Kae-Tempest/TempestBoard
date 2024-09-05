@@ -27,7 +27,6 @@ onMounted(async () => {
   issueArray.value = issueData.value as Issue[]
   AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned === user?.id)
   CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
-
 });
 
 watch(() => isRefresh.value, async (newVal) => {
@@ -38,6 +37,7 @@ watch(() => isRefresh.value, async (newVal) => {
     CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
     await refresh()
     projects.value = data.value as Project[]
+    isRefresh.value = false
   }
 });
 
