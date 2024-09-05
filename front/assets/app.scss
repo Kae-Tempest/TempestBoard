@@ -24,6 +24,9 @@
   --red-600: #dc2626;
   --green-400: #4ade80;
   --green-500: #22c55e;
+
+  --tabs-heigth: 2.5rem;
+  --header-heigth: 3.125rem;
 }
 
 @mixin SeiraFont($weight) {
@@ -36,12 +39,12 @@
 
 html {
   overflow-y: auto;
-  background-color: var(--broken-white);
+  background-color: white;
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--broken-white);
+  background-color: white;
   color: var(--neutral-950);
   height: 100%;
   margin: 0;
@@ -486,7 +489,7 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 3.125rem;
+      height: var(--header-heigth);
       border-bottom: 1px solid var(--blue-800);
 
       & > .breadcrumb {
@@ -564,6 +567,8 @@ body {
     }
 
     & > .typeview-tabs {
+      height: var(--tabs-heigth);
+
       & > .tabs {
         width: fit-content;
 
@@ -1090,5 +1095,127 @@ body {
     }
   }
 }
+
+#kanban {
+  display: flex;
+
+  & > .state-list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)));
+    margin: .5rem .5rem;
+    padding: .5rem 1rem;
+    border-radius: 6px;
+    box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+    background-color: var(--broken-white);
+    max-width: 350px;
+
+    & > .header {
+      display: flex;
+      justify-content: space-between;
+
+      & > .state-name {
+        @include SeiraFont(600);
+      }
+      & > .action-icon {
+        & > .button {
+          margin: 0 .125rem;
+        }
+      }
+    }
+
+    & > .issue-list {
+      & > .issue-card {
+        @include SeiraFont(500);
+        height: 119px;
+        width: 236px;
+        margin: .625rem 0;
+        box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+        border-radius: 6px;
+        background-color: white;
+
+        &.dragging {
+          color: transparent;
+          background: none;
+          border: 2px dashed rgba(0, 0, 0, 0.2);
+          box-shadow: none;
+          user-select: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          cursor: grabbing;
+        }
+
+        & > .issue {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100%;
+          width: 100%;
+
+          & > .issue-title {
+            padding-left: .5rem;
+          }
+
+          & > .issue-desc {
+            @include SeiraFont(400);
+            padding-left: .5rem;
+            overflow-wrap: break-word;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 100%;
+            max-height: 60%;
+          }
+
+          & > .issue-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 .25rem;
+          }
+        }
+      }
+    }
+  }
+  & > .icon {
+    border: 1px solid hsl(221, 14%,calc(86% + -10%));
+    border-radius: .25rem;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: .0825em .0825em .125em hsla(221, 14%, 4%, .5);
+    height: 1.75rem;
+    width: 1.75rem;
+    margin-top: .5rem;
+    &:hover {
+      background-color: hsl(221, 14%,calc(100% + -5%));
+    }
+    &:active {
+      background-color:hsl(221, 14%,calc(100% + -10%));
+    }
+  }
+}
+
+.drag-clone {
+  @include SeiraFont(500);
+  height: 119px;
+  width: 236px;
+  border-radius: 6px;
+  background-color: white;
+  background-image: none;
+  border: 2px solid var(--blue-200);
+
+  & > .issue {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+
+    & > .issue-footer {
+      .icon {
+        display: none;
+      }
+    }
+  }
+}
+
 
 //}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Issue, Project, User} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
@@ -21,6 +21,7 @@ const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate
 const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
 
 onMounted(async () => {
+  console.log('Mounted')
   await refresh()
   await issueRefresh()
   projects.value = data.value as Project[]
@@ -30,6 +31,7 @@ onMounted(async () => {
 });
 
 watch(() => isRefresh.value, async (newVal) => {
+  console.log(newVal)
   if (newVal) {
     await issueRefresh()
     issueArray.value = issueData.value as Issue[]
@@ -100,7 +102,7 @@ watch(() => isRefresh.value, async (newVal) => {
       <div class="issues">
         <div>
           <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
-          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects"/>
+          <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
         </div>
       </div>
     </div>
