@@ -21,7 +21,6 @@ const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate
 const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
 
 onMounted(async () => {
-  console.log('Mounted')
   await refresh()
   await issueRefresh()
   projects.value = data.value as Project[]
@@ -31,7 +30,6 @@ onMounted(async () => {
 });
 
 watch(() => isRefresh.value, async (newVal) => {
-  console.log(newVal)
   if (newVal) {
     await issueRefresh()
     issueArray.value = issueData.value as Issue[]

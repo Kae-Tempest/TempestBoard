@@ -4,7 +4,7 @@
 import type {Issue, Project} from "~/types/global";
 
 interface Props {
-  issueId: number
+  issueId: number | null
 }
 
 const props = defineProps<Props>()

@@ -3,7 +3,7 @@ import type {Issue} from "~/types/global";
 import {ref} from "vue";
 
 interface Props {
-  issueId: number
+  issueId: number | null
 }
 
 const props = defineProps<Props>()
@@ -30,6 +30,13 @@ onMounted(() => {
   })
 })
 
+const resetForm = () => {
+  data.title = "";
+  data.description = "";
+  data.priority = "";
+  data.status = "";
+};
+
 watch(showModal, async () => {
   count.value = 500
   const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
@@ -38,7 +45,7 @@ watch(showModal, async () => {
   data.priority = issue.value?.priority || "Any Issue";
   data.status = issue.value?.status || "Any Issue";
 
-  count.value = count.value - issue.value?.description.length
+  count.value = count.value - data.description.length
 
   SelectedPriority.value = data.priority.toLowerCase()
   SelectedState.value = data.status

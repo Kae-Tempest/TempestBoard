@@ -19,7 +19,7 @@ const showEditModal = ref(false);
   <deleteIssueModal :issueId="id" v-model="showModal"/>
   <editIssueModal :issueId="id" v-model="showEditModal"/>
   <div class="menu">
-    <div class="menu-content" :style="{'left': pos.x - 70 + 'px', 'bottom': `calc(-${pos.y}px + 120px)`}">
+    <div class="menu-content" :style="{'left': pos.x - 70 + 'px', 'bottom': `calc(-${pos.y}px + 90px)`}">
       <div class="menu-item" @click="showEditModal = true">
         <font-awesome-icon icon="fa-regular fa-pencil"/>
       </div>
