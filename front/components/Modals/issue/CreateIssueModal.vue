@@ -63,7 +63,7 @@ const resetForm = () => {
 
 const handleSubmit = async () => {
   if (data.title.length < 3) errors.title = "Title must be at least 3 characters long";
-  if (data.description.length < 3) errors.description = "Description must be at least 3 characters long";
+  // if (data.description.length < 3) errors.description = "Description must be at least 3 characters long";
   const res = await useCustomFetch('/issues/', {
         method: 'POST',
         body: JSON.stringify(data),
