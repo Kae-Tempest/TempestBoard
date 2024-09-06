@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@awesome.me/kit-c53b93d6fb": "^1.0.10",
@@ -20,9 +21,10 @@
     "bulma": "^1.0.0",
     "nuxt": "^3.10.3",
     "sass": "^1.71.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0",
-    "vuedraggable": "^4.1.0"
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0"
