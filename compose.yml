@@ -6,6 +6,8 @@ services:
     ports:
       - "8000:8000"
     tty: true
+    volumes:
+      - ./back:/app
     depends_on:
       - db
   nuxt:
@@ -13,6 +15,8 @@ services:
       context: ./front
     container_name: TempestBoard-front
     restart: unless-stopped
+    volumes:
+      - ./front:/app
     ports:
       - "3000:3000"
     depends_on:

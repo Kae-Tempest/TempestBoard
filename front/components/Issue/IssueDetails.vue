@@ -9,10 +9,17 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const IssueAssignedClicked = defineModel<boolean>()
+const dropdownIdOpen = defineModel('dropdownIdOpen')
+
+const issue = computed(() => props.issue)
+const projects = computed(() => props.projects)
+const project = computed(() => projects.value.find(p => p.id === issue.value.project))
+
 const user = ref<User | null>(null);
-const IssueAssignedClicked = defineModel()
-const IssueAssignedDropDown = ref<boolean>(false)
 const users = ref<User[] | null>([]);
+
 onMounted(async () => {
   const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned}/`);
   user.value = data.value;
@@ -34,14 +41,25 @@ const UpdateAssignedUser = async (u: number) => {
     const {data} = await useCustomFetch<User>(`/users/${u}/`);
     user.value = data.value;
   }
-  IssueAssignedDropDown.value = false
+  dropdownIsOpen.value = false
+}
+
+const onClickUser = () => {
+    IssueAssignedClicked.value = true;
+    if (issue.value.id !== dropdownIdOpen.value) {
+        dropdownIdOpen.value = issue.value.id
+    } else if (issue.value.id === dropdownIdOpen.value) {
+        dropdownIdOpen.value = null
+    } else {
+        dropdownIdOpen.value = issue.value.id
+    }
 }
 
 </script>
 
 <template>
   <div class="issue-list">
-    <div v-for="project in projects.filter(p => p.id === issue.project)" class="issue-list-item">
+    <div class="issue-list-item">
       <div class="issue-info">
         <div class="issue-content">
           <div class="priority">
@@ -54,10 +72,10 @@ const UpdateAssignedUser = async (u: number) => {
         </div>
         <div class="other-info">
           <div class="user-tag">
-            <div class="dropdown" :class="{'is-active': IssueAssignedDropDown}">
+            <div class="dropdown" :class="{'is-active': dropdownIdOpen === issue.id}">
               <div class="dropdown-trigger">
                 <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                  <span @click="IssueAssignedClicked = true; IssueAssignedDropDown = !IssueAssignedDropDown" class="tag">{{ user?.username }}</span> <!-- @click open dropdown -->
+                  <span @click="onClickUser" class="tag">{{ user?.username }}</span> <!-- @click open dropdown -->
                 </button>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
