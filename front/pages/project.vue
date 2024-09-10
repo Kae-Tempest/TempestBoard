@@ -80,7 +80,7 @@ const handleOpenUserModal = (project: Project) => {
                 <h2>{{ project.name }}</h2>
                 <p>{{ project.description }}</p>
                 <div class="content-footer">
-                  <div v-if="user?.id == project.creator" class="btn-action">
+                  <div v-if="user?.id == project.creator.id" class="btn-action">
                     <button class="button" @click="handleOpenDeleteModal(project)">
                       <span class="icon is-small">
                         <font-awesome-icon icon="fa-solid fa-trash-can"/>

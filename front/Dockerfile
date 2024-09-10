@@ -16,10 +16,12 @@ RUN yarn
 
 
 # Construire l'application Nuxt en mode production
-RUN yarn build
+#RUN yarn build # Uncomment for Prof
 
 # Exposer le port 3000 (port par défaut pour Nuxt)
 EXPOSE 3000
 
 # Démarrer l'application Nuxt en mode production
-CMD ["yarn", "start"]
+# Comment for Prof
+CMD ["yarn", "dev"]
+#CMD ["yarn", "start"] # Uncomment for Prof

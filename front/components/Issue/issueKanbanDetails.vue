@@ -33,7 +33,7 @@ const startDrag = (e: DragEvent, item: Issue) => {
   document.body.appendChild(clone);
 
   // Utiliser l'aperçu personnalisé
-  e.dataTransfer.setDragImage(clone, 0, 0);
+  e.dataTransfer.setDragImage(clone, e.offsetX, e.offsetY);
 
   draggedItem.value = item.id;
 
