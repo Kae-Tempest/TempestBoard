@@ -11,17 +11,17 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const IssueModel = defineModel()
+const IssueID = defineModel()
 const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
 const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
   if (!IssueAssignedClicked.value) {
-    if (IssueModel.value === issue.id) {
-      IssueModel.value = null
+    if (IssueID.value === issue.id) {
+      IssueID.value = null
     } else {
-      IssueModel.value = issue.id
+      IssueID.value = issue.id
       IssuePos.value = {x: e.offsetX, y: e.clientY}
     }
   }

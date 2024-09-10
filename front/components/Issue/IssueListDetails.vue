@@ -19,12 +19,21 @@ const stateArray = ["open", "in_progress", "completed", "canceled"];
 const showModal = ref(false);
 const selectedState = ref("")
 const dropdownIdOpen = ref<number | null>(null)
-const IssueModel = defineModel()
+const IssueID = defineModel()
 const IssuePos = defineModel('pos')
 
 watch(() => showModal.value, (newVal) => {
   if (!newVal) selectedState.value = ""
 })
+
+watch(() => dropdownIdOpen.value, (newVal) => {
+  if(newVal) IssueID.value = null
+})
+
+watch(() => IssueID.value, (newVal) => {
+  if(newVal) dropdownIdOpen.value = null
+})
+
 </script>
 
 <template>
@@ -37,6 +46,6 @@ watch(() => showModal.value, (newVal) => {
       </div>
       <font-awesome-icon icon="fa-solid fa-plus" @click="showModal=true; selectedState=state" class="issue-add"/>
     </div>
-    <DnDIssue :projects="Projects" :issues="issueArray" :state="state" v-model="IssueModel" v-model:pos="IssuePos" v-model:dropdown-id-open="dropdownIdOpen"/>
+    <DnDIssue :projects="Projects" :issues="issueArray" :state="state" v-model="IssueID" v-model:pos="IssuePos" v-model:dropdown-id-open="dropdownIdOpen"/>
   </div>
 </template>
