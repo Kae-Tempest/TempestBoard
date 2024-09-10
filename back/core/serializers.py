@@ -24,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    creator = UserSerializer(read_only=True)
     class Meta:
         model = Project
         fields = ['id', 'creator', 'users', 'name', 'description', 'status', 'thumbnail', 'created_at', 'updated_at']
@@ -42,6 +43,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
+    creator = UserSerializer(read_only=True)
+    assigned = UserSerializer(read_only=True)
     class Meta:
         model = Issue
         fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']

@@ -25,16 +25,16 @@ onMounted(async () => {
   await issueRefresh()
   projects.value = data.value as Project[]
   issueArray.value = issueData.value as Issue[]
-  AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned === user?.id)
-  CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
+  AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned.id === user?.id)
+  CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
 });
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
     await issueRefresh()
     issueArray.value = issueData.value as Issue[]
-    AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned === user?.id)
-    CreateIssues.value = issueArray.value.filter((issue) => issue.creator === user?.id)
+    AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned.id === user?.id)
+    CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
     await refresh()
     projects.value = data.value as Project[]
     isRefresh.value = false
