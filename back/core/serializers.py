@@ -49,6 +49,7 @@ class IssueSerializer(serializers.ModelSerializer):
         model = Issue
         fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
         extra_kwargs = {'ticket_id': {'read_only': True}}
+
     def validate(self, attrs):
         attrs.pop('ticket_id', None)
         return super().validate(attrs)
