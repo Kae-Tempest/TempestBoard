@@ -11,16 +11,17 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const IssueModel = defineModel()
+const IssueID = defineModel()
 const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
+const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
   if (!IssueAssignedClicked.value) {
-    if (IssueModel.value === issue.id) {
-      IssueModel.value = null
+    if (IssueID.value === issue.id) {
+      IssueID.value = null
     } else {
-      IssueModel.value = issue.id
+      IssueID.value = issue.id
       IssuePos.value = {x: e.offsetX, y: e.clientY}
     }
   }
@@ -52,7 +53,7 @@ const onDrop = async (e: DragEvent, state: string) => {
   <div @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent class="dnd-issue-wrapper">
     <div v-for="issue in issues.filter(i => i.status === state).sort((a,b) => a.ticket_id - b.ticket_id)" :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
          @click="handleMenu(issue, $event)" class="dnd-issue-list">
-      <IssueDetails :projects="projects" :issue="issue" v-model="IssueAssignedClicked"/>
+      <IssueDetails :projects="projects" :issue="issue" v-model="IssueAssignedClicked" v-model:dropdown-id-open="dropdownIdOpen" />
     </div>
     <div v-if="issues.filter(i => i.status === state).length === 0" class="issue-list">
       <p class="placeholder-issue-list">drop here...</p>
