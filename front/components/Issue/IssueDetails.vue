@@ -21,7 +21,7 @@ const user = ref<User | null>(null);
 const users = ref<User[] | null>([]);
 
 onMounted(async () => {
-  const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned}/`);
+  const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned.id}/`);
   user.value = data.value;
   const {data: userList} = await useCustomFetch<User[]>(`/users/`)
   users.value = userList.value
@@ -75,12 +75,12 @@ const onClickUser = () => {
             <div class="dropdown" :class="{'is-active': dropdownIdOpen === issue.id}">
               <div class="dropdown-trigger">
                 <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                  <span @click="onClickUser" class="tag">{{ user?.username }}</span> <!-- @click open dropdown -->
+                  <span @click="onClickUser" class="tag">{{ issue.assigned.username }}</span>
                 </button>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <div class="users-list" v-for="user in project.users.filter(u => u != issue.assigned)">
+                  <div v-for="user in project.users.filter(u => u != issue.assigned.id)" class="users-list">
                     <div v-if="project.users.length >= 2" @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item">{{ users?.find(u => u.id === user)?.username }}</div>
                   </div>
                   <div class="any-user" v-if="project.users.length == 1">Any User..</div>

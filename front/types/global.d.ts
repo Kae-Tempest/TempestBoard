@@ -11,7 +11,7 @@ export type User = {
 
 export type Project = {
     id: number;
-    creator: number;
+    creator: User;
     name: string;
     description: string;
     thumbnail: string;
@@ -23,8 +23,8 @@ export type Project = {
 
 export type Issue = {
     id: number;
-    creator: number;
-    assigned: number;
+    creator: User;
+    assigned: User;
     project: number;
     ticket_id: number;
     title: string;
