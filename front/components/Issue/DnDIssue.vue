@@ -14,7 +14,7 @@ const props = defineProps<Props>();
 const IssueModel = defineModel()
 const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
-const dropdownIdOpen = defineModel('dropdownIdOpen')
+const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
   if (!IssueAssignedClicked.value) {

@@ -11,7 +11,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const IssueAssignedClicked = defineModel<boolean>()
-const dropdownIdOpen = defineModel('dropdownIdOpen')
+const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
 
 const issue = computed(() => props.issue)
 const projects = computed(() => props.projects)
@@ -41,7 +41,7 @@ const UpdateAssignedUser = async (u: number) => {
     const {data} = await useCustomFetch<User>(`/users/${u}/`);
     user.value = data.value;
   }
-  dropdownIsOpen.value = false
+  dropdownIdOpen.value = null
 }
 
 const onClickUser = () => {
@@ -59,7 +59,7 @@ const onClickUser = () => {
 
 <template>
   <div class="issue-list">
-    <div class="issue-list-item">
+    <div v-if="project" class="issue-list-item">
       <div class="issue-info">
         <div class="issue-content">
           <div class="priority">
