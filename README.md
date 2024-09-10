@@ -6,7 +6,7 @@
 - BDD : ![PgSQL](https://img.shields.io/badge/PgSQL-005C84?style=for-the-badge&logo=postgresql&logoColor=white)
 - Back : ![Django](https://img.shields.io/badge/-Django-0a3c29?style=for-the-badge&logo=django&logoColor=white)
 - Docker : ✅
-- Maquette : (Figma)[https://www.figma.com/design/vemwaPRhJGu4l6wu7rfIeO/TempestBoard?node-id=0-1&t=PDlt6zFb6gvx1Xrq-1]
+- Maquette : [Figma](https://www.figma.com/design/vemwaPRhJGu4l6wu7rfIeO/TempestBoard?node-id=0-1&t=PDlt6zFb6gvx1Xrq-1)
 
 ## Installation
 
