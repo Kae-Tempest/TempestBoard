@@ -3,8 +3,8 @@ from rest_framework import viewsets, views, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .models import User, Project, Issue, Role, Tag
-from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer
+from .models import User, Project, Issue, Role, Tag, State
+from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -58,7 +58,7 @@ class IssueViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = IssueSerializer(data=request.data, )
+        serializer = IssueSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
@@ -66,6 +66,16 @@ class IssueViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Issue.objects.filter(project__creator_id=self.request.user)
 
+class StateViewSet(viewsets.ModelViewSet):
+    queryset = State.objects.all()
+    serializer_class = StateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = StateSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 class MyIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -73,7 +83,7 @@ class MyIssueAPIView(views.APIView):
     def get(self, request):
         createdIssues = Issue.objects.filter(creator_id=request.user)
         assignedIssues = Issue.objects.filter(assigned_id=request.user)
-        serializer = IssueSerializer(createdIssues.union(assignedIssues), many=True)
+        serializer = IssueReadSerializer(createdIssues.union(assignedIssues), many=True)
         return Response(serializer.data)
 
 

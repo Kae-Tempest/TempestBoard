@@ -11,7 +11,7 @@ export type User = {
 
 export type Project = {
     id: number;
-    creator: User;
+    creator: number;
     name: string;
     description: string;
     thumbnail: string;
@@ -32,6 +32,13 @@ export type Issue = {
     priority: string;
     status: string;
     tags: [];
+    created_at: Date;
+    updated_at: Date;
+}
+
+export type States = {
+    name: string;
+    project: number;
     created_at: Date;
     updated_at: Date;
 }

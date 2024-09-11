@@ -6,6 +6,7 @@ import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 interface Props {
   issue: Issue;
   projects: Project[];
+  users: User[];
 }
 
 const props = defineProps<Props>();
@@ -17,15 +18,7 @@ const issue = computed(() => props.issue)
 const projects = computed(() => props.projects)
 const project = computed(() => projects.value.find(p => p.id === issue.value.project))
 
-const user = ref<User | null>(null);
 const users = ref<User[] | null>([]);
-
-onMounted(async () => {
-  const {data} = await useCustomFetch<User>(`/users/${props.issue.assigned.id}/`);
-  user.value = data.value;
-  const {data: userList} = await useCustomFetch<User[]>(`/users/`)
-  users.value = userList.value
-});
 
 const UpdateAssignedUser = async (u: number) => {
   const res = await useCustomFetch(`/issues/${props.issue.id}/`, {
@@ -39,7 +32,7 @@ const UpdateAssignedUser = async (u: number) => {
   }
   if (!res.error.value) {
     const {data} = await useCustomFetch<User>(`/users/${u}/`);
-    user.value = data.value;
+    issue.value.assigned = data.value as User
   }
   dropdownIdOpen.value = null
 }
@@ -72,10 +65,10 @@ const onClickUser = () => {
         </div>
         <div class="other-info">
           <div class="user-tag">
-            <div v-if="user" class="dropdown" :class="{'is-active': dropdownIdOpen === issue.id}">
+            <div class="dropdown" :class="{'is-active': dropdownIdOpen === issue.id}">
               <div class="dropdown-trigger">
                 <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                  <span @click="onClickUser" class="tag">{{ user.username }}</span>
+                  <span @click="onClickUser" class="tag">{{ issue.assigned.username }}</span>
                 </button>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
