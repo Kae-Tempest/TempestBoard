@@ -4,6 +4,7 @@ import {ref, watch} from "vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import CreateStateModal from "~/components/Modals/state/CreateStateModal.vue";
 
 interface Props {
   issueArray: Issue[];
@@ -15,6 +16,7 @@ const stateArray = ["open", "in_progress", "completed", "canceled"];
 const draggedItem = ref(0)
 const showModal = ref(false);
 const selectedState = ref("")
+const openCreateStateModal = ref<boolean>(false)
 
 watch(() => showModal.value, (newVal) => {
   if (!newVal) selectedState.value = ""
@@ -58,6 +60,7 @@ const onDrop = async (e: DragEvent, state: string) => {
 
 <template>
   <div id="kanban">
+    <CreateStateModal v-model="openCreateStateModal"/>
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
     <div v-for="state in stateArray" :key="state" class="state-list" @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
       <div class="header">
@@ -95,6 +98,6 @@ const onDrop = async (e: DragEvent, state: string) => {
         </div>
       </div>
     </div>
-    <span class="icon"><font-awesome-icon icon="fa-solid fa-plus"/></span>
+    <span @click="openCreateStateModal = true" class="icon"><font-awesome-icon icon="fa-solid fa-plus"/></span>
   </div>
 </template>
