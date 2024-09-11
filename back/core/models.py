@@ -22,7 +22,7 @@ class User(AbstractUser):
 
 
 class Project(models.Model):
-    creator = models.ForeignKey('User', related_name='created_projects', on_delete=models.CASCADE, )
+    creator = models.ForeignKey('User', related_name='created_projects', on_delete=models.CASCADE)
     users = models.ManyToManyField('User', blank=True, related_name='participating_users')
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True,null=True)
@@ -51,6 +51,14 @@ class Issue(models.Model):
     def __str__(self):
         return self.title
 
+class State(models.Model):
+    name = models.CharField(max_length=25)
+    project = models.ForeignKey('Project', related_name='project_states', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 class Role(models.Model):
     name = models.CharField(max_length=100)

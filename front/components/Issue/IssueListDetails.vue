@@ -1,20 +1,20 @@
 <script setup lang="ts">
 
-import type {Issue, Project} from "~/types/global";
+import type {Issue, Project, States, User} from "~/types/global";
 import {ref, watch} from 'vue'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import IssueIcon from "~/components/Icon/IssueIcon.vue";
 import DnDIssue from "~/components/Issue/DnDIssue.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 
 interface Props {
   issueArray: Issue[];
   Projects: Project[];
+  States: States[] | null;
+  Users: User[];
 }
 
 defineProps<Props>()
 
-const stateArray = ["open", "in_progress", "completed", "canceled"];
 
 const showModal = ref(false);
 const selectedState = ref("")
@@ -38,14 +38,14 @@ watch(() => IssueID.value, (newVal) => {
 
 <template>
   <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-  <div v-for="state in stateArray" :key="state" class="wrapper-issue-list">
+  <div v-for="state in States" :key="state.name" class="wrapper-issue-list">
     <div class="issue-header">
       <div class="issue-state">
-        <IssueIcon :state="state"/>
-        {{ state.toUpperCase() }}
+<!--        <IssueIcon :state="state.name"/>-->
+        {{ state.name.toUpperCase() }}
       </div>
-      <font-awesome-icon icon="fa-solid fa-plus" @click="showModal=true; selectedState=state" class="issue-add"/>
+      <font-awesome-icon icon="fa-solid fa-plus" @click="showModal=true; selectedState=state.name" class="issue-add"/>
     </div>
-    <DnDIssue :projects="Projects" :issues="issueArray" :state="state" v-model="IssueID" v-model:pos="IssuePos" v-model:dropdown-id-open="dropdownIdOpen"/>
+    <DnDIssue :projects="Projects" :issues="issueArray" :state="state.name" :users="Users" v-model="IssueID" v-model:pos="IssuePos" v-model:dropdown-id-open="dropdownIdOpen"/>
   </div>
 </template>

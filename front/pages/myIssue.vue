@@ -10,23 +10,33 @@ useHead({title: 'Home - Tempest Board'})
 const viewMode = ref("list");
 const typeView = ref("all");
 const Title = ref("All");
+
 const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
 const CreateIssues = ref<Issue[]>([]);
-const user: User | null = useUserStore().user;
+
+const user: User | null = useUserStore().getUser();
+const users = ref<User[] | null>([])
+
 const projects = ref<Project[]>([])
+
 const {isRefresh} = useRefreshData()
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
+const {data: userList, refresh: userRefresh } = await useCustomFetch<User[]>(`/users/`)
 
 onMounted(async () => {
   await refresh()
   await issueRefresh()
+   await userRefresh()
   projects.value = data.value as Project[]
+
   issueArray.value = issueData.value as Issue[]
   AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned.id === user?.id)
   CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
+
+  users.value = userList.value
 });
 
 watch(() => isRefresh.value, async (newVal) => {
@@ -99,7 +109,7 @@ watch(() => isRefresh.value, async (newVal) => {
       </div>
       <div class="issues">
         <div>
-          <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
+          <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users"/>
           <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
         </div>
       </div>

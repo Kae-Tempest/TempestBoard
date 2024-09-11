@@ -2,6 +2,7 @@
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
+import type {Project} from "~/types/global";
 
 type formType = {
   creator: number | undefined,
@@ -14,6 +15,7 @@ type formType = {
 const showModal = defineModel()
 const user = useUserStore().getUser();
 const {isRefresh} = useRefreshData()
+const defaultStates = ['backlog', 'open', 'in_progress', 'completed','canceled']
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -76,6 +78,18 @@ const handleCreate = async () => {
   })
 
   if (res.data.value !== null) {
+    const createdProjectId = (res.data.value as Project).id
+    for (const state of defaultStates) {
+      await useCustomFetch('/states/', {
+        method: 'POST',
+        body: {
+          name : state,
+          project: createdProjectId
+        }
+      })
+    }
+
+    resetForm()
     isRefresh.value = true
     showModal.value = false
   }

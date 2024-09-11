@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import User, Project, Issue, Role, Tag
+from .models import User, Project, Issue, Role, Tag, State
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,7 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = UserSerializer(read_only=True)
     class Meta:
         model = Project
         fields = ['id', 'creator', 'users', 'name', 'description', 'status', 'thumbnail', 'created_at', 'updated_at']
@@ -41,10 +40,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         project.users.add(validated_data['creator'])
         return project
 
-
 class IssueSerializer(serializers.ModelSerializer):
-    creator = UserSerializer(read_only=True)
-    assigned = UserSerializer(read_only=True)
     class Meta:
         model = Issue
         fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
@@ -71,6 +67,26 @@ class IssueSerializer(serializers.ModelSerializer):
             priority=validated_data['priority'],
             status=validated_data['status'],
         )
+
+class IssueReadSerializer(serializers.ModelSerializer):
+    creator = UserSerializer(read_only=True)
+    assigned = UserSerializer(read_only=True)
+    class Meta:
+        model = Issue
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
+        extra_kwargs = {'ticket_id': {'read_only': True}}
+
+class StateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = State
+        fields = ['name', 'project', 'created_at', 'updated_at']
+
+    def create(self, validated_data):
+        state = State.objects.create(
+            name=validated_data['name'],
+            project=validated_data['project']
+        )
+        return state
 
 
 class RoleSerializer(serializers.ModelSerializer):

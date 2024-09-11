@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import UserViewSet, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView
+from .views import UserViewSet, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet
 
 app_name = 'core'
 
@@ -11,6 +11,7 @@ router.register(r'projects', ProjectViewSet, basename='project')
 router.register(r'issues', IssueViewSet, basename='issue')
 router.register(r'roles', RoleViewSet, basename='role')
 router.register(r'tags', TagViewSet, basename='tag')
+router.register(r'states', StateViewSet, basename='state')
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),

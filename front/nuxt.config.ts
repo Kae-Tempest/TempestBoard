@@ -1,6 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 require('dotenv').config({path: '../.env'});
+import {resolve} from 'path'
+
 export default defineNuxtConfig({
+    hooks: {
+      "pages:extend"(pages) {
+          pages.push({
+              name: "My Issue",
+              path: "/",
+              file: resolve(__dirname, 'pages/myIssue.vue')
+          })
+      }
+    },
     devtools: {enabled: true},
     modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt'],
     css: [
