@@ -84,7 +84,8 @@ const handleCreate = async () => {
         method: 'POST',
         body: {
           name : state,
-          project: createdProjectId
+          project: createdProjectId,
+          isdefault: true
         }
       })
     }
