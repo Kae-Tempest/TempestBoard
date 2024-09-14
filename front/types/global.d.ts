@@ -39,6 +39,7 @@ export type Issue = {
 export type States = {
     name: string;
     project: number;
+    isdefault: Boolean;
     created_at: Date;
     updated_at: Date;
 }
