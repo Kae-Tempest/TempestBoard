@@ -60,7 +60,7 @@ const onDrop = async (e: DragEvent, state: string) => {
 
 <template>
   <div id="kanban">
-    <CreateStateModal v-model="openCreateStateModal"/>
+    <CreateStateModal :projects="Projects" v-model="openCreateStateModal"/>
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
     <div v-for="state in stateArray" :key="state" class="state-list" @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
       <div class="header">
@@ -98,6 +98,5 @@ const onDrop = async (e: DragEvent, state: string) => {
         </div>
       </div>
     </div>
-    <span @click="openCreateStateModal = true" class="icon"><font-awesome-icon icon="fa-solid fa-plus"/></span>
   </div>
 </template>
