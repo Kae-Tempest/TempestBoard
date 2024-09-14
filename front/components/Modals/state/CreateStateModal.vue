@@ -1,22 +1,57 @@
 <script setup lang="ts">
 
+import type {Project} from "~/types/global";
+
+interface Props {
+  project: Project
+}
+const props = defineProps<Props>()
 const openCreateStateModal = defineModel()
 
 const data = reactive({
-  name: ""
+  name: "",
+  project: props.project.id,
+  isdefault: false
 })
 
 const error = reactive({
-  name: ""
+  name: "",
 })
 
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      openCreateStateModal.value = false
+    }
+  })
+})
+
+onMounted(() => {
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      openCreateStateModal.value = false
+      data.name = ""
+      error.name = ""
+    }
+  })
+})
+
+
 const handleAddState = async () => {
-  console.log(data.name)
+  const res = await useCustomFetch('/states/', {
+    method: "POST",
+    body: data
+  })
+  if (res.error.value) {
+
+  } else {
+    openCreateStateModal.value = false
+  }
 }
 </script>
 
 <template>
-  <div :class="{'is-active': openCreateStateModal}" class="modal">
+  <div :class="{'is-active': openCreateStateModal}" class="modal state">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box">
