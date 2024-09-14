@@ -42,7 +42,7 @@ watch(() => IssueID.value, (newVal) => {
     <div class="issue-header">
       <div class="issue-state">
 <!--        <IssueIcon :state="state.name"/>-->
-        {{ state.name.toUpperCase() }}
+        {{ useCapitalize(state.name).toUpperCase() }}
       </div>
       <font-awesome-icon icon="fa-solid fa-plus" @click="showModal=true; selectedState=state.name" class="issue-add"/>
     </div>
