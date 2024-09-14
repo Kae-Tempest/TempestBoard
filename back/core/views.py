@@ -77,6 +77,14 @@ class StateViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+class ProjectStateViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        states = State.objects.filter(project=pk)
+        serializer = StateSerializer(states, many=True)
+        return Response(serializer.data)
+
 class MyIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
