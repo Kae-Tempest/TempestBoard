@@ -54,6 +54,7 @@ class Issue(models.Model):
 class State(models.Model):
     name = models.CharField(max_length=25)
     project = models.ForeignKey('Project', related_name='project_states', on_delete=models.CASCADE)
+    isdefault = models.BooleanField(default=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
