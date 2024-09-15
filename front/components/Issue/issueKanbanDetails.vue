@@ -15,7 +15,6 @@ const stateArray = ["open", "in_progress", "completed", "canceled"];
 const draggedItem = ref(0)
 const showModal = ref(false);
 const selectedState = ref("")
-const openCreateStateModal = ref<boolean>(false)
 
 watch(() => showModal.value, (newVal) => {
   if (!newVal) selectedState.value = ""
@@ -49,7 +48,6 @@ const onDrop = async (e: DragEvent, state: string) => {
   if (!item) return;
   item.status = state;
   await useCustomFetch(`/issues/${item.id}/`, {
-    credentials: 'include',
     method: 'PATCH',
     body: JSON.stringify({status: state}),
   });
