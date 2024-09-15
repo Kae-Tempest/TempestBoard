@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Project, States, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
-import CreateStateModal from "~/components/Modals/state/CreateStateModal.vue";
+import WorkflowSettingsModule from "~/components/Project/Workflow/WorkflowSettingsModule.vue";
 
 interface Props {
   project: Project
@@ -87,7 +87,6 @@ const handleUpdate = async () => {
   <div :class="{'is-active': showModal}" class="modal settings">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <CreateStateModal :project="project" v-model="openCreateStateModal"/>
       <div class="box user-box">
         <h3>Project Settings</h3>
         <div class="content">
@@ -113,21 +112,7 @@ const handleUpdate = async () => {
             </div>
           </div>
           <div v-if="tabs === 'workflow'" class="tabs-right workflow">
-            <div class="state-wrapper">
-              <div class="state-infos" v-for="state in projectState" key="state.name">
-                <div class="state-name">
-                  {{ useCapitalize(state.name) }}
-                </div>
-                <div v-if="!state.isdefault" class="state-options">
-                  <div class="edit-icon">
-                    <font-awesome-icon icon="fa-regular fa-pen"/>
-                  </div>
-                  <div class="trash-icon">
-                    <font-awesome-icon icon="fa-solid fa-trash" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <WorkflowSettingsModule  :projectStates="projectState" :project="project" v-model="openCreateStateModal"/>
             <div class="button is-small" @click="openCreateStateModal = true">
               <span class="icon is-small">
                 <font-awesome-icon icon="fa-solid fa-plus" />

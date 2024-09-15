@@ -940,22 +940,18 @@ body {
       }
       & > .modal.settings > .modal-content {
         width: 50rem;
-        height: 100%;
+        height: fit-content;
         & > .box.user-box {
-          height: 100%;
           padding-left: 0;
           padding-right: 0;
           & > .content {
             display: flex;
-            width: 100%;
             min-height: 85%;
             & > .tabs-left {
               width: 15%;
               border-right: 1px solid var(--blue-800);
               margin-right: 1rem;
-              min-height: 100%;
               & > .tabs-titles > .tabs-title {
-                width: 100%;
                 font-size: 16px;
                 margin: .5rem 0;
                 padding: .25rem;
@@ -1008,6 +1004,8 @@ body {
                     padding: .25rem;
                     display: flex;
                     justify-content: space-between;
+                    height: 3rem;
+                    align-items: center;
                     &:first-child {
                       border-radius: 15px 15px 0 0;
                     }
@@ -1023,8 +1021,9 @@ body {
                       @include SeiraFont(400)
                     }
                     & > .state-options {
+                      padding-bottom: .5rem;
+                      align-items: center;
                       display: flex;
-                      gap: 10px;
                     }
                   }
                 }
