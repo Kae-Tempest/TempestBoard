@@ -2,6 +2,7 @@
 import {reactive, ref, watch} from 'vue'
 import type {Project} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
+import Toastify from "toastify-js";
 
 interface Props {
   projects: Project[];
@@ -72,6 +73,16 @@ const handleSubmit = async () => {
   if (res.error.value !== null) {
     errors.title = res.error.value?.data.title[0];
     errors.description = res.error.value?.data.description[0];
+    Toastify({
+      text: 'An error occurred',
+      duration: 5000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      className: "toast",
+    }).showToast();
   }
   if (res.data.value !== null) {
     isRefresh.value = true

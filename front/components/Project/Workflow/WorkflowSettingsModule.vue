@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type {Project, States} from "~/types/global";
+import Toastify from "toastify-js";
 
 interface Props {
   projectStates: States[];
@@ -93,7 +94,16 @@ const handleUpsertState = async (stateID: number) => {
       isCreating.value = false
       CreateStateRef.value = false
     } else if (res.error.value?.data){
-
+      Toastify({
+        text: res.error.value.data?.name[0],
+        duration: 5000,
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        className: "toast",
+      }).showToast();
     }
 
   } else if (!isCreating.value) {
