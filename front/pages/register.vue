@@ -3,6 +3,7 @@ import {reactive} from 'vue';
 import {useUserStore} from '~/stores/useUserStore';
 import type {User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
+import Toastify from "toastify-js";
 
 useHead({title: 'Register - Tempest Board'})
 
@@ -35,7 +36,16 @@ const handleSubmit = async () => {
     if (res.error.value?.data?.password) errors.password = res.error.value?.data?.password[0];
     if (res.error.value?.data?.confirm_password) errors.confirm_password = res.error.value?.data?.confirm_password[0];
   } else {
-    console.log('error', 'future toasts');
+    Toastify({
+      text: "An Error as occurred",
+      duration: 5000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      className: "toast",
+    }).showToast();
   }
 }
 </script>

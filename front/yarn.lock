@@ -1846,6 +1846,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/toastify-js@npm:^1":
+  version: 1.12.3
+  resolution: "@types/toastify-js@npm:1.12.3"
+  checksum: 10c0/e886fdef7c110eed0a2eece0fd1c2292f696d722409e8cc66f583ebf33a36feface876524710b202b167a17c8937451b60add302e4600e103ef93c6ba740b311
+  languageName: node
+  linkType: hard
+
 "@unhead/dom@npm:1.8.12, @unhead/dom@npm:^1.8.10":
   version: 1.8.12
   resolution: "@unhead/dom@npm:1.8.12"
@@ -5522,10 +5529,12 @@ __metadata:
     "@fortawesome/vue-fontawesome": "npm:^3.0.6"
     "@pinia-plugin-persistedstate/nuxt": "npm:^1.2.0"
     "@pinia/nuxt": "npm:^0.5.1"
+    "@types/toastify-js": "npm:^1"
     axios: "npm:^1.6.7"
     bulma: "npm:^1.0.0"
     nuxt: "npm:^3.10.3"
     sass: "npm:^1.71.1"
+    toastify-js: "npm:^1.12.0"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.5.4"
     vue: "npm:^3.4.21"
@@ -7190,6 +7199,13 @@ __metadata:
   dependencies:
     is-number: "npm:^7.0.0"
   checksum: 10c0/487988b0a19c654ff3e1961b87f471702e708fa8a8dd02a298ef16da7206692e8552a0250e8b3e8759270f62e9d8314616f6da274734d3b558b1fc7b7724e892
+  languageName: node
+  linkType: hard
+
+"toastify-js@npm:^1.12.0":
+  version: 1.12.0
+  resolution: "toastify-js@npm:1.12.0"
+  checksum: 10c0/493584aa0980f89f52da55643a20b2436f9a459a639358ec39519a590fad59ef8356ab5404010c330f47ccb2ca0ce2c237cee8235580d7e52ed60c179125e2e3
   languageName: node
   linkType: hard
 

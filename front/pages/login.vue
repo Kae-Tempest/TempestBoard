@@ -2,6 +2,7 @@
 import CustomCheckbox from '~/components/Checkbox/LoginCustomCheckbox.vue';
 import {useUserStore} from "~/stores/useUserStore";
 import type {User} from "~/types/global";
+import Toastify from "toastify-js";
 
 useHead({title: 'Login - Tempest Board'})
 
@@ -28,7 +29,16 @@ const handleSubmit = async () => {
     useUserStore().setUser(user);
     await navigateTo('/');
   } else {
-    errors.msg = res.error.value?.data?.msg || 'An error occurred';
+    Toastify({
+      text: res.error.value?.data?.msg || 'An error occurred',
+      duration: 5000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      className: "toast",
+    }).showToast();
   }
 };
 

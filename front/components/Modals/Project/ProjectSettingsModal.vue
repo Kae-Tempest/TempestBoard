@@ -2,6 +2,7 @@
 import type {Project, States, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import WorkflowSettingsModule from "~/components/Project/Workflow/WorkflowSettingsModule.vue";
+import Toastify from "toastify-js";
 
 interface Props {
   project: Project
@@ -78,6 +79,17 @@ const handleUpdate = async () => {
   if (res.error.value === null) {
     showModal.value = false
     resetForm()
+  } else if(res.error.value) {
+    Toastify({
+      text: 'An error occurred',
+      duration: 5000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      className: "toast",
+    }).showToast();
   }
 }
 

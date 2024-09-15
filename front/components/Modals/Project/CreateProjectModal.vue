@@ -3,6 +3,7 @@
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
 import type {Project} from "~/types/global";
+import Toastify from "toastify-js";
 
 type formType = {
   creator: number | undefined,
@@ -15,7 +16,7 @@ type formType = {
 const showModal = defineModel()
 const user = useUserStore().getUser();
 const {isRefresh} = useRefreshData()
-const defaultStates = ['backlog', 'open', 'in_progress', 'completed','canceled']
+const defaultStates = ['backlog', 'open', 'in_progress', 'completed', 'canceled']
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -83,7 +84,7 @@ const handleCreate = async () => {
       await useCustomFetch('/states/', {
         method: 'POST',
         body: {
-          name : state,
+          name: state,
           project: createdProjectId,
           isdefault: true
         }
@@ -98,6 +99,16 @@ const handleCreate = async () => {
     if (res.error.value.data?.name) error.name = res.error.value.data?.name[0]
     if (res.error.value.data?.description) error.description = res.error.value.data?.description[0]
     if (res.error.value.data?.thumbnail) error.thumbnail = res.error.value.data?.thumbnail[0]
+    Toastify({
+      text: 'An error occurred',
+      duration: 5000,
+      newWindow: true,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      className: "toast",
+    }).showToast();
   }
 }
 

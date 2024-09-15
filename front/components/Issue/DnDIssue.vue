@@ -43,7 +43,6 @@ const onDrop = async (e: DragEvent, state: string) => {
   if (!item) return;
   item.status = state;
   await useCustomFetch(`/issues/${item.id}/`, {
-    credentials: 'include',
     method: 'PATCH',
     body: JSON.stringify({status: state}),
   });

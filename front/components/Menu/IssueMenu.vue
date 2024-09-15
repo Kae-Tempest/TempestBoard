@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import DeleteIssueModal from "~/components/Modals/issue/deleteIssueModal.vue";
-import EditIssueModal from "~/components/Modals/issue/editIssueModal.vue";
+import DeleteIssueModal from "~/components/Modals/issue/DeleteIssueModal.vue";
+import EditIssueModal from "~/components/Modals/issue/EditIssueModal.vue";
 
 interface Props {
   id: number | null
