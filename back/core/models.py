@@ -52,7 +52,7 @@ class Issue(models.Model):
         return self.title
 
 class State(models.Model):
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, unique=True)
     project = models.ForeignKey('Project', related_name='project_states', on_delete=models.CASCADE)
     isdefault = models.BooleanField(default=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

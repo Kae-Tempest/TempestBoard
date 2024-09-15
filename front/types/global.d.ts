@@ -37,6 +37,7 @@ export type Issue = {
 }
 
 export type States = {
+    id: number;
     name: string;
     project: number;
     isdefault: Boolean;

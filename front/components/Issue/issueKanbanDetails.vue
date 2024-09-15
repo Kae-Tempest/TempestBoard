@@ -4,7 +4,6 @@ import {ref, watch} from "vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import CreateStateModal from "~/components/Modals/state/CreateStateModal.vue";
 
 interface Props {
   issueArray: Issue[];
@@ -28,7 +27,6 @@ const startDrag = (e: DragEvent, item: Issue) => {
   e.dataTransfer.dropEffect = 'move';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('itemID', item.id.toString());
-  console.log(target)
   // Créer un aperçu personnalisé
   const clone = target.cloneNode(true) as HTMLElement;
   clone.classList.add('drag-clone')
@@ -60,7 +58,6 @@ const onDrop = async (e: DragEvent, state: string) => {
 
 <template>
   <div id="kanban">
-    <CreateStateModal :projects="Projects" v-model="openCreateStateModal"/>
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
     <div v-for="state in stateArray" :key="state" class="state-list" @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
       <div class="header">
