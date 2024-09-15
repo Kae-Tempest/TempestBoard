@@ -89,7 +89,6 @@ const handleEdit = async () => {
     isRefresh.value = true
   }
   if (res.error.value !== null) {
-    console.log(res.error)
     if (res.error.value.data?.name) error.name = res.error.value.data?.name[0]
     if (res.error.value.data?.description) error.description = res.error.value.data?.description[0]
     if (res.error.value.data?.thumbnail) error.thumbnail = res.error.value.data?.thumbnail[0]

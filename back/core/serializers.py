@@ -79,14 +79,14 @@ class IssueReadSerializer(serializers.ModelSerializer):
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = ['name', 'project', 'isdefault'  , 'created_at', 'updated_at']
+        fields = ['id', 'name', 'project', 'isdefault'  , 'created_at', 'updated_at']
         extra_kwargs = {'isdefault': {'required': False}}
 
     def create(self, validated_data):
         state = State.objects.create(
             name=validated_data['name'],
             project=validated_data['project'],
-            isdefault=validated_data['isdefault']
+            isdefault=validated_data.get('isdefault', False)
         )
         return state
 
