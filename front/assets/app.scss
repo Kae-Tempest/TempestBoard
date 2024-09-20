@@ -1312,5 +1312,10 @@ body {
   }
 }
 
+.toast {
+  background-color: var(--red-400);
+  color: var(--neutral-950);
+  border: 1px solid black;
+}
 
 //}
