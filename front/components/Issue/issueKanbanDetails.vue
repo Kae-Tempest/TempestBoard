@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Issue, Project} from "~/types/global";
+import type {Issue, Project, States} from "~/types/global";
 import {ref, watch} from "vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
@@ -8,10 +8,10 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 interface Props {
   issueArray: Issue[];
   Projects: Project[];
+  States: States[];
 }
 
 const props = defineProps<Props>()
-const stateArray = ["open", "in_progress", "completed", "canceled"];
 const draggedItem = ref(0)
 const showModal = ref(false);
 const selectedState = ref("")
@@ -57,9 +57,9 @@ const onDrop = async (e: DragEvent, state: string) => {
 <template>
   <div id="kanban">
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-    <div v-for="state in stateArray" :key="state" class="state-list" @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
+    <div v-for="state in States" :key="state" class="state-list" @drop="onDrop($event, state)" @dragenter.prevent @dragover.prevent>
       <div class="header">
-        <div class="state-name">{{ useCapitalize(state) }}</div>
+        <div class="state-name">{{ useCapitalize(state.name) }}</div>
         <div class="action-icon">
           <div class="button is-small">
             <span class="icon">
