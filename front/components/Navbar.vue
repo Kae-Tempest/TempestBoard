@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project, User} from "~/types/global";
 import MenuProject from "~/components/Menu/MenuProject.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
+import Toastify from "toastify-js";
 
 interface Props {
   user: User
@@ -34,6 +35,19 @@ const logout = async () => {
   })
   useUserStore().setUser(null)
   navigateTo('/login')
+}
+
+const testToast = () => {
+  Toastify({
+    text: "Je suis un test",
+    duration: 5000,
+    newWindow: true,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    className: "toast",
+  }).showToast();
 }
 
 
@@ -82,7 +96,7 @@ const logout = async () => {
         <font-awesome-icon icon="fa-solid fa-pen-to-square"/>
         New Issue
       </button>
-      <button>
+      <button @click="testToast">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
       </button>
     </div>
