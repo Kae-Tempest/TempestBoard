@@ -54,8 +54,6 @@ const handleDelete = async (stateID: number) => {
 
   projectStatesRef.value.map((s, i) => {
     if (s.id === stateID) {
-      console.log('s.id === statedID')
-      console.log(s, i)
       projectStatesRef.value.splice(i, 1)
     }
   })
@@ -122,7 +120,16 @@ const handleUpsertState = async (stateID: number) => {
       })
       data.name = ""
     } else if (res.error.value?.message){
-      console.log(res.error.value?.message)
+      Toastify({
+        text: "Error during updating states",
+        duration: 5000,
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        className: "toast",
+      }).showToast();
       if(isCreating.value) {
         projectStatesRef.value.pop()
         data.name = ""

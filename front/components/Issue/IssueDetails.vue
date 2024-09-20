@@ -29,7 +29,7 @@ const UpdateAssignedUser = async (u: number) => {
     }
   })
   if (res.error.value) {
-    console.log(res.error, 'error')
+    // TODO : TOAST
   }
   if (!res.error.value) {
     const {data} = await useCustomFetch<User>(`/users/${u}/`);
