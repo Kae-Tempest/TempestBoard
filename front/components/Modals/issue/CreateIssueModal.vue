@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Project} from "~/types/global";
+import type {Project, States} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
 import Toastify from "toastify-js";
 
@@ -14,6 +14,7 @@ const props = defineProps<Props>()
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(500);
 const user = useUserStore().getUser();
+const projectStates = ref<States[]>([])
 const {isRefresh} = useRefreshData();
 
 onBeforeUnmount(() => {
@@ -52,6 +53,13 @@ const errors = reactive({
 
 watch(() => props.state, (newVal) => {
   if (newVal) data.status = newVal
+});
+
+watch(() => data.project, async (newVal) => {
+  if (newVal != 0) {
+    const {data: projectState} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
+    projectStates.value = projectState.value
+  }
 });
 
 const resetForm = () => {
@@ -135,10 +143,12 @@ const handleSubmit = async () => {
               <div class="select">
                 <select v-model="data.status">
                   <option disabled value="">State</option>
-                  <option value="open">Open</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="canceled">Canceled</option>
+                  <option v-if="data.project == 0" value="backlog">Backlog</option>
+                  <option v-if="data.project == 0" value="open">Open</option>
+                  <option v-if="data.project == 0" value="in_progress">In Progress</option>
+                  <option v-if="data.project == 0" value="completed">Completed</option>
+                  <option v-if="data.project == 0" value="canceled">Canceled</option>
+                  <option v-if="data.project != 0 && projectStates.length > 0" v-for="state in projectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
                 </select>
               </div>
             </div>
