@@ -3,6 +3,7 @@
 :root {
   --tabs-heigth: 2.5rem;
   --header-heigth: 3.125rem;
+  --details-header-height: 2.5rem;
   --blue-200: #bfdbfe;
   --blue-300: #93c5fd;
   --blue-500: #3b82f6;
@@ -110,6 +111,18 @@
               :hover {
                 background-color: var(--blue-200);
                 opacity: 50;
+              }
+
+              & > a {
+                padding: 0.25rem 1.5rem 0.25rem 1.5rem;
+                width: 100%;
+                transition: none;
+                & > li {
+                  color: var(--neutral-950);
+                  &:hover {
+                    background-color: transparent;
+                  }
+                }
               }
 
               & > li {
@@ -499,6 +512,10 @@
         align-items: center;
         height: var(--header-heigth);
         border-bottom: 1px solid var(--blue-800);
+        position: sticky;
+        top: 0;
+        background-color: var(--broken-white);
+        z-index: 10;
 
         & > .breadcrumb {
           &:not(:last-child) {
@@ -1350,4 +1367,221 @@
     border: 1px solid black;
   }
 
+  #details {
+    & > header {
+      display: flex;
+      justify-content: space-between;
+      height: var(--details-header-height);
+      margin: 1rem 0;
+
+      & > .left-side {
+        display: flex;
+        gap: 10px;
+
+        & > div {
+          margin-left: 1rem;
+
+          input {
+            border: 1px solid var(--blue-600);
+            min-width: 270px;
+          }
+        }
+
+        & > .select > select {
+          border-radius: 6px;
+          border: 1px solid var(--blue-600);
+          background-color: hsl(221, 14%, calc(100% + 0%));
+          min-width: 90px;
+        }
+      }
+
+      & > .right-side {
+        margin-right: 1rem;
+
+        & > button {
+          border: 1px solid #172554;
+          background-color: var(--blue-300);
+        }
+      }
+    }
+
+    & > .hero-issue {
+      display: flex;
+      & > .issue-list {
+        overflow-x: hidden;
+        //height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
+        margin: .5rem 0 .5rem 1rem;
+        padding: .5rem 1rem;
+        border-radius: 6px;
+        box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
+        background-color: var(--broken-white);
+        max-width: 270px;
+        min-width: 270px;
+
+        & > .issue-card {
+          @include SeiraFont(500);
+          height: 119px;
+          width: 236px;
+          margin: .625rem 0;
+          box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+          border-radius: 6px;
+          background-color: white;
+
+          & > .issue {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+
+            & > .issue-title {
+              padding-left: .5rem;
+            }
+
+            & > .issue-desc {
+              @include SeiraFont(400);
+              padding-left: .5rem;
+              overflow-wrap: break-word;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 100%;
+              max-height: 60%;
+            }
+
+            & > .issue-footer {
+              display: flex;
+              justify-content: space-between;
+              padding: 0 .25rem;
+            }
+          }
+        }
+      }
+      & > .issue-info {
+        min-width: 600px;
+        flex: 1;
+        & > .issue-details {
+          & > .breadcrumb.is-small {
+            border-bottom: 1px solid var(--neutral-950);
+            @include SeiraFont(500);
+            font-size: 14px;
+            & > ul {
+              & > li {
+                margin: 0;
+                & > a {
+                  &:link {
+                    color: var(--neutral-950);
+                  }
+                  &:visited {
+                    color: var(--neutral-950);
+                  }
+                  &:hover {
+                    color: var(--blue-600);
+                  }
+                  &:active {
+                    color: var(--neutral-950);
+                  }
+                }
+                &::before{
+                  padding: 0 .5rem;
+                }
+              }
+            }
+          }
+          & > .content {
+            & > h2 {
+              margin: .5rem 2rem;
+              @include SeiraFont(800);
+            }
+            & > hr {
+              background-color: var(--neutral-950);
+              height: 1px;
+            }
+            & > div {
+              margin-top: 2.5rem;
+              @include SeiraFont(400);
+              text-align: center;
+
+            }
+            & > .activity {
+              margin: 0 auto;
+              text-align: left;
+              width: 50%;
+              & > .header {
+                @include SeiraFont(500);
+              }
+              & > .activity-list {
+                margin: .5rem 0;
+                & > .comment {
+                  box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+                  border-radius: .25rem;
+                  & > .info {
+                    display: flex;
+                    gap: .75rem;
+                    margin-left: .75rem;
+                    & > .user-info {
+                      display: flex;
+                      gap: .5rem;
+                      & > .thumbnail {
+                        height: 24px;
+                      }
+                    }
+                  }
+                  & > .content {
+                    margin-top: .375rem;
+                    margin-left: 1rem
+                  }
+                }
+              }
+            }
+          }
+
+        }
+      }
+      & > .issue-details-info {
+        min-width: 550px;
+        margin-right: 2rem;
+        & > select, button {
+          border-radius: 6px;
+          border: 1px solid var(--blue-600);
+          background-color: hsl(221, 14%, calc(100% + 0%));
+          min-width: 90px;
+          padding: .75rem;
+          height: 50px;
+        }
+        & > select {
+          margin-right: 1rem;
+          font-size: 1rem;
+        }
+        & > .details-info {
+          margin-top: 2rem;
+          & > .details-title {
+            padding: .25rem;
+            border: 1px solid hsla(221, 14%, 4%, .25);
+            box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+            border-bottom: none;
+            border-radius: .25rem .25rem 0 0;
+            background-color: var(--blue-200)
+          }
+          & > .infos {
+            padding: .25rem;
+            border: 1px solid hsla(221, 14%, 4%, .25);
+            box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+            border-radius: 0 0 .25rem .25rem;
+            & > .info {
+              display: flex;
+              justify-content: space-between;
+              & > .important-info {
+                & > .priority {
+                  display: flex;
+                  & > div {
+                    margin: 0 .25rem;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

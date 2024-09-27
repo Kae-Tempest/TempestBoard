@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type {Issue, Project, States, User} from "~/types/global";
-import IssueListDetails from "~/components/Issue/IssueListDetails.vue";
+import IssueListDetails from "~/components/Issue/ListView/IssueListDetails.vue";
 import IssueMenu from "~/components/Menu/IssueMenu.vue";
 
 interface Props {

@@ -4,12 +4,14 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Issue, Project, User} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
 import {useCustomFetch} from "~/composables/useCustomFetch";
-import IssueList from "~/components/Issue/IssueList.vue";
+import IssueList from "~/components/Issue/ListView/IssueList.vue";
+import IssueKanban from "~/components/Issue/KanbanView/IssueKanban.vue";
+import IssueDetail from "~/components/Issue/DetailView/IssueDetail.vue";
 
 useHead({title: 'Home - Tempest Board'})
-const viewMode = ref("list");
+const viewMode = ref("details");
 const typeView = ref("all");
-const Title = ref("All");
+const Title = ref("List");
 
 const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
@@ -29,7 +31,7 @@ const {data: userList, refresh: userRefresh } = await useCustomFetch<User[]>(`/u
 onMounted(async () => {
   await refresh()
   await issueRefresh()
-   await userRefresh()
+  await userRefresh()
   projects.value = data.value as Project[]
 
   issueArray.value = issueData.value as Issue[]
@@ -69,17 +71,17 @@ watch(() => isRefresh.value, async (newVal) => {
         </nav>
         <div class="tabs is-small">
           <ul>
-            <li :class="{ 'is-active': viewMode === 'list' }" @click="viewMode = 'list'">
+            <li :class="{ 'is-active': viewMode === 'list' }" @click="viewMode = 'list'; Title = 'List'">
               <a>
                 <font-awesome-icon icon="fa-solid fa-bars"/>
               </a>
             </li>
-            <li :class="{ 'is-active': viewMode === 'kanban' }" @click="viewMode = 'kanban'">
+            <li :class="{ 'is-active': viewMode === 'kanban' }" @click="viewMode = 'kanban'; Title = 'Kanban'">
               <a>
                 <font-awesome-icon icon="fa-solid fa-grip-vertical"/>
               </a>
             </li>
-            <li :class="{ 'is-active': viewMode === 'details' }" @click="viewMode = 'details'">
+            <li :class="{ 'is-active': viewMode === 'details' }" @click="viewMode = 'details'; Title = 'Details'">
               <a>
                 <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="2.5" cy="4.5" r="1.5"/>
@@ -92,16 +94,16 @@ watch(() => isRefresh.value, async (newVal) => {
           </ul>
         </div>
       </div>
-      <div class="typeview-tabs">
+      <div v-if="viewMode !== 'details'" class="typeview-tabs">
         <div class="tabs">
           <ul>
-            <li :class="{ 'is-active': typeView === 'all' }" @click="typeView = 'all'; Title = 'All'">
+            <li :class="{ 'is-active': typeView === 'all' }" @click="typeView = 'all';">
               <a>All</a>
             </li>
-            <li :class="{ 'is-active': typeView === 'created' }" @click="typeView = 'created'; Title = 'Created'">
+            <li :class="{ 'is-active': typeView === 'created' }" @click="typeView = 'created';">
               <a>Created</a>
             </li>
-            <li :class="{ 'is-active': typeView === 'assigned' }" @click="typeView = 'assigned'; Title = 'Assigned'">
+            <li :class="{ 'is-active': typeView === 'assigned' }" @click="typeView = 'assigned';">
               <a>Assigned</a>
             </li>
           </ul>
@@ -109,8 +111,9 @@ watch(() => isRefresh.value, async (newVal) => {
       </div>
       <div class="issues">
         <div>
-          <IssueList v-if="viewMode === 'list'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users"/>
+          <IssueList v-if="viewMode === 'list' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users"/>
           <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"/>
+          <IssueDetail v-if="viewMode === 'details' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users"/>
         </div>
       </div>
     </div>

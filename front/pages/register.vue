@@ -29,7 +29,7 @@ const handleSubmit = async () => {
   if (res.data.value != null) {
     const user = res.data.value;
     useUserStore().setUser(user);
-    await navigateTo('/');
+    await navigateTo('/project');
   } else if (res.error.value?.data) {
     if (res.error.value?.data?.username) errors.username = res.error.value?.data?.username[0];
     if (res.error.value?.data?.email) errors.email = res.error.value?.data?.email[0];
