@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import User, Project, Issue, Role, Tag, State
+from .models import User, Project, Issue, Role, Tag, State, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -43,8 +43,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
-        extra_kwargs = {'ticket_id': {'read_only': True}}
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'milestone', 'attachment' ,'created_at', 'updated_at']
+        extra_kwargs = {'ticket_id': {'read_only': True}, 'attachment': {'required': False}, 'milestone': {'required': False}}
 
     def validate(self, attrs):
         attrs.pop('ticket_id', None)
@@ -57,7 +57,7 @@ class IssueSerializer(serializers.ModelSerializer):
             issue_count = 1
         else:
             issue_count = last_issue.ticket_id + 1
-        return Issue.objects.create(
+        issue = Issue.objects.create(
             creator=validated_data['creator'],
             assigned=validated_data['assigned'],
             project=validated_data['project'],
@@ -66,7 +66,11 @@ class IssueSerializer(serializers.ModelSerializer):
             description=validated_data['description'],
             priority=validated_data['priority'],
             status=validated_data['status'],
+            milestone=validated_data.get('milestone'),
+            attachment=validated_data.get('attachment')
         )
+        # log Activity -> create issue
+        return issue
 
 class IssueReadSerializer(serializers.ModelSerializer):
     creator = UserSerializer(read_only=True)
@@ -79,14 +83,14 @@ class IssueReadSerializer(serializers.ModelSerializer):
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = ['id', 'name', 'project', 'isdefault'  , 'created_at', 'updated_at']
-        extra_kwargs = {'isdefault': {'required': False}}
+        fields = ['id', 'name', 'project', 'is_default'  , 'created_at', 'updated_at']
+        extra_kwargs = {'is_default': {'required': False}}
 
     def create(self, validated_data):
         state = State.objects.create(
             name=validated_data['name'],
             project=validated_data['project'],
-            isdefault=validated_data.get('isdefault', False)
+            is_default=validated_data.get('is_default', False)
         )
         return state
 
@@ -114,3 +118,23 @@ class LoginSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError("Invalid Credentials")
         return user
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'issue', 'user', 'content', 'is_answer', 'comment_parent', 'is_thread', 'is_resolved', 'attachment', 'created_at', 'updated_at']
+        extra_kwargs = {'attachment': {'required': False}, 'comment_parent': {'required': False}}
+
+        def validate(self, attrs):
+            comment = Comment.objects.create(
+                issue=attrs['issue'],
+                user=attrs['user'],
+                content=attrs['content'],
+                is_answer=attrs['is_answer'],
+                comment_parent=attrs.get('comment_parent'),
+                is_thread=attrs['is_thread'],
+                is_resolved=attrs['is_resolved'],
+                attachment=attrs.get('attachment')
+            )
+            # log activity on issue 
+            return comment

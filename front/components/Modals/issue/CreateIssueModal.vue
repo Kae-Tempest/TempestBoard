@@ -58,7 +58,7 @@ watch(() => props.state, (newVal) => {
 watch(() => data.project, async (newVal) => {
   if (newVal != 0) {
     const {data: projectState} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
-    projectStates.value = projectState.value
+    projectStates.value = projectState.value as States[]
   }
 });
 

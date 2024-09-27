@@ -1,10 +1,12 @@
 from django.contrib.auth import login, logout
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from markdown2 import Markdown
 from rest_framework import viewsets, views, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .models import User, Project, Issue, Role, Tag, State
-from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer
+from .models import User, Project, Issue, Role, Tag, State, Comment
+from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -66,6 +68,25 @@ class IssueViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Issue.objects.filter(project__creator_id=self.request.user)
 
+
+class MyIssueAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        createdIssues = Issue.objects.filter(creator_id=request.user)
+        assignedIssues = Issue.objects.filter(assigned_id=request.user)
+        serializer = IssueReadSerializer(createdIssues.union(assignedIssues), many=True)
+        for issue in serializer.data:
+            issue['description'] = Markdown(
+                safe_mode="escape",
+                extras={
+                    "breaks": {"on_newline": True},
+                },
+            ).convert(issue['description'])
+
+        return Response(serializer.data)
+
+
 class StateViewSet(viewsets.ModelViewSet):
     queryset = State.objects.all()
     serializer_class = StateSerializer
@@ -85,15 +106,27 @@ class ProjectStateViewSet(views.APIView):
         serializer = StateSerializer(states, many=True)
         return Response(serializer.data)
 
-class MyIssueAPIView(views.APIView):
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        createdIssues = Issue.objects.filter(creator_id=request.user)
-        assignedIssues = Issue.objects.filter(assigned_id=request.user)
-        serializer = IssueReadSerializer(createdIssues.union(assignedIssues), many=True)
-        return Response(serializer.data)
+    def create(self, request, *args, **kwargs):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
+class CommentIssueAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        comments = Comment.objects.filter(issue=pk)
+        for comment in comments:
+            comment.updated_at = naturaltime(comment.updated_at)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()

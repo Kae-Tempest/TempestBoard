@@ -5,3 +5,4 @@ python-dotenv==1.0.1
 psycopg[binary]
 django_extensions==3.2.3
 Pillow==10.4.0
+markdown2[all]

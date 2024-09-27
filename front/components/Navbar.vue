@@ -76,9 +76,9 @@ const testToast = () => {
                 <li>
                   <NuxtLink to="#">Settings</NuxtLink>
                 </li>
-                <li>
-                  <NuxtLink to="/project">Project</NuxtLink>
-                </li>
+                <NuxtLink to="/project"><li>
+                  Project
+                </li></NuxtLink>
                 <li>
                   <button @click="logout()">
                     Logout

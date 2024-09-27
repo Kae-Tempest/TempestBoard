@@ -29,7 +29,7 @@ watch(() => CreateStateRef.value, () => {
       id: -1,
       name: "",
       project: props.project.id,
-      isdefault: false,
+      is_default: false,
       created_at: new Date(),
       updated_at: new Date(),
     }
@@ -152,7 +152,7 @@ const handleUpsertState = async (stateID: number) => {
       <div v-if="editedState === state.name" class="state-name">
         <input type="text" class="input" :placeholder="state.name" v-model="data.name">
       </div>
-      <div v-if="!state.isdefault && editedState !== state.name" class="state-options">
+      <div v-if="!state.is_default && editedState !== state.name" class="state-options">
         <div class="edit-icon" @click="editedState = state.name; data.name = state.name">
           <button class="button">
             <span class="icon">
@@ -168,7 +168,7 @@ const handleUpsertState = async (stateID: number) => {
           </button>
         </div>
       </div>
-      <div v-if="!state.isdefault && editedState === state.name" class="state-options">
+      <div v-if="!state.is_default && editedState === state.name" class="state-options">
         <div class="check-icon">
           <button class="button" @click="handleUpsertState(state.id)">
            <span class="icon">

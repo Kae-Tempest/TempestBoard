@@ -86,7 +86,7 @@ const handleCreate = async () => {
         body: {
           name: state,
           project: createdProjectId,
-          isdefault: true
+          is_default: true
         }
       })
     }

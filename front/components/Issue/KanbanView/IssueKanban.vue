@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Issue, Project, States} from "~/types/global";
-import IssueKanbanDetails from "~/components/Issue/issueKanbanDetails.vue";
+import IssueKanbanDetails from "~/components/Issue/KanbanView/issueKanbanDetails.vue";
 
 
 interface Props {
