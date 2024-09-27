@@ -31,6 +31,5 @@
   "devDependencies": {
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/toastify-js": "^1"
-  },
-  "packageManager": "yarn@4.1.1"
+  }
 }
