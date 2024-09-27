@@ -3,7 +3,7 @@
 import type {Issue, Project, States, User} from "~/types/global";
 import {ref, watch} from 'vue'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import DnDIssue from "~/components/Issue/DnDIssue.vue";
+import DnDIssue from "~/components/Issue/ListView/DnDIssue.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 
 interface Props {

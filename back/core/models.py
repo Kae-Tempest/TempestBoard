@@ -45,6 +45,8 @@ class Issue(models.Model):
     priority = models.CharField(max_length=10)
     status = models.CharField(max_length=11)
     tags = models.ManyToManyField('Tag', blank=True, related_name='tags')
+    milestone = models.CharField(max_length=150, blank=True, null=True)
+    attachment = models.FileField(upload_to='attachment/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,7 +56,7 @@ class Issue(models.Model):
 class State(models.Model):
     name = models.CharField(max_length=25, unique=True)
     project = models.ForeignKey('Project', related_name='project_states', on_delete=models.CASCADE)
-    isdefault = models.BooleanField(default=False, blank=True)
+    is_default = models.BooleanField(default=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -80,3 +82,29 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+class Activity(models.Model):
+    type = models.CharField(max_length=100)
+    issue = models.ForeignKey('Issue', related_name='activity', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', related_name='activity', on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content
+
+class Comment(models.Model):
+    issue = models.ForeignKey('Issue', related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', related_name='comments', on_delete=models.CASCADE)
+    content = models.TextField()
+    is_answer = models.BooleanField(default=False)
+    comment_parent = models.ForeignKey('self', related_name='comments', on_delete=models.CASCADE, null=True, blank=True)
+    is_thread = models.BooleanField(default=False)
+    is_resolved = models.BooleanField(default=False)
+    attachment = models.FileField(upload_to='attachment/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content

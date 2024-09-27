@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type {Issue} from "~/types/global";
+import type {Issue, States} from "~/types/global";
 import {ref} from "vue";
 
 interface Props {
-  issueId: number | null
+  issueId: Number | null
 }
 
 const props = defineProps<Props>()
@@ -12,6 +12,7 @@ const {isRefresh} = useRefreshData()
 const SelectedPriority = ref("");
 const SelectedState = ref("");
 const count = ref(500);
+const projectStates = ref<States[]>([])
 
 
 onBeforeUnmount(() => {
@@ -40,10 +41,12 @@ const resetForm = () => {
 watch(showModal, async () => {
   count.value = 500
   const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
-  data.title = issue.value?.title || "Any Issue";
-  data.description = issue.value?.description || "Any Issue";
-  data.priority = issue.value?.priority || "Any Issue";
-  data.status = issue.value?.status || "Any Issue";
+  const {data: projectState } = await useCustomFetch<States[]>(`/project/${issue.value?.project}/states`)
+  data.title = issue.value!.title;
+  data.description = issue.value!.description;
+  data.priority = issue.value!.priority;
+  data.status = issue.value!.status;
+  projectStates.value = projectState.value as States[]
 
   count.value = count.value - data.description.length
 
@@ -104,10 +107,7 @@ const handleEdit = async () => {
               <div class="select">
                 <select v-model="SelectedState">
                   <option disabled value="">State</option>
-                  <option value="open">Open</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="canceled">Canceled</option>
+                  <option v-for="state in projectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
                 </select>
               </div>
             </div>
