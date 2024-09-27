@@ -7,8 +7,6 @@ WORKDIR /app
 # Copier package.json et package-lock.json (si présent) dans le conteneur
 COPY . .
 
-RUN corepack enable && yarn set version stable
-
 # Installer les dépendances
 RUN yarn
 
