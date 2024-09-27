@@ -1853,6 +1853,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^22.7.3":
+  version: 22.7.3
+  resolution: "@types/node@npm:22.7.3"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10c0/0e579813528b0370454337a952f43b792cd12731e10fdca0fdb627158e980c1219bba99e9048c134b6a19325d817016059afe016ccd372326c838a1b85a51574
+  languageName: node
+  linkType: hard
+
 "@types/resolve@npm:1.20.2":
   version: 1.20.2
   resolution: "@types/resolve@npm:1.20.2"
@@ -5565,6 +5574,7 @@ __metadata:
     "@fortawesome/vue-fontawesome": "npm:^3.0.6"
     "@pinia-plugin-persistedstate/nuxt": "npm:^1.2.0"
     "@pinia/nuxt": "npm:^0.5.1"
+    "@types/node": "npm:^22.7.3"
     "@types/toastify-js": "npm:^1"
     axios: "npm:^1.6.7"
     bulma: "npm:^1.0.0"
