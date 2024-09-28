@@ -26,6 +26,7 @@ export type Issue = {
     creator: User;
     assigned: User;
     project: number;
+    project_tag: string;
     ticket_id: number;
     title: string;
     description: string;

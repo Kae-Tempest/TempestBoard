@@ -58,7 +58,7 @@ watch(() => isRefresh.value, async (newVal) => {
         <ProjectSettingsModal v-if="selectedProject" :project="selectedProject" v-model="showSettingsModal"/>
         <!--   Project List   -->
         <div v-for="project in projects.sort((p, p2) => p.id - p2.id)">
-          <CardProjectCard :project="project" :user="user" v-model:edit="showEditModal" v-model:delete="showDeleteModal" v-model:settings="showSettingsModal" v-model:selectedProject="selectedProject"/>
+          <CardProjectCard v-if="user" :project="project" :user="user" v-model:edit="showEditModal" v-model:delete="showDeleteModal" v-model:settings="showSettingsModal" v-model:selectedProject="selectedProject"/>
         </div>
       </div>
     </div>
