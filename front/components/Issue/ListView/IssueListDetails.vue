@@ -9,11 +9,11 @@ import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 interface Props {
   issueArray: Issue[];
   Projects: Project[];
-  States: States[] | null;
+  States: States[];
   Users: User[];
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 
 const showModal = ref(false);
@@ -21,6 +21,21 @@ const selectedState = ref("")
 const dropdownIdOpen = ref<number | null>(null)
 const IssueID = defineModel()
 const IssuePos = defineModel('pos')
+const filteredState = computed(() => filterUniqueState(props.States))
+
+const filterUniqueState = (states: States[]): States[] => {
+  const uniqueStates = new Map<string, States>();
+
+  states.forEach(state => {
+    if (!uniqueStates.has(state.name) || state.updated_at > uniqueStates.get(state.name)!.updated_at) {
+      uniqueStates.set(state.name, state);
+    }
+  });
+
+  return Array.from(uniqueStates.values());
+}
+
+
 
 watch(() => showModal.value, (newVal) => {
   if (!newVal) selectedState.value = ""
@@ -38,7 +53,7 @@ watch(() => IssueID.value, (newVal) => {
 
 <template>
   <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-  <div v-for="state in States" :key="state.name" class="wrapper-issue-list">
+  <div v-for="state in filteredState" :key="state.name" class="wrapper-issue-list">
     <div class="issue-header">
       <div class="issue-state">
 <!--        <IssueIcon :state="state.name"/>-->
