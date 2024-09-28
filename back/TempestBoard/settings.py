@@ -29,15 +29,16 @@ SECRET_KEY = 'django-insecure-_3^1k8l1x)zj7i@&*^0w=#xh1ppvyz%i^)eoew$bb*38stv2n6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:8000",
     "http://localhost:80",
     "http://django:8000",
+    "http://tempestboard.gloupi.com"
 ]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://localhost:80","http://django:8000","http://172.18.0.4:3000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://localhost:80","http://django:8000","http://172.18.0.4:3000", "http://tempestboard.gloupi.com"]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ["Content-Type", "x-csrftoken"]
 
