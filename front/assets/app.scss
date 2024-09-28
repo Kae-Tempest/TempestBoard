@@ -1166,7 +1166,7 @@
   }
 
   .tooltip {
-    position: relative;
+    //position: relative;
   }
 
   .tooltip .tooltip-text {
@@ -1409,7 +1409,7 @@
       display: flex;
       & > .issue-list {
         overflow-x: hidden;
-        //height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
+        min-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
         margin: .5rem 0 .5rem 1rem;
         padding: .5rem 1rem;
         border-radius: 6px;

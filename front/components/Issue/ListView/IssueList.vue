@@ -28,7 +28,7 @@ onMounted(() => {
 
 <template>
   <IssueMenu v-if="issueId" :id="issueId" :pos="MenuPos"/>
-  <IssueListDetails v-if="typeView === 'all'" :issueArray="issueArray" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
-  <IssueListDetails v-if="typeView === 'created'" :issueArray="createdIssue" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
-  <IssueListDetails v-if="typeView === 'assigned'" :issueArray="assignedIssue" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
+  <IssueListDetails v-if="typeView === 'all' && allStates" :issueArray="issueArray" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
+  <IssueListDetails v-if="typeView === 'created' && allStates" :issueArray="createdIssue" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
+  <IssueListDetails v-if="typeView === 'assigned' && allStates" :issueArray="assignedIssue" :Projects="Projects" :States="allStates" v-model="issueId" v-model:pos="MenuPos" :Users="users"/>
 </template>

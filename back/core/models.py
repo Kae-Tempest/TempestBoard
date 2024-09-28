@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager
+from .utils import checkfilesize
 
 
 class User(AbstractUser):
@@ -27,9 +28,14 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True,null=True)
     status = models.CharField(max_length=20)
-    thumbnail = models.ImageField(upload_to='thumbnail/project/', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='thumbnail/project/', blank=True, null=True, validators=[checkfilesize])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['creator', 'name'], name='unique_project_creator_name'),
+        ]
 
     def __str__(self):
         return self.name
@@ -39,6 +45,7 @@ class Issue(models.Model):
     creator = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_issue')
     assigned = models.ForeignKey('User', on_delete=models.CASCADE, related_name='assigned_issue')
     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='issues')
+    project_tag = models.CharField(max_length=3)
     ticket_id = models.IntegerField()
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True,null=True)
@@ -54,11 +61,16 @@ class Issue(models.Model):
         return self.title
 
 class State(models.Model):
-    name = models.CharField(max_length=25, unique=True)
+    name = models.CharField(max_length=25)
     project = models.ForeignKey('Project', related_name='project_states', on_delete=models.CASCADE)
     is_default = models.BooleanField(default=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'project'], name='unique_project_state'),
+        ]
 
     def __str__(self):
         return self.name

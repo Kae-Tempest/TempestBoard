@@ -305,7 +305,7 @@ const handleCreateComment = async () => {
           <option v-if="issueInfo.project.id === 0" value="canceled">Canceled</option>
           <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0" v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
         </select>
-        <button class="button" @click="showUpdateModal = true; editedIssueID = issueInfo.issue.id">Update</button>
+        <button class="button" @click="showUpdateModal = true; editedIssueID = issueInfo.issue.id">Edit</button>
         <div class="details-info">
           <div class="details-title">Details</div>
           <div class="infos">

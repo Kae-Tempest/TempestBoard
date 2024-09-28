@@ -48,7 +48,7 @@ watch(() => editedState.value, (newVal) => {
 })
 
 const handleDelete = async (stateID: number) => {
-  const res = await useCustomFetch(`/states/${stateID}/`, {
+  await useCustomFetch(`/states/${stateID}/`, {
     method: 'DELETE',
   })
 

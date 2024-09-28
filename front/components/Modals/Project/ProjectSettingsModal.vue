@@ -28,27 +28,25 @@ const resetForm = () => {
   projectUsers.value = []
 }
 
-const {data: projectStateData, refresh: projectStateRefresh } = await useCustomFetch<States[]>(`/project/${props.project.id}/states/`)
 
 
 const handleFetch = async () => {
   const {data: pUsers} = await useCustomFetch<User[]>(`/projects/${props.project.id}/users/`)
   const {data: usersData} = await useCustomFetch<User[]>('/users/')
-  await projectStateRefresh()
+  const {data: projectStateData} = await useCustomFetch<States[]>(`/project/${props.project.id}/states/`)
   users.value = usersData.value as User[]
   projectUsers.value = pUsers.value as User[]
   projectState.value = projectStateData.value as States[]
 }
 
 watch(() => showModal.value, async (newVal) => {
-  if (newVal) {
-    await handleFetch()
-  }
+  if(newVal) await handleFetch()
 })
 
 watch(() => openCreateStateModal.value, async (newVal) => {
   if (newVal) {
-    await projectStateRefresh()
+    const {data: projectStateData} = await useCustomFetch<States[]>(`/project/${props.project.id}/states/`)
+    projectState.value = projectStateData.value as States[]
   }
 })
 
@@ -132,7 +130,7 @@ const handleUpdate = async () => {
             </div>
           </div>
         </div>
-        <button class="button" @click="showModal=false">Cancel</button>
+        <button class="button" @click="showModal=false; tabs = 'users'; projectState = [] ">Cancel</button>
       </div>
     </div>
   </div>

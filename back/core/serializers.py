@@ -43,24 +43,28 @@ class ProjectSerializer(serializers.ModelSerializer):
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'milestone', 'attachment' ,'created_at', 'updated_at']
-        extra_kwargs = {'ticket_id': {'read_only': True}, 'attachment': {'required': False}, 'milestone': {'required': False}}
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag', 'title', 'description', 'priority', 'status', 'milestone', 'attachment' ,'created_at', 'updated_at']
+        extra_kwargs = {'ticket_id': {'read_only': True}, 'project_tag': { 'read_only': True }, 'attachment': {'required': False}, 'milestone': {'required': False}}
 
     def validate(self, attrs):
         attrs.pop('ticket_id', None)
+        attrs.pop('project_tag', None)
         return super().validate(attrs)
 
     def create(self, validated_data):
+        project = validated_data['project']
         issue_count = Issue.objects.filter(project=validated_data['project']).count()
         last_issue = Issue.objects.filter(project=validated_data['project']).last()
         if issue_count == 0:
             issue_count = 1
         else:
             issue_count = last_issue.ticket_id + 1
+        project_tag = project.name[:3].upper()
         issue = Issue.objects.create(
             creator=validated_data['creator'],
             assigned=validated_data['assigned'],
-            project=validated_data['project'],
+            project=project,
+            project_tag=project_tag,
             ticket_id=issue_count,
             title=validated_data['title'],
             description=validated_data['description'],
@@ -77,7 +81,7 @@ class IssueReadSerializer(serializers.ModelSerializer):
     assigned = UserSerializer(read_only=True)
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag' ,'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
         extra_kwargs = {'ticket_id': {'read_only': True}}
 
 class StateSerializer(serializers.ModelSerializer):
@@ -136,5 +140,5 @@ class CommentSerializer(serializers.ModelSerializer):
                 is_resolved=attrs['is_resolved'],
                 attachment=attrs.get('attachment')
             )
-            # log activity on issue 
+            # log activity on issue
             return comment

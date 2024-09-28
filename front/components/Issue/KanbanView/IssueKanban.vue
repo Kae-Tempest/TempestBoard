@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <IssueKanbanDetails v-if="typeView === 'all'" :issueArray="issueArray" :Projects="Projects" :States="allStates"/>
-  <IssueKanbanDetails v-if="typeView === 'created'" :issueArray="createdIssue" :Projects="Projects" :States="allStates"/>
-  <IssueKanbanDetails v-if="typeView === 'assigned'" :issueArray="assignedIssue" :Projects="Projects" :States="allStates"/>
+  <IssueKanbanDetails v-if="typeView === 'all' && allStates" :issueArray="issueArray" :Projects="Projects" :States="allStates"/>
+  <IssueKanbanDetails v-if="typeView === 'created' && allStates" :issueArray="createdIssue" :Projects="Projects" :States="allStates"/>
+  <IssueKanbanDetails v-if="typeView === 'assigned' && allStates" :issueArray="assignedIssue" :Projects="Projects" :States="allStates"/>
 </template>
