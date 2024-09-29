@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Project, States} from "~/types/global";
+import type {Issue, Project, States} from "~/types/global";
 import {useUserStore} from "~/stores/useUserStore";
 import Toastify from "toastify-js";
 
@@ -10,6 +10,14 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: "Issue Created",
+  issue: 0,
+  user: 0,
+})
 
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(500);
@@ -92,7 +100,10 @@ const handleSubmit = async () => {
       className: "toast",
     }).showToast();
   }
-  if (res.data.value !== null) {
+  if (res.data.value) {
+    wsActivityMessage.issue = (res.data.value as Issue).id
+    wsActivityMessage.user = user!.id
+    sendMessage(JSON.stringify(wsActivityMessage))
     isRefresh.value = true
     showModal.value = false;
     resetForm();

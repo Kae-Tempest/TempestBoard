@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,22 +30,11 @@ SECRET_KEY = 'django-insecure-_3^1k8l1x)zj7i@&*^0w=#xh1ppvyz%i^)eoew$bb*38stv2n6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:80",
-    "http://django:8000",
-    "http://tempestboard.gloupi.com"
-]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://localhost:80","http://django:8000","http://172.18.0.4:3000", "http://tempestboard.gloupi.com"]
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = ["Content-Type", "x-csrftoken"]
-
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'core',
-    'django_extensions'
+    'django_extensions',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -85,8 +75,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'TempestBoard.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -168,4 +156,30 @@ AUTHENTICATION_BACKENDS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-FILE_UPLOAD_MAX_MEMORY_SIZE = 3145728
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:80",
+    "http://django:8000",
+    "http://tempestboard.gloupi.com",
+]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://localhost:80", "http://django:8000", "http://172.18.0.4:3000", "http://tempestboard.gloupi.com"]
+CORS_ALLOW_CREDENTIALS = True
+# WebSocket URL configuration
+CORS_ALLOWED_ORIGINS += [origin.replace('http', 'ws') for origin in CORS_ALLOWED_ORIGINS]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "connection",
+    "upgrade",
+]
+
+ASGI_APPLICATION = 'TempestBoard.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)],
+        }
+    }
+}

@@ -57,7 +57,7 @@ onBeforeUpdate(() => {
   if (issueInfo.value === null) {
     if (props.issueArray.length > 0 && props.Projects.length > 0) {
       const project = props.Projects.find(p => p.id === props.issueArray[0].project)
-      const issue = props.issueArray[0]
+      const issue = props.issueArray.sort((a,b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0]
       if (project && issue) {
         issueInfo.value = {issue, project}
       }
