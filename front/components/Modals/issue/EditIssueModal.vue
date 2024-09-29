@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import {ActivityContent, type Issue, type States} from "~/types/global"
+import type {Issue, States} from "~/types/global"
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import {reactive, ref} from "vue";
 
 interface Props {
@@ -13,6 +14,7 @@ const SelectedPriority = ref("");
 const SelectedState = ref("");
 const count = ref(500);
 const projectStates = ref<States[]>([])
+const issueInfo = ref<Issue>()
 const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
@@ -48,17 +50,16 @@ watch(showModal, async () => {
   count.value = 500
   const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
   const {data: projectState } = await useCustomFetch<States[]>(`/project/${issue.value?.project}/states`)
-  data.title = issue.value!.title;
-  data.description = issue.value!.description;
-  data.priority = issue.value!.priority;
-  data.status = issue.value!.status;
+  if(!issue.value) return
+  data.title = issue.value.title;
+  data.description = issue.value.description;
+  data.priority = issue.value.priority;
+  data.status = issue.value.status;
+  issueInfo.value = issue.value
   projectStates.value = projectState.value as States[]
-
   count.value = count.value - data.description.length
-
   SelectedPriority.value = data.priority.toLowerCase()
   SelectedState.value = data.status
-
 })
 
 const data = reactive({
@@ -67,6 +68,15 @@ const data = reactive({
   priority: "",
   status: ""
 })
+
+watch(() => SelectedPriority.value, newVal => {
+  if(newVal) data.priority = SelectedPriority.value
+})
+
+watch(() => SelectedState.value, newVal => {
+  if(newVal) data.status = SelectedState.value
+})
+
 
 const handleSendMessage = (action: string) => {
   if(!props.issueId) return
@@ -77,16 +87,17 @@ const handleSendMessage = (action: string) => {
 }
 
 const handleEdit = async () => {
+  if(!issueInfo.value) return
   const res = await useCustomFetch(`/issues/${props.issueId}/`, {
     method: 'patch',
     body: JSON.stringify(data)
   })
 
   if(res.data.value) {
-    if (data.title != "") handleSendMessage(ActivityContent.EDIT_TITLE)
-    if (data.description != "") handleSendMessage(ActivityContent.EDIT_DESCRIPTION)
-    if (data.status != "") handleSendMessage(ActivityContent.EDIT_STATUS)
-    if (data.priority != "") handleSendMessage(ActivityContent.EDIT_PRIORITY)
+    if (data.title != issueInfo.value.title) handleSendMessage(ActivityContent.EDIT_TITLE)
+    if (data.description != issueInfo.value.description) handleSendMessage(ActivityContent.EDIT_DESCRIPTION)
+    if (data.status != issueInfo.value.status) handleSendMessage(ActivityContent.EDIT_STATUS)
+    if (data.priority != issueInfo.value.priority) handleSendMessage(ActivityContent.EDIT_PRIORITY)
   }
 
   isRefresh.value = true

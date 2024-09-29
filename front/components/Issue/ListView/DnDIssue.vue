@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import {ActivityContent, type Issue, type Project, type User} from "~/types/global";
+import type {Issue, Project, User} from "~/types/global";
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import IssueDetails from "~/components/Issue/ListView/IssueDetails.vue";
 import {reactive} from "vue";
 import {useUserStore} from "~/stores/useUserStore";

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import {ActivityContent, type Issue, type Project, type States} from "~/types/global"
+import type {Issue, Project, States} from "~/types/global"
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
+
 import {useUserStore} from "~/stores/useUserStore";
 import Toastify from "toastify-js";
 

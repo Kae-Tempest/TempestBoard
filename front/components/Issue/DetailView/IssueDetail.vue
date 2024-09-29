@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Comment, Issue, Project, States, User} from "~/types/global";
-import {ActivityContent} from "~/types/global"
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import IssueCardList from "~/components/Issue/DetailView/IssueCardList.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
@@ -42,7 +42,7 @@ const selectedView = ref<String>("all")
 const projectStates = ref<States[]>([])
 const showModal = ref<boolean>(false)
 const showUpdateModal = ref<boolean>(false)
-const editedIssueID = ref<Number>(0)
+const editedIssueID = ref<number>(0)
 const issueInfo = ref<{ issue: Issue, project: Project } | null>(null)
 const isFiltered = ref<Boolean>(false)
 const filteredIssueArray = ref<Issue[]>([])
@@ -83,6 +83,17 @@ onMounted(() => {
       if (project && issue) {
         issueInfo.value = {issue, project}
       }
+    }
+  }
+})
+
+watch(() => props.issueArray, () => {
+  if(!issueInfo.value) return
+  if (props.issueArray.length > 0 && props.Projects.length > 0) {
+    const project = props.Projects.find(p => p.id === issueInfo.value?.project.id)
+    const issue = props.issueArray.find(i => i.id === issueInfo.value?.issue.id)
+    if (project && issue) {
+      issueInfo.value = {issue, project}
     }
   }
 })
@@ -318,6 +329,7 @@ const handleCreateComment = async () => {
           <option v-if="issueInfo.project.id === 0" value="canceled">Canceled</option>
           <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0" v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
         </select>
+
         <button class="button" @click="showUpdateModal = true; editedIssueID = issueInfo.issue.id">Edit</button>
         <div class="details-info">
           <div class="details-title">Details</div>
