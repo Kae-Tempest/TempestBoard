@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import User, Project, Issue, Role, Tag, State, Comment
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -129,16 +129,30 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'issue', 'user', 'content', 'is_answer', 'comment_parent', 'is_thread', 'is_resolved', 'attachment', 'created_at', 'updated_at']
         extra_kwargs = {'attachment': {'required': False}, 'comment_parent': {'required': False}}
 
-        def validate(self, attrs):
+        def create(self, validated_data):
             comment = Comment.objects.create(
-                issue=attrs['issue'],
-                user=attrs['user'],
-                content=attrs['content'],
-                is_answer=attrs['is_answer'],
-                comment_parent=attrs.get('comment_parent'),
-                is_thread=attrs['is_thread'],
-                is_resolved=attrs['is_resolved'],
-                attachment=attrs.get('attachment')
+                issue=validated_data['issue'],
+                user=validated_data['user'],
+                content=validated_data['content'],
+                is_answer=validated_data['is_answer'],
+                comment_parent=validated_data.get('comment_parent'),
+                is_thread=validated_data['is_thread'],
+                is_resolved=validated_data['is_resolved'],
+                attachment=validated_data.get('attachment')
             )
             # log activity on issue
             return comment
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ['id', 'issue', 'content', 'user', 'created_at', 'updated_at']
+
+        def create(self, validated_data):
+            activity = Activity.objects.create(
+                type=validated_data['type'],
+                issue=validated_data['issue'],
+                content=validated_data['content'],
+                user=validated_data['user'],
+            )
+            return activity

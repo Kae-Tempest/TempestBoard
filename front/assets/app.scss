@@ -1427,13 +1427,18 @@
           border-radius: 6px;
           background-color: white;
 
+
           & > .issue {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
             width: 100%;
+            &.is-active {
+              border: 1px solid var(--blue-600);
+              border-radius: 6px;
 
+            }
             & > .issue-title {
               padding-left: .5rem;
             }
