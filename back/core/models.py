@@ -26,7 +26,7 @@ class Project(models.Model):
     creator = models.ForeignKey('User', related_name='created_projects', on_delete=models.CASCADE)
     users = models.ManyToManyField('User', blank=True, related_name='participating_users')
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True,null=True)
+    description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20)
     thumbnail = models.ImageField(upload_to='thumbnail/project/', blank=True, null=True, validators=[checkfilesize])
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,7 +48,7 @@ class Issue(models.Model):
     project_tag = models.CharField(max_length=3)
     ticket_id = models.IntegerField()
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True,null=True)
+    description = models.TextField(blank=True, null=True)
     priority = models.CharField(max_length=10)
     status = models.CharField(max_length=11)
     tags = models.ManyToManyField('Tag', blank=True, related_name='tags')
@@ -59,6 +59,7 @@ class Issue(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class State(models.Model):
     name = models.CharField(max_length=25)
@@ -74,6 +75,7 @@ class State(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Role(models.Model):
     name = models.CharField(max_length=100)
@@ -95,6 +97,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Activity(models.Model):
     type = models.CharField(max_length=100)
     issue = models.ForeignKey('Issue', related_name='activity', on_delete=models.CASCADE)
@@ -105,6 +108,7 @@ class Activity(models.Model):
 
     def __str__(self):
         return self.content
+
 
 class Comment(models.Model):
     issue = models.ForeignKey('Issue', related_name='comments', on_delete=models.CASCADE)
