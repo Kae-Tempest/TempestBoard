@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Issue, Project, States} from "~/types/global";
+import {ActivityContent, type Issue, type Project, type States} from "~/types/global"
 import {useUserStore} from "~/stores/useUserStore";
 import Toastify from "toastify-js";
 
@@ -14,7 +14,7 @@ const props = defineProps<Props>()
 const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
-  content: "Issue Created",
+  content: ActivityContent.CREATE_ISSUE,
   issue: 0,
   user: 0,
 })

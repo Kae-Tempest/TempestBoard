@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type {Issue, States} from "~/types/global";
-import {ref} from "vue";
+import {ActivityContent, type Issue, type States} from "~/types/global"
+import {reactive, ref} from "vue";
 
 interface Props {
-  issueId: Number | null
+  issueId: number | null
 }
 
 const props = defineProps<Props>()
@@ -13,7 +13,13 @@ const SelectedPriority = ref("");
 const SelectedState = ref("");
 const count = ref(500);
 const projectStates = ref<States[]>([])
-
+const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: "",
+  issue: 0,
+  user: 0,
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -62,11 +68,27 @@ const data = reactive({
   status: ""
 })
 
+const handleSendMessage = (action: string) => {
+  if(!props.issueId) return
+  wsActivityMessage.issue = props.issueId
+  wsActivityMessage.user = useUserStore().user!.id
+  wsActivityMessage.content = action
+  sendMessage(JSON.stringify(wsActivityMessage))
+}
+
 const handleEdit = async () => {
-  await useCustomFetch(`/issues/${props.issueId}/`, {
+  const res = await useCustomFetch(`/issues/${props.issueId}/`, {
     method: 'patch',
     body: JSON.stringify(data)
   })
+
+  if(res.data.value) {
+    if (data.title != "") handleSendMessage(ActivityContent.EDIT_TITLE)
+    if (data.description != "") handleSendMessage(ActivityContent.EDIT_DESCRIPTION)
+    if (data.status != "") handleSendMessage(ActivityContent.EDIT_STATUS)
+    if (data.priority != "") handleSendMessage(ActivityContent.EDIT_PRIORITY)
+  }
+
   isRefresh.value = true
   showModal.value = false
 }

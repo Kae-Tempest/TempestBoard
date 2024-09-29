@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import type {Comment, Issue, Project, States, User} from "~/types/global";
+import {ActivityContent} from "~/types/global"
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import IssueCardList from "~/components/Issue/DetailView/IssueCardList.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import EditIssueModal from "~/components/Modals/issue/EditIssueModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
+import {reactive} from "vue";
+
+const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: ActivityContent.EDIT_STATUS,
+  issue: 0,
+  user: 0,
+})
 
 interface Props {
   issueArray: Issue[];
@@ -185,6 +195,9 @@ const handleUpdate = async () => {
     body: JSON.stringify({status: data.status}),
   });
   const updatedIssue: Issue = res.data.value as Issue
+  wsActivityMessage.issue = updatedIssue.id
+  wsActivityMessage.user = user!.id
+  sendMessage(JSON.stringify(wsActivityMessage))
   issueInfo.value.issue.status = updatedIssue.status
   issueInfo.value.issue.created_at = updatedIssue.created_at
   updateIssueArray(props.issueArray, updatedIssue)

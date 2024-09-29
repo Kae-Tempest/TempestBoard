@@ -1,7 +1,10 @@
 <script setup lang="ts">
 
-import type {Issue, Project, User} from "~/types/global";
+import {ActivityContent, type Issue, type Project, type User} from "~/types/global";
 import IssueDetails from "~/components/Issue/ListView/IssueDetails.vue";
+import {reactive} from "vue";
+import {useUserStore} from "~/stores/useUserStore";
+
 
 interface Props {
   issues: Issue[];
@@ -16,6 +19,13 @@ const IssueID = defineModel()
 const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
 const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
+const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: ActivityContent.EDIT_STATUS,
+  issue: 0,
+  user: 0,
+})
 
 const handleMenu = (issue: Issue, e: MouseEvent) => {
   if (!IssueAssignedClicked.value) {
@@ -46,6 +56,9 @@ const onDrop = async (e: DragEvent, state: string) => {
     method: 'PATCH',
     body: JSON.stringify({status: state}),
   });
+  wsActivityMessage.issue = item.id
+  wsActivityMessage.user = useUserStore().getUser()!.id
+  sendMessage(JSON.stringify(wsActivityMessage))
 }
 </script>
 
