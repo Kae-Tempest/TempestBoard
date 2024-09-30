@@ -1,12 +1,11 @@
 from django.contrib.auth import login, logout
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from markdown2 import Markdown
 from rest_framework import viewsets, views, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .models import User, Project, Issue, Role, Tag, State, Comment
-from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
+from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, ActivitySerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -123,11 +122,16 @@ class CommentIssueAPIView(views.APIView):
 
     def get(self, request, pk):
         comments = Comment.objects.filter(issue=pk)
-        for comment in comments:
-            comment.updated_at = naturaltime(comment.updated_at)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
+class ActivityAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk):
+        activities = Activity.objects.filter(issue=pk)
+        serializer = ActivitySerializer(activities, many=True)
+        return Response(serializer.data)
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
