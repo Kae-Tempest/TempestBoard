@@ -20,7 +20,7 @@ const IssueID = defineModel()
 const IssuePos = defineModel('pos')
 const IssueAssignedClicked = ref<boolean>(false)
 const dropdownIdOpen = defineModel<number | null>('dropdownIdOpen')
-const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
   content: ActivityContent.EDIT_STATUS,

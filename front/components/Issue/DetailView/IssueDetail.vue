@@ -10,7 +10,7 @@ import {reactive} from "vue";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 
-const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
   content: ActivityContent.EDIT_STATUS,
