@@ -1,9 +1,12 @@
 import {onMounted, onUnmounted, ref} from 'vue';
 
+
 export function useWebSocket(url: string, callback?: Function) {
     const socket = ref<WebSocket | null>(null);
     const isConnected = ref<Boolean>(false);
+    const runtimeConfig = useRuntimeConfig();
     const receivedMessage = ref<String | null>(null);
+
 
     const sendMessage = (message: string) => {
         console.log(socket.value)
@@ -13,7 +16,7 @@ export function useWebSocket(url: string, callback?: Function) {
     };
 
     const connectWebSocket = () => {
-        socket.value = new WebSocket(url);
+        socket.value = new WebSocket(`${runtimeConfig.public.wsBase}/${url}`);
 
         socket.value.onopen = () => {
             isConnected.value = true;

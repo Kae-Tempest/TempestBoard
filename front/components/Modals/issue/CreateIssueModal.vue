@@ -13,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
   content: ActivityContent.CREATE_ISSUE,
