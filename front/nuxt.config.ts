@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 require('dotenv').config({path: '../.env'});
 import {resolve} from 'path'
+import {defineNuxtConfig} from 'nuxt/config'
 
 export default defineNuxtConfig({
     hooks: {
@@ -13,7 +14,7 @@ export default defineNuxtConfig({
       }
     },
     devtools: {enabled: true},
-    modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt'],
+    modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'dayjs-nuxt'],
     css: [
         '@fortawesome/fontawesome-svg-core/styles.css',
         'assets/bulma.css',
@@ -23,22 +24,9 @@ export default defineNuxtConfig({
     build: {
         transpile: ['@fortawesome/vue-fontawesome']
     },
-    piniaPersistedstate: {
-        cookieOptions: {
-            sameSite: 'strict',
-        },
-        storage: 'localStorage'
-    },
     runtimeConfig: {
         public: {
             apiBase: process.env.NUXT_PUBLIC_API_BASE || '',
         }
-    },
-    vite: {
-      build: {
-          rollupOptions: {
-              external: ['dayjs']
-          }
-      }
     }
 })
