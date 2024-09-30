@@ -15,7 +15,7 @@ const SelectedState = ref("");
 const count = ref(500);
 const projectStates = ref<States[]>([])
 const issueInfo = ref<Issue>()
-const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
+const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
   content: "",
