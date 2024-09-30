@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type {Comment, User} from '~/types/global';
-import moment from "moment";
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
+dayjs.extend(relativeTime);
 interface Props {
   comment: Comment
 }
@@ -9,6 +11,7 @@ const props = defineProps<Props>()
 const user = ref<User | null>(null)
 
 onMounted(async () => {
+
   const {data} = await useCustomFetch<User>(`/users/${props.comment.user}`)
   user.value = data.value
 })
@@ -26,7 +29,7 @@ onMounted(async () => {
       </div>
       <!--   formated date / hour  -->
       <span>-</span>
-      <span> {{ moment(comment.updated_at).fromNow() }}</span>
+      <span> {{ dayjs().to(dayjs(comment.updated_at)) }}</span>
     </div>
     <div class="content">
       {{ comment.content }}
