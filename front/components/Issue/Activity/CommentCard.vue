@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {Comment, User} from '~/types/global';
+import moment from "moment";
 
 interface Props {
   comment: Comment
@@ -24,7 +25,8 @@ onMounted(async () => {
         <span>{{ user.username }}</span>
       </div>
       <!--   formated date / hour  -->
-      <span>{{ comment.updated_at }}</span>
+      <span>-</span>
+      <span> {{ moment(comment.updated_at).fromNow() }}</span>
     </div>
     <div class="content">
       {{ comment.content }}
