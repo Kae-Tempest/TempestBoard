@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import type {Comment, Issue, Project, States, User} from "~/types/global";
+import type {Activity, Comment, Issue, Project, States, User} from "~/types/global";
 import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import IssueCardList from "~/components/Issue/DetailView/IssueCardList.vue";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import EditIssueModal from "~/components/Modals/issue/EditIssueModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
-import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import {reactive} from "vue";
+import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
+import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 
 const { sendMessage } = useWebSocket('ws://localhost:8000/ws/activity/')
 const wsActivityMessage = reactive({
@@ -25,6 +26,10 @@ interface Props {
   typeView: string;
   users: User[];
 }
+type CommentItem = Comment & { itemType: 'comment' }
+type ActivityItem = Activity & { itemType: 'activity' }
+type MergedItem = CommentItem | ActivityItem
+
 
 type formType = {
   content: string,
@@ -48,7 +53,7 @@ const isFiltered = ref<Boolean>(false)
 const filteredIssueArray = ref<Issue[]>([])
 const issueProjectStates = ref<States[]>([])
 const searchedTitle = ref<String>("")
-const commentsList = ref<Comment[]>([])
+const activitiesList = ref<MergedItem[]>([])
 const {isRefresh} = useRefreshData()
 const user = useUserStore().getUser()
 
@@ -130,12 +135,15 @@ watch(() => issueInfo.value?.project.id, async (newVal) => {
   if (newVal !== 0) {
     const {data: projectSate} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
     issueProjectStates.value = projectSate.value as States[]
-    if(issueInfo.value) {
-      const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
-      commentsList.value = commentIssue.value as Comment[]
-    }
-
   }
+})
+
+watch(() => issueInfo.value?.issue.id, async (newVal) => {
+  if (newVal) await updateMergedList()
+})
+
+watch(() => showUpdateModal.value, async (newVal) => {
+  if(!newVal) await updateMergedList()
 })
 
 const handleFilter = (title?: string, project?: number, state?: string) => {
@@ -214,7 +222,7 @@ const handleUpdate = async () => {
   updateIssueArray(props.issueArray, updatedIssue)
   updateIssueArray(props.createdIssue, updatedIssue)
   updateIssueArray(props.assignedIssue, updatedIssue)
-
+  await updateMergedList()
   isRefresh.value = true
 }
 
@@ -234,9 +242,61 @@ const handleCreateComment = async () => {
   })
   if(res.data.value) {
     commentData.content = ""
-    commentsList.value.push(res.data.value as Comment)
+    isRefresh.value = true
+    activitiesList.value = addCommentToMergedArray(activitiesList.value, res.data.value as Comment)
+    setTimeout(async () => {
+      await updateMergedList()
+    }, 1000)
   }
 }
+
+const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[]): MergedItem[] => {
+  console.log(comments)
+  const commentItems: CommentItem[] = comments.map(comment => ({
+    ...comment,
+    itemType: 'comment' as const
+  }))
+
+  const activityItems: ActivityItem[] = activities.map(activity => ({
+    ...activity,
+    itemType: 'activity' as const
+  }))
+
+  const merged: MergedItem[] = [...commentItems, ...activityItems]
+
+  return merged.sort((a, b) => {
+    const dateA = new Date(a.created_at)
+    const dateB = new Date(b.created_at)
+    return dateB.getTime() - dateA.getTime() // Sort in descending order (newest first)
+  })
+}
+
+const updateMergedList = async () => {
+  console.log(issueInfo.value, 'issueInfo')
+  if(!issueInfo.value) return
+  console.log('merged')
+  const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
+  const {data: activityIssue} = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
+  activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[] , activityIssue.value as Activity[])
+}
+
+const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Comment, 'id' | 'created_at' | 'updated_at'> ): MergedItem[] => {
+  const now = new Date()
+  const commentToAdd: CommentItem = {
+    ...newComment,
+    id: Math.max(...mergedArray.map(item => item.id)) + 1,
+    created_at: now,
+    updated_at: "",
+    itemType: 'comment' as const
+  }
+
+  return [commentToAdd, ...mergedArray].sort((a, b) => {
+    const dateA = new Date(a.created_at)
+    const dateB = new Date(b.created_at)
+    return dateB.getTime() - dateA.getTime()
+  })
+}
+
 
 </script>
 
@@ -307,8 +367,13 @@ const handleCreateComment = async () => {
               <div class="header">
                 <div>Activity</div>
               </div>
-              <div v-for="comment in commentsList" :key="comment.id" class="activity-list">
-                  <CommentCard :comment="comment"/>
+              <div v-for="item in activitiesList" :key="item.id" class="activity-list">
+                   <template v-if="item.itemType === 'comment'">
+                     <CommentCard :comment="item"/>
+                   </template>
+                   <template v-else>
+                      <ActivityItem :activity="item" />
+                   </template>
               </div>
               <div class="comment-input">
                 <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content" @keydown.enter="handleCreateComment">

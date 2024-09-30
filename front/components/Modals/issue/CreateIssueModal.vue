@@ -140,11 +140,11 @@ const handleSubmit = async () => {
               <div class="select">
                 <select v-model="data.priority">
                   <option disabled value="">Priority</option>
-                  <option>Urgent</option>
-                  <option>High</option>
-                  <option>Neutral</option>
-                  <option>Low</option>
-                  <option>Minor</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="high">High</option>
+                  <option value="neutral">Neutral</option>
+                  <option value="low">Low</option>
+                  <option value="minor">Minor</option>
                 </select>
               </div>
               <div class="select">
