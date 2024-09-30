@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type {Comment, User} from '~/types/global';
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import {useDayjs} from '#dayjs'
 
-dayjs.extend(relativeTime);
+const dayjs = useDayjs()
+
 interface Props {
   comment: Comment
 }
