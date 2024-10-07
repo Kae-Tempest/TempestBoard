@@ -33,7 +33,6 @@ const logout = async () => {
   await useCustomFetch('/logout/', {
     method: 'GET'
   })
-  useUserStore().setUser(null)
   navigateTo('/login')
 }
 

@@ -2,8 +2,8 @@ from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
 from .consumers import PresenceConsumer, ActivityConsumer
-from .views import UserViewSet, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
-    CommentIssueAPIView, CommentViewSet, ActivityAPIView
+from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
+    CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet
 
 app_name = 'core'
 
@@ -17,6 +17,7 @@ router.register(r'states', StateViewSet, basename='state')
 router.register(r'comments', CommentViewSet, basename='comment')
 
 urlpatterns = [
+    path('register/', RegisterAPIView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('my-issues/', MyIssueAPIView.as_view(), name='my-issues'),
@@ -29,7 +30,7 @@ urlpatterns = [
 
 websocket_urlpatterns = [
     re_path(r'ws/presence/', PresenceConsumer.as_asgi(), name='ws-presence'),
-    path('ws/activity/', ActivityConsumer.as_asgi(), name='ws-activity'),
+    re_path(r'ws/activity/', ActivityConsumer.as_asgi(), name='ws-activity'),
 ]
 
 urlpatterns += router.urls
