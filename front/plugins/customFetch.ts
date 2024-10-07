@@ -8,6 +8,9 @@ export default defineNuxtPlugin(() => {
             'X-CSRFToken': useCookie('csrftoken').value || ''  // Include CSRF token in headers
         },
         onRequest({request, options, error}) {
+            options.headers = new Headers({
+                'X-CSRFToken': useCookie('csrftoken').value || ''
+            })
         },
         onResponse({response}) {},
         onResponseError({response, error}) {

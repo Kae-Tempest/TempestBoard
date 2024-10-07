@@ -115,13 +115,14 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(label="Email", required=True, write_only=True)
     password = serializers.CharField(style={'input_type': 'password'}, label="Password", write_only=True, required=True)
 
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
-        user = authenticate(email=email, password=password)
-        if not user:
-            raise serializers.ValidationError("Invalid Credentials")
-        return user
+def validate(self, attrs):
+    email = attrs.get('email')
+    password = attrs.get('password')
+    user = authenticate(email=email, password=password)
+    if not user:
+        raise serializers.ValidationError('invalid credentials')
+    attrs['user'] = user
+    return attrs
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

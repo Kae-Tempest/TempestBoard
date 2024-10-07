@@ -149,11 +149,10 @@ class LoginView(views.APIView):
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validate(request.data)
-        login(request, user)
-        user_serializer = UserSerializer(user, context={"request": request})
-        return Response(user_serializer.data, status=status.HTTP_202_ACCEPTED)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data.get('user')
+            login(request, user)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class LogoutView(views.APIView):
