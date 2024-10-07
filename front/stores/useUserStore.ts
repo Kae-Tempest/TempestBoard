@@ -2,8 +2,8 @@ import {defineStore} from 'pinia'
 import type {User} from "~/types/global";
 
 export const useUserStore = defineStore('user', () => {
-    const user = ref<User | null>(null)
-    const setUser = (newUser: User | null) => {
+    const user = ref<User>()
+    const setUser = (newUser: User) => {
         user.value = newUser
     }
     const getUser = () => {

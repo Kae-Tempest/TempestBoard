@@ -17,7 +17,7 @@ const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
 const CreateIssues = ref<Issue[]>([]);
 
-const user: User | null = useUserStore().getUser();
+const user: User | undefined = useUserStore().getUser();
 const users = ref<User[] | null>([])
 
 const projects = ref<Project[]>([])
