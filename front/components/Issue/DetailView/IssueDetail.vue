@@ -9,6 +9,7 @@ import {useUserStore} from "~/stores/useUserStore";
 import {reactive} from "vue";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
@@ -309,29 +310,31 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
         <div>
           <input class="input" v-model="searchedTitle" type="text" placeholder="Search tickets"/>
         </div>
-        <div class="select">
-          <select v-model="selectedProject">
-            <option disabled value="0">Project</option>
-            <option v-for="project in Projects" :value="project.id">{{ project.name }}</option>
-          </select>
-        </div>
-        <div class="select">
-          <select v-model="selectedState">
-            <option disabled value="">State</option>
-            <option v-if="selectedProject === 0" value="backlog">Backlog</option>
-            <option v-if="selectedProject === 0" value="open">Open</option>
-            <option v-if="selectedProject === 0" value="in_progress">In Progress</option>
-            <option v-if="selectedProject === 0" value="completed">Completed</option>
-            <option v-if="selectedProject === 0" value="canceled">Canceled</option>
-            <option v-if="selectedProject !== 0 && projectStates.length > 0" v-for="state in projectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
-          </select>
-        </div>
-        <div class="select">
-          <select v-model="selectedView">
-            <option value="all">All</option>
-            <option value="created">Created</option>
-            <option value="assigned">Assigned</option>
-          </select>
+        <div class="select-group">
+          <div class="select">
+            <select v-model="selectedProject">
+              <option disabled value="0">Project</option>
+              <option v-for="project in Projects" :value="project.id">{{ project.name }}</option>
+            </select>
+          </div>
+          <div class="select">
+            <select v-model="selectedState">
+              <option disabled value="">State</option>
+              <option v-if="selectedProject === 0" value="backlog">Backlog</option>
+              <option v-if="selectedProject === 0" value="open">Open</option>
+              <option v-if="selectedProject === 0" value="in_progress">In Progress</option>
+              <option v-if="selectedProject === 0" value="completed">Completed</option>
+              <option v-if="selectedProject === 0" value="canceled">Canceled</option>
+              <option v-if="selectedProject !== 0 && projectStates.length > 0" v-for="state in projectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
+            </select>
+          </div>
+          <div class="select">
+            <select v-model="selectedView">
+              <option value="all">All</option>
+              <option value="created">Created</option>
+              <option value="assigned">Assigned</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="right-side">
@@ -385,15 +388,18 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
 
       </div>
       <div v-if="issueInfo !== null" class="issue-details-info">
-        <select v-model="data.status" @change="handleUpdate">
-          <option disabled value="">State</option>
-          <option v-if="issueInfo.project.id === 0" value="backlog">Backlog</option>
-          <option v-if="issueInfo.project.id === 0" value="open">Open</option>
-          <option v-if="issueInfo.project.id === 0" value="in_progress">In Progress</option>
-          <option v-if="issueInfo.project.id === 0" value="completed">Completed</option>
-          <option v-if="issueInfo.project.id === 0" value="canceled">Canceled</option>
-          <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0" v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
-        </select>
+        <div class="select">
+          <select v-model="data.status" @change="handleUpdate">
+            <option disabled value="">State</option>
+            <option v-if="issueInfo.project.id === 0" value="backlog">Backlog</option>
+            <option v-if="issueInfo.project.id === 0" value="open">Open</option>
+            <option v-if="issueInfo.project.id === 0" value="in_progress">In Progress</option>
+            <option v-if="issueInfo.project.id === 0" value="completed">Completed</option>
+            <option v-if="issueInfo.project.id === 0" value="canceled">Canceled</option>
+            <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0" v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
+          </select>
+        </div>
+
 
         <button class="button" @click="showUpdateModal = true; editedIssueID = issueInfo.issue.id">Edit</button>
         <div class="details-info">
