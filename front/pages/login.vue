@@ -24,6 +24,7 @@ const handleSubmit = async () => {
     method: 'post',
     body: JSON.stringify(data),
   });
+  console.log(res)
   if (res.data.value != null) {
     const user = res.data.value as User;
     useUserStore().setUser(user);

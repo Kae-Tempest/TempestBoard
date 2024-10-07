@@ -4,7 +4,7 @@ from rest_framework import serializers
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
 
 
-class UserSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
 
@@ -22,6 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
         authenticated_user = authenticate(email=email, password=password)
         return authenticated_user
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'thumbnail', 'created_at', 'updated_at']
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -77,8 +81,8 @@ class IssueSerializer(serializers.ModelSerializer):
         return issue
 
 class IssueReadSerializer(serializers.ModelSerializer):
-    creator = UserSerializer(read_only=True)
-    assigned = UserSerializer(read_only=True)
+    creator = RegisterSerializer(read_only=True)
+    assigned = RegisterSerializer(read_only=True)
     class Meta:
         model = Issue
         fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag' ,'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
@@ -120,8 +124,9 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         user = authenticate(email=email, password=password)
         if not user:
-            raise serializers.ValidationError("Invalid Credentials")
-        return user
+            raise serializers.ValidationError('invalid credentials')
+        attrs['user'] = user
+        return attrs
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

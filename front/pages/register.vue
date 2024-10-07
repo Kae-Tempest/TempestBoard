@@ -22,7 +22,7 @@ const errors = reactive({
 });
 
 const handleSubmit = async () => {
-  const res = await useCustomFetch<User>('/users/', {
+  const res = await useCustomFetch<User>('/register/', {
     method: 'post',
     body: JSON.stringify(data),
   });

@@ -5,25 +5,26 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
-from .serializers import UserSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, ActivitySerializer
+from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
+    ActivitySerializer, UserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class RegisterAPIView(views.APIView):
 
-    def get_permissions(self):
-        if self.action == 'create':
-            return [AllowAny()]
-        return [IsAuthenticated()]
-
-    def create(self, request, *args, **kwargs):
-        print('create user')
-        serializer = UserSerializer(data=request.data)
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             login(request, serializer.instance)
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(pk=self.request.user.pk)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -132,6 +133,7 @@ class ActivityAPIView(views.APIView):
         activities = Activity.objects.filter(issue=pk)
         serializer = ActivitySerializer(activities, many=True)
         return Response(serializer.data)
+
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
@@ -149,11 +151,11 @@ class LoginView(views.APIView):
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validate(request.data)
-        login(request, user)
-        user_serializer = UserSerializer(user, context={"request": request})
-        return Response(user_serializer.data, status=status.HTTP_202_ACCEPTED)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data.get('user')
+            login(request, user)
+            connected_user = UserSerializer(user)
+            return Response(connected_user.data, status=status.HTTP_202_ACCEPTED)
 
 
 class LogoutView(views.APIView):
