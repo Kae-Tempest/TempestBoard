@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return User.objects.filter(pk=self.request.user.pk)
+        return User.objects.all()
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

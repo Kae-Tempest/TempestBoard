@@ -3,6 +3,7 @@ import type {Project, States, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import WorkflowSettingsModule from "~/components/Project/Workflow/WorkflowSettingsModule.vue";
 import Toastify from "toastify-js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 interface Props {
   project: Project
@@ -27,8 +28,6 @@ const resetForm = () => {
   users.value = []
   projectUsers.value = []
 }
-
-
 
 const handleFetch = async () => {
   const {data: pUsers} = await useCustomFetch<User[]>(`/projects/${props.project.id}/users/`)

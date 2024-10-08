@@ -75,8 +75,8 @@ const handleSubmit = async () => {
             v-model="data.remember"
         />
         <div>
-          <NuxtLink to="/register">Any account ?</NuxtLink>
-          <NuxtLink to="#">Forgotten password ?</NuxtLink>
+          <NuxtLink to="/register">No account ?</NuxtLink>
+          <NuxtLink to="#">Forgotten password</NuxtLink>
           <button type="submit">
             Login
           </button>

@@ -87,7 +87,7 @@ const onClickUser = () => {
                   <div v-if="users && users?.length > 0" v-for="user in project.users.filter(u => u != issue.assigned.id)" class="users-list">
                     <div v-if="project.users.length > 1" @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item">{{ users?.find(u => u.id === user)?.username }}</div>
                   </div>
-                  <div class="any-user" v-if="project.users.length == 1">Any User..</div>
+                  <div class="any-user" v-if="project.users.length == 1">No User..</div>
                 </div>
               </div>
             </div>

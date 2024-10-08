@@ -11,13 +11,14 @@ import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-const { sendMessage } = useWebSocket('ws/activity/')
+const { sendMessage, receivedMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
   content: ActivityContent.EDIT_STATUS,
   issue: 0,
   user: 0,
 })
+
 
 interface Props {
   issueArray: Issue[];
@@ -145,6 +146,10 @@ watch(() => issueInfo.value?.issue.id, async (newVal) => {
 
 watch(() => showUpdateModal.value, async (newVal) => {
   if(!newVal) await updateMergedList()
+})
+
+watch(() => receivedMessage.value, async (newVal) => {
+  if (newVal) await updateMergedList()
 })
 
 const handleFilter = (title?: string, project?: number, state?: string) => {
