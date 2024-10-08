@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Issue, Project, States} from "~/types/global"
+import type {Issue, Project, States, User} from "~/types/global"
 import {ActivityContent} from "~/enums/AcitivityContentEnum"
 
 import {useUserStore} from "~/stores/useUserStore";
@@ -23,7 +23,7 @@ const wsActivityMessage = reactive({
 
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(500);
-const user = useUserStore().getUser();
+const user: User | null = useUserStore().getUser;
 const projectStates = ref<States[]>([])
 const {isRefresh} = useRefreshData();
 

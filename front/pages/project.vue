@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue'
-import type {Project} from "~/types/global";
+import type {Project, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import CreateProjectModal from "~/components/Modals/Project/CreateProjectModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
@@ -10,7 +10,7 @@ import ProjectSettingsModal from "~/components/Modals/Project/ProjectSettingsMod
 
 useHead({title: 'Project - Tempest Board'})
 
-const user = useUserStore().getUser();
+const user: User | null = useUserStore().getUser;
 const projects = ref<Project[]>([]);
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 

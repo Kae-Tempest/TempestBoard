@@ -56,7 +56,7 @@ const issueProjectStates = ref<States[]>([])
 const searchedTitle = ref<String>("")
 const activitiesList = ref<MergedItem[]>([])
 const {isRefresh} = useRefreshData()
-const user = useUserStore().getUser()
+const user: User | null = useUserStore().getUser
 
 const data = reactive({
   status: issueInfo.value !== null ? issueInfo.value.issue.status : ""

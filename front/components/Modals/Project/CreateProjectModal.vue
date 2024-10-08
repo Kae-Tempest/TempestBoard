@@ -2,7 +2,7 @@
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
-import type {Project} from "~/types/global";
+import type {Project, User} from "~/types/global";
 import Toastify from "toastify-js";
 
 type formType = {
@@ -14,7 +14,7 @@ type formType = {
 }
 
 const showModal = defineModel()
-const user = useUserStore().getUser();
+const user: User | null = useUserStore().getUser;
 const {isRefresh} = useRefreshData()
 const defaultStates = ['backlog', 'open', 'in_progress', 'completed', 'canceled']
 

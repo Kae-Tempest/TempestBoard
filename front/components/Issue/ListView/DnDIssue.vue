@@ -58,7 +58,7 @@ const onDrop = async (e: DragEvent, state: string) => {
     body: JSON.stringify({status: state}),
   });
   wsActivityMessage.issue = item.id
-  wsActivityMessage.user = useUserStore().getUser()!.id
+  wsActivityMessage.user = useUserStore().getUser!.id
   sendMessage(JSON.stringify(wsActivityMessage))
 }
 </script>
