@@ -2,6 +2,7 @@
 
 import type {Project, States} from "~/types/global";
 import Toastify from "toastify-js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 interface Props {
   projectStates: States[];
@@ -15,11 +16,6 @@ const isCreating = ref<Boolean>(false)
 const data = reactive({
   name: ""
 })
-
-const error = reactive({
-  name: ""
-})
-
 const projectStatesRef = computed(() => props.projectStates)
 
 watch(() => CreateStateRef.value, () => {
@@ -33,9 +29,10 @@ watch(() => CreateStateRef.value, () => {
       created_at: new Date(),
       updated_at: new Date(),
     }
-
-    projectStatesRef.value.push(newState)
-    editedState.value = newState.name
+    setTimeout(() => {
+      projectStatesRef.value.push(newState)
+      editedState.value = newState.name
+    }, 100)
   }
 })
 
@@ -59,7 +56,6 @@ const handleDelete = async (stateID: number) => {
   })
 
 }
-
 
 const handleCancel = () => {
   editedState.value = ''

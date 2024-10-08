@@ -25,7 +25,6 @@ class PresenceConsumer(WebsocketConsumer):
         return super().disconnect(code)
 
     def receive(self, text_data=None, bytes_data=None):
-        print(text_data, 'from PresenceConsumer')
         for connection in self.connections:
             connection.send(
                 text_data=json.dumps({
@@ -58,11 +57,12 @@ class ActivityConsumer(WebsocketConsumer):
         return super().disconnect(code)
 
     def receive(self, text_data=None, bytes_data=None):
-        print(text_data, 'data from ActivityConsumer')
         data = json.loads(text_data)
         serializer = ActivitySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            send_message(self, serializer.data)
+            for connection in self.connections:
+                send_message(connection, serializer.data)
         else:
-            send_message(self, json.dumps({"msg": f"{serializer.errors}"}))
+            for connection in self.connections:
+                send_message(connection, json.dumps({"msg": f"{serializer.errors}"}))
