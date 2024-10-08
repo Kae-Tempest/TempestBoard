@@ -10,6 +10,7 @@ from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer,
 
 
 class RegisterAPIView(views.APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
