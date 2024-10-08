@@ -89,6 +89,20 @@
                 opacity: 50;
               }
 
+              & > a {
+                padding: 0.25rem 1.5rem 0.25rem 1.5rem;
+                width: 100%;
+                transition: none;
+
+                & > li {
+                  color: var(--neutral-50);
+
+                  &:hover {
+                    background-color: transparent;
+                  }
+                }
+              }
+
               & > li {
                 padding: 0.25rem 1.5rem 0.25rem 1.5rem;
                 width: 100%;
