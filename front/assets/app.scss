@@ -97,6 +97,7 @@
             border: solid 2px var(--blue-600);
             width: 1.875rem;
             height: 1.875rem;
+            cursor: pointer;
           }
 
           & > div {
@@ -1167,10 +1168,6 @@
     }
   }
 
-  .tooltip {
-    //position: relative;
-  }
-
   .tooltip .tooltip-text {
     visibility: hidden;
     width: 3.75rem;
@@ -1588,8 +1585,10 @@
           border: 1px solid var(--blue-600);
           background-color: hsl(221, 14%, calc(100% + 0%));
           min-width: 90px;
-          padding: .75rem;
-          height: 50px;
+        }
+
+        & > button:hover {
+          background-color: var(--blue-200)
         }
 
         & > .select {
