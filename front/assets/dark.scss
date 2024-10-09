@@ -73,6 +73,7 @@
             border: solid 2px var(--blue-600);
             width: 1.875rem;
             height: 1.875rem;
+            cursor: pointer;
           }
 
           & > div {
@@ -1565,8 +1566,10 @@
           border-radius: 6px;
           border: 1px solid var(--blue-600);
           min-width: 90px;
-          padding: .75rem;
-          height: 50px;
+        }
+
+        & > button:hover {
+          background-color: var(--blue-400)
         }
 
         & > .select {
