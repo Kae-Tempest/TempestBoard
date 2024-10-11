@@ -1421,7 +1421,7 @@
 
       & > .issue-list {
         overflow-y: scroll;
-        max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
+        height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
         margin: .5rem 0 .5rem 1rem;
         padding: .5rem 1rem;
         border-radius: 6px;
@@ -1542,7 +1542,7 @@
 
               & > .wrapper {
                 overflow-y: scroll;
-                height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px );
+                max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px );
                 padding: 0 .125rem;
 
                 &::-webkit-scrollbar {

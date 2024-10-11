@@ -1529,7 +1529,7 @@
 
               & > .wrapper {
                 overflow-y: scroll;
-                height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px);
+                max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px);
                 padding: 0 .125rem;
 
                 &::-webkit-scrollbar {
