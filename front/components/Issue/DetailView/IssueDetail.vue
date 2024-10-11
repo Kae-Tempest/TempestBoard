@@ -323,7 +323,7 @@ const handleResetFilter = () => {
 }
 
 const handleUpdateAssigned = async () => {
-  if (AssignedUpdate.value === issueInfo.value?.issue.assigned.id) return
+  if (AssignedUpdate.value === issueInfo.value?.issue.assigned.username) return
   if(!props.users && !AssignedUpdate.value) return
   let user_id = props.users.find((u: User) => u.username === AssignedUpdate.value)?.id
 
