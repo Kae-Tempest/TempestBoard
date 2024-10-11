@@ -47,7 +47,7 @@
   }
 
   html {
-    overflow-y: auto;
+    overflow-y: hidden;
     background-color: white;
   }
 
@@ -1389,20 +1389,20 @@
         & > .select-group {
           & > .select {
             & > select {
-              border-radius: 6px;
               border: 1px solid var(--blue-600);
               background-color: hsl(221, 14%, calc(100% + 0%));
-
               min-width: 90px;
             }
-
             margin: 0 .5rem;
-
 
             &:nth-child(1) {
               margin-left: 0;
             }
           }
+        }
+        & > .button {
+          border: 1px solid var(--blue-600);
+          margin: 0
         }
       }
 
@@ -1420,15 +1420,14 @@
       display: flex;
 
       & > .issue-list {
-        overflow-x: hidden;
-        min-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
+        overflow-y: scroll;
+        max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height));
         margin: .5rem 0 .5rem 1rem;
         padding: .5rem 1rem;
         border-radius: 6px;
         box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
         background-color: var(--broken-white);
-        max-width: 270px;
-        min-width: 270px;
+        width: 270px;
 
         & > .issue-card {
           @include SeiraFont(500);
@@ -1438,7 +1437,6 @@
           box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
           border-radius: 6px;
           background-color: white;
-
 
           & > .issue {
             display: flex;
@@ -1542,33 +1540,51 @@
                 @include SeiraFont(500);
               }
 
-              & > .activity-list {
-                margin: .5rem 0;
+              & > .wrapper {
+                overflow-y: scroll;
+                max-height: 600px;
+                padding: 0 .125rem;
 
-                & > .comment {
-                  box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
-                  border-radius: .25rem;
+                &::-webkit-scrollbar {
+                  display: block;
+                }
 
-                  & > .info {
-                    display: flex;
-                    gap: .75rem;
-                    margin-left: .75rem;
+                & {
+                  -ms-overflow-style: auto;
+                  scrollbar-width: initial;
+                }
 
-                    & > .user-info {
+                & > .activity-list {
+                  margin: .5rem 0;
+
+                  & > .comment {
+                    box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25), 0 .0625em .125em hsla(221, 14%, 4%, .25);
+                    border-radius: .25rem;
+
+                    & > .info {
                       display: flex;
-                      gap: .5rem;
+                      gap: .75rem;
+                      margin-left: .75rem;
 
-                      & > .thumbnail {
-                        height: 24px;
+                      & > .user-info {
+                        display: flex;
+                        gap: .5rem;
+
+                        & > .thumbnail {
+                          height: 24px;
+                        }
                       }
                     }
-                  }
 
-                  & > .content {
-                    margin-top: .375rem;
-                    margin-left: 1rem
+                    & > .content {
+                      margin-top: .375rem;
+                      margin-left: 1rem
+                    }
                   }
                 }
+              }
+              & > .comment-input {
+                display: flex;
               }
             }
           }
