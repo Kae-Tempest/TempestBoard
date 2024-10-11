@@ -1542,7 +1542,7 @@
 
               & > .wrapper {
                 overflow-y: scroll;
-                max-height: 600px;
+                max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px );
                 padding: 0 .125rem;
 
                 &::-webkit-scrollbar {
@@ -1635,6 +1635,25 @@
               justify-content: space-between;
 
               & > .important-info {
+
+                & > .assigned {
+                  display: flex;
+                  & > .name {
+                    line-height: 2.5rem;
+
+                  }
+                  & > div {
+                    display: flex;
+                    & > .input {
+                      width : 100px
+                    }
+                    & > .button {
+                      min-width: 48px;
+                      padding: 0;
+                    }
+                  }
+                }
+
                 & > .priority {
                   display: flex;
 

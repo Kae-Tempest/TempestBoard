@@ -56,7 +56,7 @@ const issueProjectStates = ref<States[]>([])
 const searchedTitle = ref<String>("")
 const activitiesList = ref<MergedItem[]>([])
 const isAssignedClicked = ref<Boolean>(false)
-const AssignedUpdate = ref<number>()
+const AssignedUpdate = ref<string>()
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
 
@@ -161,23 +161,6 @@ watch(() => showUpdateModal.value, async (newVal) => {
 
 watch(() => receivedMessage.value, async (newVal) => {
   if (newVal) await updateMergedList()
-})
-
-watch(() => AssignedUpdate.value, async (newVal) => {
-  if (newVal === issueInfo.value?.issue.assigned.id) return
-  if(newVal) {
-    await useCustomFetch(`/issues/${issueInfo.value?.issue.id}/`,{
-      method: 'PATCH',
-      body: JSON.stringify({assigned: AssignedUpdate.value})
-    })
-    isAssignedClicked.value = false
-    wsActivityMessage.issue = issueInfo.value!.issue.id
-    wsActivityMessage.user = user!.id
-    wsActivityMessage.content = ActivityContent.ASSIGNED_TO + " " + props.users?.find(u => u.id === AssignedUpdate.value)?.username
-    sendMessage(JSON.stringify(wsActivityMessage))
-    await updateMergedList()
-    isRefresh.value = true
-  }
 })
 
 const handleFilter = (title?: string, project?: number, state?: string) => {
@@ -339,6 +322,24 @@ const handleResetFilter = () => {
   selectedView.value = "all"
 }
 
+const handleUpdateAssigned = async () => {
+  if (AssignedUpdate.value === issueInfo.value?.issue.assigned.id) return
+  if(!props.users && !AssignedUpdate.value) return
+  let user_id = props.users.find((u: User) => u.username === AssignedUpdate.value)?.id
+
+  await useCustomFetch(`/issues/${issueInfo.value?.issue.id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify({assigned: user_id})
+  })
+  isAssignedClicked.value = false
+  wsActivityMessage.issue = issueInfo.value!.issue.id
+  wsActivityMessage.user = user!.id
+  wsActivityMessage.content = ActivityContent.ASSIGNED_TO + " " + AssignedUpdate.value
+  sendMessage(JSON.stringify(wsActivityMessage))
+  await updateMergedList()
+  isRefresh.value = true
+}
+
 </script>
 
 <template>
@@ -429,7 +430,7 @@ const handleResetFilter = () => {
                 <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content" @keydown.enter="handleCreateComment">
                 <button class="button" @click="handleCreateComment">
                   <span class="icon">
-                    <font-awesome-icon icon="fa-solid fa-paper-plane" />
+                    <font-awesome-icon icon="fa-solid fa-paper-plane"/>
                   </span>
                 </button>
               </div>
@@ -459,17 +460,24 @@ const handleResetFilter = () => {
           <div class="infos">
             <div class="info">
               <div class="important-info">
-                <div v-if="!isAssignedClicked" @click="AssignedUpdate = issueInfo.issue.assigned.id; isAssignedClicked = true;" class="assigned">Assigned: {{ issueInfo.issue.assigned.username }}</div>
+                <div v-if="!isAssignedClicked" @click="AssignedUpdate = issueInfo.issue.assigned.username; isAssignedClicked = true;" class="assigned">Assigned: {{ issueInfo.issue.assigned.username }}</div>
                 <div v-if="isAssignedClicked" class="assigned">
-                  Assigned:
-                  <div class="select is-small">
-                    <select v-model="AssignedUpdate">
-                      <option disabled :value="issueInfo?.issue.assigned.id">{{ issueInfo?.issue.assigned.username }}</option>
-                      <option v-for="user in issueInfo.project.users.filter(u => u !== issueInfo?.issue.assigned.id )" :value="user">
-                        {{ users?.find(u => u.id === user)?.username  }}
-                      </option>
-                    </select>
+                  <div class="name">
+                    Assigned:
                   </div>
+                  <div>
+                    <input class="input" list="project-users" type="text" @keydown.enter="handleUpdateAssigned" v-model="AssignedUpdate"/>
+                    <button class="button" @click="handleUpdateAssigned">
+                      <span class="icon">
+                        <font-awesome-icon icon="fa-solid fa-paper-plane"/>
+                      </span>
+                    </button>
+                  </div>
+                  <datalist id="project-users">
+                    <option v-for="user in issueInfo.project.users" :value="users?.find(u => u.id === user)?.username ">
+                      {{ users?.find(u => u.id === user)?.username }}
+                    </option>
+                  </datalist>
                 </div>
 
                 <div class="creator">Creator: {{ issueInfo.issue.creator.username }}</div>
