@@ -11,14 +11,13 @@ import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-const { sendMessage, receivedMessage } = useWebSocket('ws/activity/')
+const {sendMessage, receivedMessage} = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
-  content: ActivityContent.EDIT_STATUS,
+  content: ActivityContent.EDIT_STATUS.toString(),
   issue: 0,
   user: 0,
 })
-
 
 interface Props {
   issueArray: Issue[];
@@ -28,10 +27,10 @@ interface Props {
   typeView: string;
   users: User[];
 }
+
 type CommentItem = Comment & { itemType: 'comment' }
 type ActivityItem = Activity & { itemType: 'activity' }
 type MergedItem = CommentItem | ActivityItem
-
 
 type formType = {
   content: string,
@@ -56,6 +55,8 @@ const filteredIssueArray = ref<Issue[]>([])
 const issueProjectStates = ref<States[]>([])
 const searchedTitle = ref<String>("")
 const activitiesList = ref<MergedItem[]>([])
+const isAssignedClicked = ref<Boolean>(false)
+const AssignedUpdate = ref<number>()
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
 
@@ -71,10 +72,15 @@ const commentData = reactive<formType>({
 })
 
 onBeforeUpdate(() => {
+  document.removeEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      isAssignedClicked.value = false
+    }
+  })
   if (issueInfo.value === null) {
     if (props.issueArray.length > 0 && props.Projects.length > 0) {
       const project = props.Projects.find(p => p.id === props.issueArray[0].project)
-      const issue = props.issueArray.sort((a,b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0]
+      const issue = props.issueArray.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0]
       if (project && issue) {
         issueInfo.value = {issue, project}
       }
@@ -83,6 +89,11 @@ onBeforeUpdate(() => {
 })
 
 onMounted(() => {
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      isAssignedClicked.value = false
+    }
+  })
   if (issueInfo.value === null) {
     if (props.issueArray.length > 0 && props.Projects.length > 0) {
       const project = props.Projects.find(p => p.id === props.issueArray[0].project)
@@ -95,7 +106,7 @@ onMounted(() => {
 })
 
 watch(() => props.issueArray, () => {
-  if(!issueInfo.value) return
+  if (!issueInfo.value) return
   if (props.issueArray.length > 0 && props.Projects.length > 0) {
     const project = props.Projects.find(p => p.id === issueInfo.value?.project.id)
     const issue = props.issueArray.find(i => i.id === issueInfo.value?.issue.id)
@@ -145,11 +156,28 @@ watch(() => issueInfo.value?.issue.id, async (newVal) => {
 })
 
 watch(() => showUpdateModal.value, async (newVal) => {
-  if(!newVal) await updateMergedList()
+  if (!newVal) await updateMergedList()
 })
 
 watch(() => receivedMessage.value, async (newVal) => {
   if (newVal) await updateMergedList()
+})
+
+watch(() => AssignedUpdate.value, async (newVal) => {
+  if (newVal === issueInfo.value?.issue.assigned.id) return
+  if(newVal) {
+    await useCustomFetch(`/issues/${issueInfo.value?.issue.id}/`,{
+      method: 'PATCH',
+      body: JSON.stringify({assigned: AssignedUpdate.value})
+    })
+    isAssignedClicked.value = false
+    wsActivityMessage.issue = issueInfo.value!.issue.id
+    wsActivityMessage.user = user!.id
+    wsActivityMessage.content = ActivityContent.ASSIGNED_TO + " " + props.users?.find(u => u.id === AssignedUpdate.value)?.username
+    sendMessage(JSON.stringify(wsActivityMessage))
+    await updateMergedList()
+    isRefresh.value = true
+  }
 })
 
 const handleFilter = (title?: string, project?: number, state?: string) => {
@@ -208,7 +236,7 @@ const handleFilter = (title?: string, project?: number, state?: string) => {
 
 const updateIssueArray = (arr: Issue[], issue: Issue) => {
   const idx = arr.findIndex(i => i.id === issue.id)
-  if(idx != 0) {
+  if (idx != 0) {
     arr[idx] = issue
   }
 }
@@ -246,7 +274,7 @@ const handleCreateComment = async () => {
     method: 'POST',
     body: formData,
   })
-  if(res.data.value) {
+  if (res.data.value) {
     commentData.content = ""
     isRefresh.value = true
     activitiesList.value = addCommentToMergedArray(activitiesList.value, res.data.value as Comment)
@@ -279,14 +307,14 @@ const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[])
 
 const updateMergedList = async () => {
   console.log(issueInfo.value, 'issueInfo')
-  if(!issueInfo.value) return
+  if (!issueInfo.value) return
   console.log('merged')
   const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
   const {data: activityIssue} = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
-  activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[] , activityIssue.value as Activity[])
+  activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[], activityIssue.value as Activity[])
 }
 
-const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Comment, 'id' | 'created_at' | 'updated_at'> ): MergedItem[] => {
+const addCommentToMergedArray = (mergedArray: MergedItem[], newComment: Omit<Comment, 'id' | 'created_at' | 'updated_at'>): MergedItem[] => {
   const now = new Date()
   const commentToAdd: CommentItem = {
     ...newComment,
@@ -303,6 +331,13 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
   })
 }
 
+const handleResetFilter = () => {
+  isFiltered.value = false
+  selectedState.value = ""
+  selectedProject.value = 0
+  searchedTitle.value = ""
+  selectedView.value = "all"
+}
 
 </script>
 
@@ -341,6 +376,9 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
             </select>
           </div>
         </div>
+        <div class="button">
+          <button @click="handleResetFilter">Reset</button>
+        </div>
       </div>
       <div class="right-side">
         <button class="button" @click="showModal = true">
@@ -357,11 +395,13 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
       <IssueCardList v-if="selectedView === 'assigned' && !isFiltered " :Projects="Projects" :issueArray="assignedIssue" v-model="issueInfo"/>
       <IssueCardList v-if="isFiltered" :Projects="Projects" :issueArray="filteredIssueArray" v-model="issueInfo"/>
 
-      <div v-if="issueInfo !== null"  class="issue-info">
+      <div v-if="issueInfo !== null" class="issue-info">
         <div class="issue-details">
           <div class="breadcrumb is-small">
             <ul>
-              <li><NuxtLink to="/project">{{ issueInfo.project.name }}</NuxtLink></li>
+              <li>
+                <NuxtLink to="/project">{{ issueInfo.project.name }}</NuxtLink>
+              </li>
               <li>{{ issueInfo.project.name.substring(0, 3).toUpperCase() }}-{{ issueInfo.issue.ticket_id }}</li>
             </ul>
           </div>
@@ -375,16 +415,23 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
               <div class="header">
                 <div>Activity</div>
               </div>
-              <div v-for="item in activitiesList" :key="item.id" class="activity-list">
-                   <template v-if="item.itemType === 'comment'">
-                     <CommentCard :comment="item"/>
-                   </template>
-                   <template v-else>
-                      <ActivityItem :activity="item" />
-                   </template>
+              <div class="wrapper">
+                <div v-for="item in activitiesList" :key="item.id" class="activity-list">
+                  <template v-if="item.itemType === 'comment'">
+                    <CommentCard :comment="item"/>
+                  </template>
+                  <template v-else>
+                    <ActivityItem :activity="item"/>
+                  </template>
+                </div>
               </div>
               <div class="comment-input">
                 <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content" @keydown.enter="handleCreateComment">
+                <button class="button" @click="handleCreateComment">
+                  <span class="icon">
+                    <font-awesome-icon icon="fa-solid fa-paper-plane" />
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -412,7 +459,19 @@ const addCommentToMergedArray = ( mergedArray: MergedItem[], newComment: Omit<Co
           <div class="infos">
             <div class="info">
               <div class="important-info">
-                <div class="assigned">Assigned: {{ issueInfo.issue.assigned.username }}</div>
+                <div v-if="!isAssignedClicked" @click="AssignedUpdate = issueInfo.issue.assigned.id; isAssignedClicked = true;" class="assigned">Assigned: {{ issueInfo.issue.assigned.username }}</div>
+                <div v-if="isAssignedClicked" class="assigned">
+                  Assigned:
+                  <div class="select is-small">
+                    <select v-model="AssignedUpdate">
+                      <option disabled :value="issueInfo?.issue.assigned.id">{{ issueInfo?.issue.assigned.username }}</option>
+                      <option v-for="user in issueInfo.project.users.filter(u => u !== issueInfo?.issue.assigned.id )" :value="user">
+                        {{ users?.find(u => u.id === user)?.username  }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="creator">Creator: {{ issueInfo.issue.creator.username }}</div>
                 <div class="issue-tags">Tags: Any</div>
                 <div class="priority">Priority:
