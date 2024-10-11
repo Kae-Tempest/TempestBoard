@@ -47,7 +47,7 @@
   }
 
   html {
-    overflow-y: hidden;
+    overflow-y: auto;
     background-color: white;
   }
 
@@ -1542,7 +1542,7 @@
 
               & > .wrapper {
                 overflow-y: scroll;
-                max-height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px );
+                height: calc(90vh - calc(var(--header-heigth) - var(--tabs-heigth)) - var(--details-header-height) - 240px );
                 padding: 0 .125rem;
 
                 &::-webkit-scrollbar {
@@ -1588,7 +1588,6 @@
               }
             }
           }
-
         }
       }
 
