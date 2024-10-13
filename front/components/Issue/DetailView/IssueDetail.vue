@@ -57,6 +57,7 @@ const searchedTitle = ref<String>("")
 const activitiesList = ref<MergedItem[]>([])
 const isAssignedClicked = ref<Boolean>(false)
 const AssignedUpdate = ref<string>()
+const isResponseSend = ref<boolean>(false)
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
 
@@ -161,6 +162,13 @@ watch(() => showUpdateModal.value, async (newVal) => {
 
 watch(() => receivedMessage.value, async (newVal) => {
   if (newVal) await updateMergedList()
+})
+
+watch(() => isResponseSend.value, async (newVal) => {
+  if(newVal) {
+    await updateMergedList()
+    isResponseSend.value = false
+  }
 })
 
 const handleFilter = (title?: string, project?: number, state?: string) => {
@@ -268,7 +276,6 @@ const handleCreateComment = async () => {
 }
 
 const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[]): MergedItem[] => {
-  console.log(comments)
   const commentItems: CommentItem[] = comments.map(comment => ({
     ...comment,
     itemType: 'comment' as const
@@ -284,14 +291,12 @@ const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[])
   return merged.sort((a, b) => {
     const dateA = new Date(a.created_at)
     const dateB = new Date(b.created_at)
-    return dateB.getTime() - dateA.getTime() // Sort in descending order (newest first)
+    return dateB.getTime() - dateA.getTime()
   })
 }
 
 const updateMergedList = async () => {
-  console.log(issueInfo.value, 'issueInfo')
   if (!issueInfo.value) return
-  console.log('merged')
   const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
   const {data: activityIssue} = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
   activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[], activityIssue.value as Activity[])
@@ -419,7 +424,7 @@ const handleUpdateAssigned = async () => {
               <div class="wrapper">
                 <div v-for="item in activitiesList" :key="item.id" class="activity-list">
                   <template v-if="item.itemType === 'comment'">
-                    <CommentCard :comment="item"/>
+                    <CommentCard v-model="isResponseSend" :comment="item" :commentA="activitiesList"/>
                   </template>
                   <template v-else>
                     <ActivityItem :activity="item"/>
