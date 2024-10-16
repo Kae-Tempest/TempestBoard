@@ -56,9 +56,8 @@ const handleSendCommentaryResponse = async () => {
     if(data.user === 0 && data.content === "") return
     const res = await useCustomFetch<Comment>(`/comments/`, {
       method: "POST",
-      body: data,
+      body: {...data},
     })
-    console.log(res)
     if (res.error.value) console.log('error')
     if (res.data.value) {
       const resp = await useCustomFetch(`/comments/${res.data.value.comment_parent}/`, {
@@ -125,7 +124,7 @@ const handleSendCommentaryResponse = async () => {
     </div>
     
     <div v-if="showResponseInput || commentAnswer.length > 0" class="input-response">
-      <input type="text" placeholder="Leave your comment..." class="input" v-model="data.content" @keydown.enter="handleSendCommentaryResponse">
+      <input type="text" placeholder="Leave your comment..." class="input" v-model.trim="data.content" @keydown.enter="handleSendCommentaryResponse">
       <button class="button" @click="handleSendCommentaryResponse">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
