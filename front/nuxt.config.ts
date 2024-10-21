@@ -3,6 +3,12 @@ require('dotenv').config({path: '../.env'});
 import {resolve} from 'path'
 
 export default defineNuxtConfig({
+    app: {
+        head: {
+            charset: 'utf-8',
+            viewport: 'width=device-width, height=device-height, initial-scale=1',
+        }
+    },
     hooks: {
       "pages:extend"(pages) {
           pages.push({
