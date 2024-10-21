@@ -508,6 +508,8 @@
 
     & > div.content {
       padding-left: 16rem;
+      overflow-y: scroll;
+      height: 100vh;
 
       & > .header {
         display: flex;
