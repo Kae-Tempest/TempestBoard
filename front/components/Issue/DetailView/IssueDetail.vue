@@ -61,6 +61,7 @@ const isResponseSend = ref<boolean>(false)
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
 
+
 const data = reactive({
   status: issueInfo.value !== null ? issueInfo.value.issue.status : ""
 })
