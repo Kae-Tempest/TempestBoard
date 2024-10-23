@@ -20,11 +20,11 @@ const updateIcon = (priority: string) => {
 }
 
 onMounted(() => {
-  updateIcon(props.priority)
+  updateIcon(useCapitalize(props.priority))
 })
 
 watch(() => props.priority, (newVal) => {
-  if(newVal) updateIcon(newVal)
+  if(newVal) updateIcon(useCapitalize(newVal))
 })
 
 </script>
