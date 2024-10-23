@@ -16,8 +16,37 @@ const user = ref<User | null>(null)
 const {isRefresh} = useRefreshData()
 const isResponseSend = defineModel()
 const isEditing = ref<Boolean>(false)
+const dropdownRef = ref<HTMLElement | null>(null)
+
 
 const {data: users, refresh} = await useCustomFetch<User>(`/users/${props.answer.user}`)
+
+// Use the dropdown state composable
+const { activeDropdownId, toggleDropdown, closeDropdown } = useDropdownState()
+
+// Computed property to check if this dropdown is open
+const isDropdownOpen = computed(() => activeDropdownId.value === props.answer.id)
+
+// Add click outside handler
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    closeDropdown()
+  }
+}
+
+// Add and remove event listeners
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+// Prevent dropdown from closing when clicking inside
+const handleDropdownClick = (event: Event) => {
+  event.stopPropagation()
+}
 
 onMounted(async () => {
   await refresh()
@@ -99,15 +128,15 @@ const handleUnresolved = async () => {
       <div v-if="comment.is_resolved && answer.is_resolved" class="is-resolved">
         <font-awesome-icon icon="fa-regular fa-circle-check"/>
       </div>
-      <div class="dropdown is-right is-active">
+      <div class="dropdown is-right" :class="{ 'is-active': isDropdownOpen }" ref="dropdownRef" @click="handleDropdownClick">
         <div class="dropdown-trigger">
-          <button class="button is-small" @click="showResponseMenu = !showResponseMenu">
+          <button class="button is-small" @click="toggleDropdown(answer.id)">
                 <span class="icon is-small">
                   <font-awesome-icon icon="fa-solid fa-ellipsis"/>
                 </span>
           </button>
         </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu" v-if="showResponseMenu">
+        <div class="dropdown-menu" id="dropdown-menu" role="menu" v-if="isDropdownOpen">
           <div class="dropdown-content">
             <div class="item-menu">
               <font-awesome-icon icon="fa-regular fa-trash-can" @click="handleDeleteComment"/>
