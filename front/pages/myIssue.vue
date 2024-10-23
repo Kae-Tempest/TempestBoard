@@ -9,7 +9,7 @@ import IssueKanban from "~/components/Issue/KanbanView/IssueKanban.vue";
 import IssueDetail from "~/components/Issue/DetailView/IssueDetail.vue";
 
 useHead({title: 'Home - Tempest Board'})
-const viewMode = ref("details");
+const viewMode = ref("list");
 const typeView = ref("all");
 const Title = ref("List");
 
