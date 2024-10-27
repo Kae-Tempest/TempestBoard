@@ -26,6 +26,7 @@ interface Props {
   Projects: Project[];
   typeView: string;
   users: User[];
+  filter?: string;
 }
 
 type CommentItem = Comment & { itemType: 'comment' }
@@ -60,6 +61,7 @@ const AssignedUpdate = ref<string>()
 const isResponseSend = ref<boolean>(false)
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
+const route = useRoute()
 
 
 const data = reactive({
@@ -96,6 +98,9 @@ onMounted(() => {
       isAssignedClicked.value = false
     }
   })
+  if (route.params.id) {
+    selectedProject.value = parseInt(route.params.id as string)
+  }
   if (issueInfo.value === null) {
     if (props.issueArray.length > 0 && props.Projects.length > 0) {
       const project = props.Projects.find(p => p.id === props.issueArray[0].project)
@@ -127,10 +132,14 @@ watch(() => issueInfo.value?.issue.status, (newVal) => {
 watch(() => selectedProject.value, async (newVal) => {
   if (newVal !== 0) {
     let projectID = newVal as number
-    const {data: projectSate} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
-    projectStates.value = projectSate.value as States[]
+    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
+    if (props.filter && projectSate.value) {
+      if(props.filter === 'active') projectStates.value = projectSate.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
+      if(props.filter === 'backlog') projectStates.value = projectSate.value.filter(s => s.name === 'backlog');
+    } else {
+      projectStates.value = projectSate.value as States[]
+    }
     handleFilter(undefined, projectID)
-
   }
 })
 
@@ -148,8 +157,13 @@ watch(() => selectedState.value, (newVal) => {
 
 watch(() => issueInfo.value?.project.id, async (newVal) => {
   if (newVal !== 0) {
-    const {data: projectSate} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
-    issueProjectStates.value = projectSate.value as States[]
+    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
+    if (props.filter && projectSate.value) {
+      if(props.filter === 'active') issueProjectStates.value = projectSate.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
+      if(props.filter === 'backlog') issueProjectStates.value = projectSate.value.filter(s => s.name === 'backlog');
+    } else {
+      issueProjectStates.value = projectSate.value as States[]
+    }
   }
 })
 
@@ -359,7 +373,7 @@ const handleUpdateAssigned = async () => {
         </div>
         <div class="select-group">
           <div class="select">
-            <select v-model="selectedProject">
+            <select v-model="selectedProject" :disabled="(route.params.id as string) != null">
               <option disabled value="0">Project</option>
               <option v-for="project in Projects" :value="project.id">{{ project.name }}</option>
             </select>

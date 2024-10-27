@@ -9,20 +9,28 @@ interface Props {
   assignedIssue: Issue[];
   Projects: Project[];
   typeView: string;
+  filter?: string;
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const {data: allStates, refresh} = await useCustomFetch<States[]>('/states/')
+const statesFilter = ref<States[]>([])
 
-onMounted(() => {
-  refresh()
+onMounted(async () => {
+  await refresh()
+  if (props.filter && allStates.value) {
+    if(props.filter === 'active') statesFilter.value = allStates.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
+    if(props.filter === 'backlog') statesFilter.value = allStates.value.filter(s => s.name === 'backlog');
+  } else {
+    statesFilter.value = allStates.value as States[]
+  }
 })
 
 
 </script>
 
 <template>
-  <IssueKanbanDetails v-if="typeView === 'all' && allStates" :issueArray="issueArray" :Projects="Projects" :States="allStates"/>
-  <IssueKanbanDetails v-if="typeView === 'created' && allStates" :issueArray="createdIssue" :Projects="Projects" :States="allStates"/>
-  <IssueKanbanDetails v-if="typeView === 'assigned' && allStates" :issueArray="assignedIssue" :Projects="Projects" :States="allStates"/>
+  <IssueKanbanDetails v-if="typeView === 'all' && allStates" :issueArray="issueArray" :Projects="Projects" :States="statesFilter"/>
+  <IssueKanbanDetails v-if="typeView === 'created' && allStates" :issueArray="createdIssue" :Projects="Projects" :States="statesFilter"/>
+  <IssueKanbanDetails v-if="typeView === 'assigned' && allStates" :issueArray="assignedIssue" :Projects="Projects" :States="statesFilter"/>
 </template>
