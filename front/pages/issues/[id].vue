@@ -124,7 +124,7 @@ watch(() => issueInfo.value?.issue.status, (newVal) => {
 
 watch(() => issueInfo.value?.project.id, async (newVal) => {
   if (newVal !== 0) {
-    const {data: projectSate} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
+    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
     issueProjectStates.value = projectSate.value as States[]
   }
 })
