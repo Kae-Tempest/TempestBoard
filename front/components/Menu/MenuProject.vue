@@ -26,10 +26,10 @@ const isMenuOpen = ref(false)
             <span>Issues</span>
             <ul>
               <li>
-                <NuxtLink to="#">Active</NuxtLink>
+                <NuxtLink :to="{ name: 'projects-id-active' , params: { id: project.id }}">Active</NuxtLink>
               </li>
               <li>
-                <NuxtLink to="#">Backlog</NuxtLink>
+                <NuxtLink :to="{ name: 'projects-id-backlog' , params: { id: project.id }}">Backlog</NuxtLink>
               </li>
             </ul>
           </li>
