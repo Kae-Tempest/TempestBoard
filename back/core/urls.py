@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .consumers import PresenceConsumer, ActivityConsumer
 from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
-    CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet
+    CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView
 
 app_name = 'core'
 
@@ -23,6 +23,8 @@ urlpatterns = [
     path('my-issues/', MyIssueAPIView.as_view(), name='my-issues'),
     path('projects/<int:pk>/users/', ProjectUserAPIView.as_view(), name='project-users'),
     path('project/<int:pk>/states/', ProjectStateViewSet.as_view(), name='project-states'),
+    path('projects/<int:pk>/active-issues/', ProjectActiveIssueAPIView.as_view(), name='project-active-issues'),
+    path('projects/<int:pk>/backlog-issues/', ProjectBacklogIssueAPIView.as_view(), name='project-backlog-issues'),
     path('issues/<int:pk>/comments/', CommentIssueAPIView.as_view(), name='issue-comments'),
     path('issues/<int:pk>/activities/', ActivityAPIView.as_view(), name='issue-activity'),
 

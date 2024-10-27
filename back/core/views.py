@@ -87,6 +87,60 @@ class MyIssueAPIView(views.APIView):
 
         return Response(serializer.data)
 
+class ProjectActiveIssueAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        createdIssues = Issue.objects.filter(project=pk)
+        assignedIssues = Issue.objects.filter(project=pk)
+        serializer = IssueReadSerializer(createdIssues.union(assignedIssues), many=True)
+
+        # Filter out unwanted statuses
+        filtered_data = [
+            issue for issue in serializer.data
+            if issue['status'] not in ['backlog', 'canceled', 'completed']
+        ]
+
+        # Process markdown for descriptions
+        for issue in filtered_data:
+            issue['description'] = Markdown(
+                safe_mode="escape",
+                extras={
+                    "breaks": {"on_newline": True},
+                },
+            ).convert(issue['description'])
+
+        return Response(filtered_data)
+
+class ProjectBacklogIssueAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        # Filter out unwanted statuses at the queryset level
+        active_statuses = ['backlog']  # Add whatever statuses you want to keep
+        createdIssues = Issue.objects.filter(
+            project=pk,
+            status__in=active_statuses
+        )
+        assignedIssues = Issue.objects.filter(
+            project=pk,
+            status__in=active_statuses
+        )
+
+        issues = createdIssues.union(assignedIssues)
+        serializer = IssueReadSerializer(issues, many=True)
+
+        # Process markdown for descriptions
+        for issue in serializer.data:
+            issue['description'] = Markdown(
+                safe_mode="escape",
+                extras={
+                    "breaks": {"on_newline": True},
+                },
+            ).convert(issue['description'])
+
+        return Response(serializer.data)
+
 
 class StateViewSet(viewsets.ModelViewSet):
     queryset = State.objects.all()
