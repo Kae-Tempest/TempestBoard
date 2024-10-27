@@ -32,7 +32,7 @@ const resetForm = () => {
 const handleFetch = async () => {
   const {data: pUsers} = await useCustomFetch<User[]>(`/projects/${props.project.id}/users/`)
   const {data: usersData} = await useCustomFetch<User[]>('/users/')
-  const {data: projectStateData} = await useCustomFetch<States[]>(`/project/${props.project.id}/states/`)
+  const {data: projectStateData} = await useCustomFetch<States[]>(`/projects/${props.project.id}/states/`)
   users.value = usersData.value as User[]
   projectUsers.value = pUsers.value as User[]
   projectState.value = projectStateData.value as States[]
@@ -44,7 +44,7 @@ watch(() => showModal.value, async (newVal) => {
 
 watch(() => openCreateStateModal.value, async (newVal) => {
   if (newVal) {
-    const {data: projectStateData} = await useCustomFetch<States[]>(`/project/${props.project.id}/states/`)
+    const {data: projectStateData} = await useCustomFetch<States[]>(`/projects/${props.project.id}/states/`)
     projectState.value = projectStateData.value as States[]
   }
 })
