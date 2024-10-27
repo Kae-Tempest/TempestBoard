@@ -49,7 +49,7 @@ const resetForm = () => {
 watch(showModal, async () => {
   count.value = 500
   const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
-  const {data: projectState } = await useCustomFetch<States[]>(`/project/${issue.value?.project}/states`)
+  const {data: projectState } = await useCustomFetch<States[]>(`/projects/${issue.value?.project}/states`)
   if(!issue.value) return
   data.title = issue.value.title;
   data.description = issue.value.description;
