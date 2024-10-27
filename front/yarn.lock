@@ -15,10 +15,10 @@
   resolved "https://registry.npmjs.org/@antfu/utils/-/utils-0.7.10.tgz"
   integrity sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==
 
-"@awesome.me/kit-c53b93d6fb@^1.0.67":
-  version "1.0.67"
-  resolved "https://npm.fontawesome.com/@awesome.me/kit-c53b93d6fb/-/1.0.67/kit-c53b93d6fb-1.0.67.tgz#42b70dae48da8a0fa8b136be59d1152fe62dd3c4"
-  integrity sha512-9oQOHd5HOwL9ZiEpDHdTDejNjHSjfhnQ0J6zNut/OUlbKSyCDdrPJVbDZLnNKgkjAW/krwCNPageHUZtrjTowA==
+"@awesome.me/kit-c53b93d6fb@^1.0.70":
+  version "1.0.70"
+  resolved "https://npm.fontawesome.com/@awesome.me/kit-c53b93d6fb/-/1.0.70/kit-c53b93d6fb-1.0.70.tgz#40c98838ade448ba5df516bfbaeab9582308b9c7"
+  integrity sha512-kpKzHbQ8F8Jf5QH+uouss1yJZMLph1XXk/0Tn7o8sWPE19PUa1naqvH/toAQQnEXLQtqeCY5teAzj9yKGM8ZGw==
   dependencies:
     "@fortawesome/fontawesome-common-types" "^6.6.0"
 

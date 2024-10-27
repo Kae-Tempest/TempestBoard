@@ -95,13 +95,6 @@ const logout = async () => {
         <li v-for="project in projects">
           <MenuProject :project="project"/>
         </li>
-
-        <li>
-          <NuxtLink to="#">Roadmap</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="#">Dashboard</NuxtLink>
-        </li>
       </ul>
     </nav>
   </div>
