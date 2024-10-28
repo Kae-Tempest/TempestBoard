@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -161,3 +161,15 @@ class ActivitySerializer(serializers.ModelSerializer):
                 user=validated_data['user'],
             )
             return activity
+
+class MilestoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Milestone
+        fields = ['id', 'name', 'project', 'description', 'status', 'start_date', 'delivery_date','created_at', 'updated_at']
+
+        def create(self, validated_data):
+            milestone = Milestone.objects.create(
+                name=validated_data['name'],
+                project=validated_data['project'],
+            )
+            return milestone

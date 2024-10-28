@@ -4,9 +4,9 @@ from rest_framework import viewsets, views, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .models import User, Project, Issue, Role, Tag, State, Comment, Activity
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
 from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
-    ActivitySerializer, UserSerializer
+    ActivitySerializer, UserSerializer, MilestoneSerializer
 
 
 class RegisterAPIView(views.APIView):
@@ -188,6 +188,40 @@ class ActivityAPIView(views.APIView):
         activities = Activity.objects.filter(issue=pk)
         serializer = ActivitySerializer(activities, many=True)
         return Response(serializer.data)
+
+class MilestoneViewSet(viewsets.ModelViewSet):
+    queryset = Milestone.objects.all()
+    serializer_class = MilestoneSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = MilestoneSerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
+
+class MilestoneProjectAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        milestone = Milestone.objects.filter(project=pk)
+        serializer = MilestoneSerializer(milestone, many=True)
+        return Response(serializer.data)
+
+class MilestoneAdvancementAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, milestone):
+        backlog_issue = Issue.objects.filter(project=pk, milestone=milestone, status__in=['backlog']).count()
+        active_issue = Issue.objects.filter(project=pk,milestone=milestone).exclude(status__in=['backlog', 'completed', 'canceled']).count()
+        completed_issue = Issue.objects.filter(project=pk, milestone=milestone, status__in=['completed']).count()
+        
+        return Response({
+            'backlog_issues': backlog_issue,
+            'active_issues': active_issue,
+            'completed_issues': completed_issue
+        }, status=status.HTTP_200_OK)
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()

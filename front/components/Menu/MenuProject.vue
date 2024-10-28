@@ -34,7 +34,7 @@ const isMenuOpen = ref(false)
             </ul>
           </li>
           <li>
-            <NuxtLink to="#">Releases</NuxtLink>
+            <NuxtLink :to="{ name: 'projects-id-release' , params: { id: project.id }}">Releases</NuxtLink>
           </li>
           <li>
             <span>Repos</span>

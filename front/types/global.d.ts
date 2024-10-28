@@ -78,3 +78,15 @@ export type Comment = {
     updated_at: Date | string;
 }
 
+export type MileStone = {
+    id: number;
+    name: string;
+    project: number;
+    status: string;
+    description: string;
+    delivery_date: Date;
+    start_date: Date;
+    created_at: Date;
+    updated_at: Date;
+}
+
