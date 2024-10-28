@@ -52,7 +52,7 @@ class Issue(models.Model):
     priority = models.CharField(max_length=10)
     status = models.CharField(max_length=11)
     tags = models.ManyToManyField('Tag', blank=True, related_name='tags')
-    milestone = models.CharField(max_length=150, blank=True, null=True)
+    milestone = models.ForeignKey('Milestone', on_delete=models.CASCADE, related_name='issues', blank=True, null=True)
     attachment = models.FileField(upload_to='attachment/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -124,3 +124,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
+
+
+class Milestone(models.Model):
+    name = models.CharField(max_length=100)
+    project = models.ForeignKey('Project', related_name='milestones', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20)
+    description = models.CharField(max_length=300, blank=True, null=True)
+    start_date = models.DateTimeField()
+    delivery_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
