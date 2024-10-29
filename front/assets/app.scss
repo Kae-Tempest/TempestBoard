@@ -2291,10 +2291,21 @@
     }
     .modal {
       & > .modal-content > .box {
+        & > .field > .control  > .select {
+          height: auto;
+          & > select {
+            border: 1px solid var(--blue-600);
+          }
+        }
         & > .field.is-grouped > .control {
           display: flex;
           justify-content: space-between;
-          width: 100%
+          width: 100%;
+          & > .date-picker {
+            & > input {
+              border: 1px solid var(--blue-600);
+            }
+          }
         }
       }
     }

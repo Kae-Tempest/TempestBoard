@@ -12,45 +12,66 @@ type Advancement = {
 }
 
 const props = defineProps<Props>()
-
-const {data, refresh} = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
-
+const advancementData = ref<Advancement>()
+let backlogDiv: HTMLElement | null
+let activeDiv: HTMLElement | null
+let completedDiv: HTMLElement | null
 
 onMounted(async () => {
-  await refresh()
-  if (!data.value) return
 
-  const backlogDiv: HTMLElement | null = document.getElementById('backlog');
-  const activeDiv: HTMLElement | null = document.getElementById('active');
-  const completedDiv: HTMLElement | null = document.getElementById('completed');
+  const {data} = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
+  advancementData.value = data.value as Advancement
+  await updateBar()
+})
 
+watch(() => props.milestone, async (newVal) => {
+  if(newVal) {
+
+    const {data} = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
+    advancementData.value = data.value as Advancement
+    await updateBar()
+  }
+})
+
+const updateBar = async () => {
+  backlogDiv = document.getElementById('backlog');
+  activeDiv = document.getElementById('active');
+  completedDiv = document.getElementById('completed');
   if (!backlogDiv || !activeDiv || !completedDiv) return
+  if (!advancementData.value) return
 
-  const allCount = data.value.backlog_issues + data.value.active_issues + data.value.completed_issues
+  const allCount = advancementData.value.backlog_issues + advancementData.value.active_issues + advancementData.value.completed_issues
   let backlogSize: number
   let activeSize: number
   let completedSize: number
 
 
   if (allCount !== 0) {
-    backlogSize = data.value.backlog_issues / allCount * 100
-    activeSize = data.value.active_issues / allCount * 100
-    completedSize = data.value.completed_issues / allCount * 100
+    backlogSize = advancementData.value.backlog_issues / allCount * 100
+    activeSize = advancementData.value.active_issues / allCount * 100
+    completedSize = advancementData.value.completed_issues / allCount * 100
     backlogDiv.style.borderBottomRightRadius = "0"
     backlogDiv.style.borderTopRightRadius = "0"
-  } else {
+    backlogDiv.style.width = backlogSize + "%"
+    activeDiv.style.width = activeSize + "%"
+    completedDiv.style.width = completedSize + "%"
+  } else if(isNaN(allCount)) {
     backlogSize = 0
     activeSize = 0
     completedSize = 0
+    backlogDiv.style.width = backlogSize + "%"
+    activeDiv.style.width = activeSize + "%"
+    completedDiv.style.width = completedSize + "%"
   }
-  
-  backlogDiv.style.width = backlogSize + "%"
-  activeDiv.style.width = activeSize + "%"
+
+
+  backlogDiv.style.display = "block"
   activeDiv.style.display = "block"
-  completedDiv.style.width = completedSize + "%"
   completedDiv.style.display = "block"
 
-})
+
+}
+
 
 
 </script>
