@@ -7,23 +7,16 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
+const showModal = defineModel()
+const milestoneID = defineModel('milestoneID')
 const dropdownRef = ref<HTMLElement | null>(null)
-
-// Use the dropdown state composable
 const {activeDropdownId, toggleDropdown, closeDropdown} = useDropdownState()
-
-// Computed property to check if this dropdown is open
 const isDropdownOpen = computed(() => activeDropdownId.value === props.milestone.id)
-
-// Add click outside handler
 const handleClickOutside = (event: MouseEvent) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     closeDropdown()
   }
 }
-
-// Add and remove event listeners
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
@@ -32,11 +25,16 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-// Prevent dropdown from closing when clicking inside
 const handleDropdownClick = (event: Event) => {
   event.stopPropagation()
 }
 
+const handleDeleteMilestone = async () => {
+  await useCustomFetch(`/milestones/${props.milestone.id}/`,{
+    method: 'delete'
+  })
+  useRefreshData().isRefresh.value = true
+}
 </script>
 
 <template>
@@ -52,10 +50,10 @@ const handleDropdownClick = (event: Event) => {
       <div class="dropdown-menu" id="dropdown-menu" role="menu" v-if="isDropdownOpen">
         <div class="dropdown-content">
           <div class="item-menu">
-            <font-awesome-icon icon="fa-regular fa-trash-can" @click=""/>
+            <font-awesome-icon icon="fa-regular fa-trash-can" @click="handleDeleteMilestone"/>
           </div>
           <div class="item-menu">
-            <font-awesome-icon icon="fa-regular fa-pen" @click=""/>
+            <font-awesome-icon icon="fa-regular fa-pen" @click="showModal = true; milestoneID = milestone.id"/>
           </div>
         </div>
       </div>

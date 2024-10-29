@@ -3,12 +3,33 @@ import type {MileStone} from "~/types/global";
 import {ref} from "vue";
 
 interface Props {
-  project: string
+  milestoneID: number
 }
+
 const props = defineProps<Props>()
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(300);
+const milestone = ref<MileStone>()
 
+watch(() => props.milestoneID, async (newVal) => {
+  if(newVal) {
+    if (props.milestoneID !== 0) {
+      const {data} = await useCustomFetch<MileStone>(`/milestones/${props.milestoneID}/`)
+      milestone.value = data.value as MileStone
+      await updateData()
+    }
+  }
+})
+
+const updateData = async () => {
+  if (!milestone.value) return
+  data.name = milestone.value.name
+  data.description = milestone.value.description
+  data.project = milestone.value.project
+  data.start_date = new Date(milestone.value.start_date).toISOString().substring(0, 10)
+  data.delivery_date = new Date(milestone.value.delivery_date).toISOString().substring(0, 10)
+  data.status = milestone.value.status
+}
 
 const resetForm = () => {
   data.name = ""
@@ -17,15 +38,15 @@ const resetForm = () => {
   data.delivery_date = ""
 }
 
-const handleCreateMilestone = async () => {
+const handleUpdateMilestone = async () => {
   const res = await useCustomFetch<MileStone>(`/milestones/`, {
-    method: "post",
+    method: "patch",
     body: data
   })
 
-  if( res.error.value ) {
+  if (res.error.value) {
     console.log(res.error.value)
-  } else if ( res.data.value ) {
+  } else if (res.data.value) {
     resetForm()
     showModal.value = false
     useRefreshData().isRefresh.value = true
@@ -34,7 +55,7 @@ const handleCreateMilestone = async () => {
 
 const data = reactive({
   name: "",
-  project: props.project,
+  project: 0,
   description: "",
   start_date: new Date().toISOString().substring(0, 10),
   delivery_date: "",
@@ -65,6 +86,19 @@ const data = reactive({
             <div class="count">{{ count != 0 ? count : 0 }}/300</div>
           </div>
         </div>
+        <div class="field">
+          <label for="status">State</label>
+          <div class="control">
+            <div class="select">
+              <select name="state" id="state" v-model="data.status">
+                <option value="open">Open</option>
+                <option value="publish">Publish</option>
+                <option value="unpublish">Unpublish</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+        </div>
         <div class="field is-grouped">
           <div class="control">
             <div class="date-picker">
@@ -81,8 +115,8 @@ const data = reactive({
           Cancel
         </button>
         <button
-            class="button is-dark" @click="handleCreateMilestone">
-          Create
+            class="button is-dark" @click="handleUpdateMilestone">
+          Update
         </button>
       </div>
     </div>

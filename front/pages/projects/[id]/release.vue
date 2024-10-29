@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import CreateMilestoneModal from "~/components/Modals/milestone/CreateMilestoneModal.vue";
 import ReleaseMenu from "~/components/Menu/ReleaseMenu.vue";
 import ReleaseAdvancementBar from "~/components/Bars/ReleaseAdvancementBar.vue";
+import EditMilestoneModal from "~/components/Modals/milestone/EditMilestoneModal.vue";
 
 useHead({title: 'Home - Tempest Board'})
 const user: User | null = useUserStore().getUser;
@@ -14,6 +15,8 @@ const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 const route = useRoute()
 const openModal = ref<boolean>(false)
+const openEditModal = ref<boolean>(false)
+const editMilestoneID = ref<number>(0)
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 const {data: Milestones, refresh: refreshMilestone} = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
@@ -36,6 +39,7 @@ watch(() => isRefresh.value, async (newVal) => {
 <template>
   <div id="release">
     <CreateMilestoneModal v-model:modal="openModal" :project="route.params.id[0]"/>
+    <EditMilestoneModal v-model:modal="openEditModal" :milestoneID="editMilestoneID"/>
     <Navbar v-if="user" :user="user" :projects="projects"/>
     <div class="content">
       <header>
@@ -82,7 +86,7 @@ watch(() => isRefresh.value, async (newVal) => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="milestone in Milestones">
+            <tr v-for="milestone in Milestones" :key="milestone.id">
               <td class="is-center">{{ milestone.name }}</td>
               <td>{{ useCapitalize(milestone.status) }}</td>
               <td class="is-center">{{ new Date(milestone.start_date).toISOString().substring(0, 10) }}</td>
@@ -92,7 +96,7 @@ watch(() => isRefresh.value, async (newVal) => {
               <td class="is-center">{{ new Date(milestone.delivery_date).toISOString().substring(0, 10) }}</td>
               <td class="is-center">{{ milestone.description || "No Description" }}</td>
               <td class="is-center action-menu">
-                <ReleaseMenu :milestone="milestone"/>
+                <ReleaseMenu :milestone="milestone" v-model="openEditModal" v-model:milestoneID="editMilestoneID"/>
               </td>
             </tr>
           </tbody>
