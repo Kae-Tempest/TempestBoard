@@ -8,6 +8,7 @@ import CreateMilestoneModal from "~/components/Modals/milestone/CreateMilestoneM
 import ReleaseMenu from "~/components/Menu/ReleaseMenu.vue";
 import ReleaseAdvancementBar from "~/components/Bars/ReleaseAdvancementBar.vue";
 import EditMilestoneModal from "~/components/Modals/milestone/EditMilestoneModal.vue";
+import SearchBar from "~/components/SearchBar.vue";
 
 useHead({title: 'Home - Tempest Board'})
 const user: User | null = useUserStore().getUser;
@@ -20,7 +21,7 @@ const editMilestoneID = ref<number>(0)
 const MilestonesList = ref<MileStone[]>([])
 const StateFilter = ref<string>("all")
 const MilestoneSearch = ref<string>("")
-
+const showSearchBar = ref<boolean>(false)
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 const {data: Milestones, refresh: refreshMilestone} = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
@@ -55,7 +56,7 @@ watch(() => StateFilter.value, (newVal) => {
 watch(() => MilestoneSearch.value, (newVal) => {
   if (newVal && Milestones.value) {
     MilestonesList.value = Milestones.value.filter(m => m.name.includes(newVal))
-  } else if(Milestones.value) MilestonesList.value = Milestones.value
+  } else if (Milestones.value) MilestonesList.value = Milestones.value
 })
 
 </script>
@@ -63,7 +64,8 @@ watch(() => MilestoneSearch.value, (newVal) => {
   <div id="release">
     <CreateMilestoneModal v-model:modal="openModal" :project="route.params.id[0]"/>
     <EditMilestoneModal v-model:modal="openEditModal" :milestoneID="editMilestoneID"/>
-    <Navbar v-if="user" :user="user" :projects="projects"/>
+    <SearchBar v-model="showSearchBar"/>
+    <Navbar v-if="user" :user="user" :projects="projects" v-model="showSearchBar"/>
     <div class="content">
       <header>
         <div class="title">Release</div>

@@ -2160,4 +2160,44 @@
       }
     }
   }
+
+  #searchbar {
+    &.modal {
+      justify-content: normal;
+      & > .searchbar {
+        margin-top: 2rem;
+        width: 40rem;
+        & > .input {
+          border-radius: .375rem .375rem 0 0;
+        }
+        & > .card-list {
+          & > .card {
+            &:hover {
+              background-color: var(--blue-200);
+            }
+            border-radius: 0;
+            &:last-child {
+              border-radius: 0 0 .375rem .375rem;
+            }
+            margin: 0;
+            & > .wrapper {
+              & > .head {
+                @include SeiraFont(600);
+                display: flex;
+                justify-content: space-between;
+                & > .left, .right {
+                  display: flex;
+                  gap: 1rem;
+                }
+              }
+              & > .content {
+                min-height: 3.5rem;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
 }
