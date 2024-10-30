@@ -49,11 +49,11 @@ const handleDeleteMilestone = async () => {
       </div>
       <div class="dropdown-menu" id="dropdown-menu" role="menu" v-if="isDropdownOpen">
         <div class="dropdown-content">
-          <div class="item-menu">
-            <font-awesome-icon icon="fa-regular fa-trash-can" @click="handleDeleteMilestone"/>
+          <div class="item-menu" @click="handleDeleteMilestone">
+            <font-awesome-icon icon="fa-regular fa-trash-can" />
           </div>
-          <div class="item-menu">
-            <font-awesome-icon icon="fa-regular fa-pen" @click="showModal = true; milestoneID = milestone.id"/>
+          <div class="item-menu" @click="showModal = true; milestoneID = milestone.id">
+            <font-awesome-icon icon="fa-regular fa-pen" />
           </div>
         </div>
       </div>
