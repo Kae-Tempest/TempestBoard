@@ -39,7 +39,7 @@ const resetForm = () => {
 }
 
 const handleUpdateMilestone = async () => {
-  const res = await useCustomFetch<MileStone>(`/milestones/`, {
+  const res = await useCustomFetch<MileStone>(`/milestones/${props.milestoneID}/`, {
     method: "patch",
     body: data
   })

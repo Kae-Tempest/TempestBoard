@@ -17,6 +17,10 @@ const route = useRoute()
 const openModal = ref<boolean>(false)
 const openEditModal = ref<boolean>(false)
 const editMilestoneID = ref<number>(0)
+const MilestonesList = ref<MileStone[]>([])
+const StateFilter = ref<string>("all")
+const MilestoneSearch = ref<string>("")
+
 
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 const {data: Milestones, refresh: refreshMilestone} = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
@@ -25,15 +29,34 @@ onMounted(async () => {
   await refresh()
   await refreshMilestone()
   projects.value = data.value as Project[]
+  MilestonesList.value = Milestones.value as MileStone[]
 });
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
     await refresh()
+    await refreshMilestone()
     projects.value = data.value as Project[]
+    MilestonesList.value = Milestones.value as MileStone[]
     isRefresh.value = false
   }
 });
+
+watch(() => StateFilter.value, (newVal) => {
+  if (newVal === "all" && Milestones.value) {
+    StateFilter.value = "all"
+    MilestonesList.value = Milestones.value
+  }
+  if (newVal !== "all" && Milestones.value) {
+    MilestonesList.value = Milestones.value.filter(m => m.status === newVal)
+  }
+})
+
+watch(() => MilestoneSearch.value, (newVal) => {
+  if (newVal && Milestones.value) {
+    MilestonesList.value = Milestones.value.filter(m => m.name.includes(newVal))
+  } else if(Milestones.value) MilestonesList.value = Milestones.value
+})
 
 </script>
 <template>
@@ -46,8 +69,8 @@ watch(() => isRefresh.value, async (newVal) => {
         <div class="title">Release</div>
         <div class="action">
           <div class="select">
-            <select name="state" id="state" class="state">
-              <option disabled value="">State</option>
+            <select name="state" id="state" class="state" v-model="StateFilter">
+              <option value="all">All</option>
               <option value="open">Open</option>
               <option value="publish">Publish</option>
               <option value="unpublish">Unpublish</option>
@@ -55,7 +78,7 @@ watch(() => isRefresh.value, async (newVal) => {
             </select>
           </div>
           <div class="search">
-            <input type="text" class="input" placeholder="Search Version">
+            <input type="text" class="input" placeholder="Search Version" v-model="MilestoneSearch">
             <button class="button">
               <span class="icon">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
@@ -75,30 +98,30 @@ watch(() => isRefresh.value, async (newVal) => {
       <div class="hero">
         <table class="table is-striped is-hoverable">
           <thead>
-            <tr>
-              <th scope="col" class="is-tiny">Version</th>
-              <th scope="col" class="is-tiny">State</th>
-              <th scope="col" class="is-small">Start Date</th>
-              <th scope="col">Advancement</th>
-              <th scope="col" class="is-small">Delivery Date</th>
-              <th scope="col">Description</th>
-              <th scope="col" class="is-tiny">Actions</th>
-            </tr>
+          <tr>
+            <th scope="col" class="is-tiny">Version</th>
+            <th scope="col" class="is-tiny">State</th>
+            <th scope="col" class="is-small">Start Date</th>
+            <th scope="col">Advancement</th>
+            <th scope="col" class="is-small">Delivery Date</th>
+            <th scope="col">Description</th>
+            <th scope="col" class="is-tiny">Actions</th>
+          </tr>
           </thead>
           <tbody>
-            <tr v-for="milestone in Milestones" :key="milestone.id">
-              <td class="is-center">{{ milestone.name }}</td>
-              <td>{{ useCapitalize(milestone.status) }}</td>
-              <td class="is-center">{{ new Date(milestone.start_date).toISOString().substring(0, 10) }}</td>
-              <td class="advancement">
-                <ReleaseAdvancementBar :milestone="milestone"/>
-              </td>
-              <td class="is-center">{{ new Date(milestone.delivery_date).toISOString().substring(0, 10) }}</td>
-              <td class="is-center">{{ milestone.description || "No Description" }}</td>
-              <td class="is-center action-menu">
-                <ReleaseMenu :milestone="milestone" v-model="openEditModal" v-model:milestoneID="editMilestoneID"/>
-              </td>
-            </tr>
+          <tr v-for="milestone in MilestonesList" :key="milestone.id">
+            <td class="is-center">{{ milestone.name }}</td>
+            <td>{{ useCapitalize(milestone.status) }}</td>
+            <td class="is-center">{{ new Date(milestone.start_date).toISOString().substring(0, 10) }}</td>
+            <td class="advancement">
+              <ReleaseAdvancementBar :milestone="milestone"/>
+            </td>
+            <td class="is-center">{{ new Date(milestone.delivery_date).toISOString().substring(0, 10) }}</td>
+            <td class="is-center">{{ milestone.description || "No Description" }}</td>
+            <td class="is-center action-menu">
+              <ReleaseMenu :milestone="milestone" v-model="openEditModal" v-model:milestoneID="editMilestoneID"/>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
