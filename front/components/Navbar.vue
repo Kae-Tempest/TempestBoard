@@ -11,6 +11,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const showSearchBar = defineModel()
 
 const isDropDownOpen = ref(false);
 const isShowModal = ref(false)
@@ -55,17 +56,23 @@ const logout = async () => {
           <div class="dropdown-menu" id="user-menu">
             <div class="dropdown-content">
               <ul>
+                <NuxtLink to="#">
+                  <li>
+                    Profile
+                  </li>
+                </NuxtLink>
+                  <NuxtLink to="#">
                 <li>
-                  <NuxtLink to="#">Profile</NuxtLink>
+                    Settings
                 </li>
-                <li>
-                  <NuxtLink to="#">Settings</NuxtLink>
-                </li>
-                <NuxtLink to="/project"><li>
-                  Project
-                </li></NuxtLink>
-                <li>
-                  <button @click="logout()">
+                  </NuxtLink>
+                <NuxtLink to="/project">
+                  <li>
+                    Project
+                  </li>
+                </NuxtLink>
+                <li @click="logout()">
+                  <button>
                     Logout
                   </button>
                 </li>
@@ -81,7 +88,7 @@ const logout = async () => {
         <font-awesome-icon icon="fa-solid fa-pen-to-square"/>
         New Issue
       </button>
-      <button>
+      <button @click="showSearchBar = true;">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
       </button>
     </div>

@@ -4,11 +4,12 @@ import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import EditIssueModal from "~/components/Modals/issue/EditIssueModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useCustomFetch} from "~/composables/useCustomFetch";
+import SearchBar from "~/components/SearchBar.vue";
 
 const {sendMessage, receivedMessage} = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
@@ -60,7 +61,7 @@ const {data: projectsData} = await useCustomFetch<Project[]>('/projects/')
 const {data: users} = await useCustomFetch<User[]>(`/users/`)
 
 const projects = projectsData.value || []
-
+const showSearchBar = ref<boolean>(false)
 
 onBeforeUpdate(async () => {
   document.removeEventListener('keydown', event => {
@@ -70,7 +71,7 @@ onBeforeUpdate(async () => {
   })
   if (issueInfo.value === null) {
     await issueRefresh()
-    if(issue.value) {
+    if (issue.value) {
       const {data: project} = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
       if (project.value && issue.value) {
         if (users.value && issue.value.creator) {
@@ -97,7 +98,7 @@ onMounted(async () => {
   })
   if (issueInfo.value === null) {
     await issueRefresh()
-    if(issue.value) {
+    if (issue.value) {
       const {data: project} = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
       if (project.value && issue.value) {
         if (users.value && issue.value.creator) {
@@ -253,7 +254,8 @@ const handleUpdateAssigned = async () => {
 </script>
 
 <template>
-  <Navbar v-if="user" :user="user" :projects="projects"/>
+  <SearchBar v-model="showSearchBar"/>
+  <Navbar v-if="user" :user="user" :projects="projects" v-model="showSearchBar"/>
   <div id="issue-details">
     <EditIssueModal :issueId="editedIssueID" v-model="showUpdateModal"/>
     <div class="hero-issue">

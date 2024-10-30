@@ -7,6 +7,7 @@ import {useCustomFetch} from "~/composables/useCustomFetch";
 import IssueList from "~/components/Issue/ListView/IssueList.vue";
 import IssueKanban from "~/components/Issue/KanbanView/IssueKanban.vue";
 import IssueDetail from "~/components/Issue/DetailView/IssueDetail.vue";
+import SearchBar from "~/components/SearchBar.vue";
 
 useHead({title: 'Home - Tempest Board'})
 const viewMode = ref("list");
@@ -26,10 +27,10 @@ const users = ref<User[] | null>([])
 const projects = ref<Project[]>([])
 
 const {isRefresh} = useRefreshData()
-
+const showSearchBar = ref<boolean>(false)
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/')
 const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/projects/${route.params.id}/active-issues/`) // call url fort fetch project issue with id in params, get only active issue ( !backlog && !completed && !canceled )a
-const {data: userList, refresh: userRefresh } = await useCustomFetch<User[]>(`/users/`)
+const {data: userList, refresh: userRefresh} = await useCustomFetch<User[]>(`/users/`)
 
 onMounted(async () => {
   await refresh()
@@ -59,7 +60,8 @@ watch(() => isRefresh.value, async (newVal) => {
 </script>
 <template>
   <div id="my_issue">
-    <Navbar v-if="user" :user="user" :projects="projects"/>
+    <SearchBar v-model="showSearchBar"/>
+    <Navbar v-if="user" :user="user" :projects="projects" v-model="showSearchBar"/>
     <div class="content">
       <div class="header">
         <nav class="breadcrumb is-medium" aria-label="breadcrumbs">
@@ -114,9 +116,11 @@ watch(() => isRefresh.value, async (newVal) => {
       </div>
       <div class="issues">
         <div>
-          <IssueList v-if="viewMode === 'list' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users" filter="active"/>
+          <IssueList v-if="viewMode === 'list' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users"
+                     filter="active"/>
           <IssueKanban v-if="viewMode === 'kanban'" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" filter="active"/>
-          <IssueDetail v-if="viewMode === 'details' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView" :users="users" filter="active"/>
+          <IssueDetail v-if="viewMode === 'details' && users" :issueArray="issueArray" :Projects="projects" :assignedIssue="AssignedIssues" :createdIssue="CreateIssues" :typeView="typeView"
+                       :users="users" filter="active"/>
         </div>
       </div>
     </div>
