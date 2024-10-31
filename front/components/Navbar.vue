@@ -61,11 +61,6 @@ const logout = async () => {
                     Profile
                   </li>
                 </NuxtLink>
-                  <NuxtLink to="#">
-                <li>
-                    Settings
-                </li>
-                  </NuxtLink>
                 <NuxtLink to="/project">
                   <li>
                     Project
