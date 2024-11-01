@@ -20,7 +20,6 @@ export function useWebSocket(url: string, callback?: Function) {
 
         socket.value.onopen = () => {
             isConnected.value = true;
-            console.log('WebSocket connected');
         };
 
         socket.value.onmessage = (event) => {
@@ -30,7 +29,6 @@ export function useWebSocket(url: string, callback?: Function) {
 
         socket.value.onclose = () => {
             isConnected.value = false;
-            console.log('WebSocket disconnected');
         };
 
         socket.value.onerror = (error) => {
