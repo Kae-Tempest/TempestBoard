@@ -243,7 +243,7 @@ class LoginView(views.APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data.get('user')
         login(request, user)
-        connected_user = UserSerializer(user)
+        connected_user = UserSerializer(user, context={"request": request})
         return Response(connected_user.data, status=status.HTTP_202_ACCEPTED)
 
 

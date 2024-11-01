@@ -23,9 +23,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return authenticated_user
 
 class UserSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'thumbnail', 'created_at', 'updated_at']
+
+    def get_thumbnail(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.thumbnail.url)
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
