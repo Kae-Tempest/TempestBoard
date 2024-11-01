@@ -11,7 +11,7 @@ import EditMilestoneModal from "~/components/Modals/milestone/EditMilestoneModal
 import SearchBar from "~/components/SearchBar.vue";
 
 useHead({title: 'Home - Tempest Board'})
-const user: User | null = useUserStore().getUser;
+let user: User | null = useUserStore().getUser;
 const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 const route = useRoute()
@@ -39,6 +39,7 @@ watch(() => isRefresh.value, async (newVal) => {
     await refreshMilestone()
     projects.value = data.value as Project[]
     MilestonesList.value = Milestones.value as MileStone[]
+    user = useUserStore().getUser;
     isRefresh.value = false
   }
 });

@@ -4,7 +4,7 @@ import {ActivityContent} from "~/enums/AcitivityContentEnum"
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
 import EditIssueModal from "~/components/Modals/issue/EditIssueModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -41,8 +41,8 @@ const isAssignedClicked = ref<Boolean>(false)
 const AssignedUpdate = ref<string>()
 const isResponseSend = ref<boolean>(false)
 const {isRefresh} = useRefreshData()
-const user: User | null = useUserStore().getUser
 const route = useRoute()
+let user: User | null = useUserStore().getUser
 
 
 const data = reactive({
@@ -57,8 +57,8 @@ const commentData = reactive<formType>({
 })
 
 const {data: issue, refresh: issueRefresh} = await useCustomFetch<Issue>(`/issues/${route.params.id}/`)
-const {data: projectsData} = await useCustomFetch<Project[]>('/projects/')
-const {data: users} = await useCustomFetch<User[]>(`/users/`)
+const {data: projectsData, refresh: projectsRefresh} = await useCustomFetch<Project[]>('/projects/')
+const {data: users, refresh: usersRefresh} = await useCustomFetch<User[]>(`/users/`)
 
 const projects = projectsData.value || []
 const showSearchBar = ref<boolean>(false)
@@ -148,6 +148,16 @@ watch(() => isResponseSend.value, async (newVal) => {
     isResponseSend.value = false
   }
 })
+
+watch(() => isRefresh.value, async (newVal) => {
+  if (newVal) {
+    await issueRefresh()
+    await projectsRefresh()
+    await usersRefresh()
+    user = useUserStore().getUser;
+    isRefresh.value = false
+  }
+});
 
 const handleUpdate = async () => {
   if (!issueInfo.value) return

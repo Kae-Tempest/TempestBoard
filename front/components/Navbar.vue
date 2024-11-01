@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project, User} from "~/types/global";
 import MenuProject from "~/components/Menu/MenuProject.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
+import ProfileModal from "~/components/Modals/user/ProfileModal.vue";
 
 interface Props {
   user: User
@@ -13,11 +14,12 @@ interface Props {
 const props = defineProps<Props>()
 const showSearchBar = defineModel()
 
-const isDropDownOpen = ref(false);
-const isShowModal = ref(false)
-const thumbnail = ref('')
+const isDropDownOpen = ref<boolean>(false);
+const isShowModal = ref<boolean>(false)
+const thumbnail = ref<string>('')
+const showProfileModal = ref<boolean>(false)
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('click', () => isDropDownOpen.value = false)
   if (props.user.thumbnail) {
     thumbnail.value = props.user.thumbnail
@@ -41,6 +43,7 @@ const logout = async () => {
 
 <template>
   <CreateIssueModal :projects="projects" v-model:modal="isShowModal"/>
+  <ProfileModal :user="user" v-model="showProfileModal"/>
   <div id="navbar">
     <div>
       <div>
@@ -56,11 +59,9 @@ const logout = async () => {
           <div class="dropdown-menu" id="user-menu">
             <div class="dropdown-content">
               <ul>
-                <NuxtLink to="#">
-                  <li>
-                    Profile
-                  </li>
-                </NuxtLink>
+                <li @click="showProfileModal = true">
+                  Profile
+                </li>
                 <NuxtLink to="/project">
                   <li>
                     Project

@@ -18,7 +18,7 @@ const issueArray = ref<Issue[]>([]);
 const AssignedIssues = ref<Issue[]>([]);
 const CreateIssues = ref<Issue[]>([]);
 
-const user: User | null = useUserStore().getUser;
+let user: User | null = useUserStore().getUser;
 
 const users = ref<User[] | null>([])
 
@@ -52,6 +52,7 @@ watch(() => isRefresh.value, async (newVal) => {
     CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
     await refresh()
     projects.value = data.value as Project[]
+    user = useUserStore().getUser;
     isRefresh.value = false
   }
 });
