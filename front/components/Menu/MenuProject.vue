@@ -9,7 +9,7 @@ interface Props {
 
 defineProps<Props>()
 
-const isMenuOpen = ref(false)
+const isMenuOpen = ref(true)
 
 </script>
 
