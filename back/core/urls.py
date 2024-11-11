@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 
 from .consumers import PresenceConsumer, ActivityConsumer
 from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
-    CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView, MilestoneViewSet, MilestoneProjectAPIView, MilestoneAdvancementAPIView
+    CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView, MilestoneViewSet, MilestoneProjectAPIView, MilestoneAdvancementAPIView, \
+    UserProjectAPIView, ChangePasswordView
 
 app_name = 'core'
 
@@ -29,6 +30,9 @@ urlpatterns = [
     path('projects/<int:pk>/backlog-issues/', ProjectBacklogIssueAPIView.as_view(), name='project-backlog-issues'),
     path('projects/<int:pk>/milestones/', MilestoneProjectAPIView.as_view(), name='project-milestones'),
     path('projects/<int:pk>/advancement/<int:milestone>/', MilestoneAdvancementAPIView.as_view() , name="project-advancement"),
+
+    path('users/<int:pk>/project/', UserProjectAPIView.as_view() , name="user-project"),
+    path('users/<int:pk>/change_password/', ChangePasswordView.as_view() , name="user-change-password"),
 
     path('issues/<int:pk>/comments/', CommentIssueAPIView.as_view(), name='issue-comments'),
     path('issues/<int:pk>/activities/', ActivityAPIView.as_view(), name='issue-activity'),

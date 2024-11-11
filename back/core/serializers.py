@@ -22,6 +22,35 @@ class RegisterSerializer(serializers.ModelSerializer):
         authenticated_user = authenticate(email=email, password=password)
         return authenticated_user
 
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+    new_password_confirm = serializers.CharField(required=True, write_only=True)
+
+    def validate_old_password(self, value):
+        user = self.context['user']  # Changed to get user from context
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect.")
+        return value
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password_confirm']:
+            raise serializers.ValidationError({
+                'new_password_confirm': "The new passwords don't match."
+            })
+
+        if data['old_password'] == data['new_password']:
+            raise serializers.ValidationError({
+                'new_password': "New password cannot be the same as old password."
+            })
+
+        return data
+    def save(self, **kwargs):
+        user = self.context['user']  # Changed to get user from context
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
+
 class UserSerializer(serializers.ModelSerializer):
     thumbnail = serializers.SerializerMethodField()
     class Meta:
@@ -30,7 +59,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_thumbnail(self, obj):
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.thumbnail.url)
+        if obj.thumbnail != "":
+            print(obj.thumbnail, 'thumbnail')
+            return request.build_absolute_uri(obj.thumbnail.url)
+        else:
+            return ""
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,6 +82,52 @@ class ProjectSerializer(serializers.ModelSerializer):
         project.users.add(validated_data['creator'])
         return project
 
+    def update(self, instance, validated_data):
+        # Get the original project by ID first
+        original_project = Project.objects.get(id=instance.id)
+
+        # Remove any existing numbering from the original name
+        base_name = original_project.name
+        if '(' in base_name and base_name.endswith(')'):
+            base_name = base_name[:base_name.rfind('(')].strip()
+
+        # First try with base name
+        exact_name_exists = Project.objects.filter(
+            creator=validated_data['creator'],
+            name=base_name
+        ).exclude(id=instance.id).exists()
+
+        if exact_name_exists:
+            # Then try with (1)
+            name_with_one = f"{base_name} (1)"
+            name_with_one_exists = Project.objects.filter(
+                creator=validated_data['creator'],
+                name=name_with_one
+            ).exclude(id=instance.id).exists()
+
+            if not name_with_one_exists:
+                validated_data['name'] = name_with_one
+            else:
+                # If even (1) exists, find next available number
+                counter = 2
+                while True:
+                    new_name = f"{base_name} ({counter})"
+                    if not Project.objects.filter(
+                            creator=validated_data['creator'],
+                            name=new_name
+                    ).exclude(id=instance.id).exists():
+                        validated_data['name'] = new_name
+                        break
+                    counter += 1
+        else:
+            validated_data['name'] = base_name
+
+        # Update the instance with all validated data
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
