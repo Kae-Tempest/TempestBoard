@@ -27,8 +27,12 @@ const {isRefresh} = useRefreshData()
 
 onMounted(async () => {
   await refresh()
-  projects.value = data.value as Project[]
-  console.log(projects.value)
+  if(data.value) {
+    projects.value = data.value as Project[]
+  } else {
+    await refresh()
+    if(data.value) projects.value = data.value as Project[]
+  }
 })
 
 watch(() => isRefresh.value, async (newVal) => {
