@@ -11,7 +11,7 @@ import SearchBar from "~/components/SearchBar.vue";
 
 useHead({title: 'Project - Tempest Board'})
 
-const user: User | null = useUserStore().getUser;
+let user: User | null = useUserStore().getUser;
 const projects = ref<Project[]>([]);
 const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 
@@ -27,13 +27,19 @@ const {isRefresh} = useRefreshData()
 
 onMounted(async () => {
   await refresh()
-  projects.value = data.value as Project[]
+  if(data.value) {
+    projects.value = data.value as Project[]
+  } else {
+    await refresh()
+    if(data.value) projects.value = data.value as Project[]
+  }
 })
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
     await refresh()
     projects.value = data.value as Project[]
+    user = useUserStore().getUser
     isRefresh.value = false
   }
 });

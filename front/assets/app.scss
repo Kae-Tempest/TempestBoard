@@ -886,6 +886,7 @@
       & > div {
         display: flex;
         width: 100%;
+        flex-wrap: wrap;
 
         & > div > .card {
           width: 500px; // petit 350 | grand 600 | moyen 500
@@ -2346,6 +2347,132 @@
 
             }
           }
+        }
+      }
+    }
+  }
+
+  #profile {
+    & > .modal > .modal-content > .box {
+      padding: 0;
+      border-radius: 1rem;
+      @include SeiraFont(400);
+      .profile-header {
+        padding: 20px 24px;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        background-color: #e9e9e9;
+
+        .header-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+
+          .text-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+          }
+
+          .name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--neutral-950);
+            margin: 0;
+          }
+
+          .email {
+            font-size: 14px;
+            color: var(--neutral-950);
+          }
+        }
+      }
+
+
+
+      .edit-form {
+        padding: 0 12px 12px;
+        .form-group {
+          margin-bottom: 24px;
+
+          label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--neutral-950);
+          }
+        }
+
+        .name-inputs {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        .photo-upload {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 32px;
+        padding-top: 32px;
+        border-top: 1px solid #eaecf0;
+
+        .delete-btn {
+          .button {
+            margin:0;
+            &.is-confirm {
+              transition: all 1s ease-in-out;
+              position: absolute;
+              display: initial;
+              left: 70px;
+              top: 107.3%;
+              margin-top: -100px;
+              z-index: -100
+            }
+            &.is-confirm.is-display {
+              left: 20%;
+              margin-top: -100px;
+              z-index: 50
+            }
+          }
+        }
+        .right-actions {
+          display: flex;
+          gap: 12px;
         }
       }
     }

@@ -9,7 +9,7 @@ from .utils import checkfilesize
 class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(_("email address"), unique=True)
-    thumbnail = models.ImageField(upload_to='thumbnail/user/', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='thumbnail/user/', blank=True, null=True, validators=[checkfilesize])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -42,8 +42,8 @@ class Project(models.Model):
 
 
 class Issue(models.Model):
-    creator = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_issue')
-    assigned = models.ForeignKey('User', on_delete=models.CASCADE, related_name='assigned_issue')
+    creator = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='created_issue')
+    assigned = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='assigned_issue')
     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='issues')
     project_tag = models.CharField(max_length=3)
     ticket_id = models.IntegerField()
@@ -52,7 +52,7 @@ class Issue(models.Model):
     priority = models.CharField(max_length=10)
     status = models.CharField(max_length=11)
     tags = models.ManyToManyField('Tag', blank=True, related_name='tags')
-    milestone = models.ForeignKey('Milestone', on_delete=models.CASCADE, related_name='issues', blank=True, null=True)
+    milestone = models.ForeignKey('Milestone', on_delete=models.SET_NULL, related_name='issues', blank=True, null=True)
     attachment = models.FileField(upload_to='attachment/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
