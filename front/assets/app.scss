@@ -886,6 +886,7 @@
       & > div {
         display: flex;
         width: 100%;
+        flex-wrap: wrap;
 
         & > div > .card {
           width: 500px; // petit 350 | grand 600 | moyen 500
