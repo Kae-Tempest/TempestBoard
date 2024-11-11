@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type {User} from "~/types/global";
+import type {Project, User} from "~/types/global";
 import {reactive} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import TransferOwnerProjectModal from "~/components/Modals/user/TransferOwnerProjectModal.vue";
+import ChangePasswordModal from "~/components/Modals/user/ChangePasswordModal.vue";
 
 interface Props {
   user: User
@@ -19,6 +21,12 @@ const props = defineProps<Props>()
 const showProfileModal = defineModel()
 const previewImage = ref<string>("")
 const confirmDelete = ref<boolean>(false)
+const projectModal = ref<Project | null>(null)
+const userProjects = ref<Project[]>([])
+const showModal = ref<boolean>(false)
+const projectIndex = ref<number>(0)
+const projectIsTransferred = ref<boolean>(false)
+const showChangePasswordModal = ref<boolean>(false)
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -102,17 +110,51 @@ const handleUpdateProfile = async () => {
 }
 
 const handleDelete = async () => {
-  await useCustomFetch(`/users/${props.user.id}/`, {
-    method: "delete"
-  })
-  useUserStore().clearUser()
-  navigateTo('/login')
+  const { data: userProject } = await useCustomFetch<Project[]>(`/users/${props.user.id}/project/`)
+  userProjects.value = userProject.value?.reverse() as Project[]
+  if (userProject.value && userProject.value.length > 0) {
+    showProfileModal.value = false
+    showModal.value = true
+    projectModal.value = userProjects.value[0]
+    projectIndex.value++
+  } else {
+    await useCustomFetch(`/users/${props.user.id}/`, {
+      method: "delete"
+    })
+    useUserStore().clearUser()
+    navigateTo('/login')
+  }
 }
 
+watch(() => projectIsTransferred.value, async (newVal) => {
+  if(newVal) {
+    if(userProjects.value.length >= projectIndex.value) {
+      projectModal.value = userProjects.value[projectIndex.value]
+      projectIndex.value++
+      projectIsTransferred.value = false
+    }
+    if(userProjects.value.length < projectIndex.value) {
+      showModal.value = false
+      projectIsTransferred.value = false
+      await useCustomFetch(`/users/${props.user.id}/`, {
+        method: "delete"
+      })
+      useUserStore().clearUser()
+      navigateTo('/login')
+    }
+  }
+})
+
+const handleOpenChangePasswordModal = () => {
+  showProfileModal.value = false
+  showChangePasswordModal.value = true
+}
 
 </script>
 
 <template>
+  <TransferOwnerProjectModal :project="projectModal" v-model="showModal" v-model:isTransferred="projectIsTransferred" />
+  <ChangePasswordModal v-model="showChangePasswordModal" :user="user"/>
   <div id="profile" v-if="user">
     <div :class="{'is-active': showProfileModal}" class="modal">
       <div class="modal-background" @click="showProfileModal = false"></div>
@@ -129,7 +171,7 @@ const handleDelete = async () => {
                 </div>
               </div>
               <div class="action-buttons">
-                <button class="button is-warning">change password</button>
+                <button class="button is-warning" @click="handleOpenChangePasswordModal">change password</button>
               </div>
             </div>
           </div>
