@@ -1,12 +1,13 @@
 from django.contrib.auth import login, logout
 from markdown2 import Markdown
 from rest_framework import viewsets, views, status
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
 from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
-    ActivitySerializer, UserSerializer, MilestoneSerializer
+    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer
 
 
 class RegisterAPIView(views.APIView):
@@ -27,7 +28,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return User.objects.all()
 
-
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -36,13 +36,39 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Project.objects.filter(users=self.request.user)
 
+class ChangePasswordView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        # Get the target user
+        target_user = get_object_or_404(User.objects.all(), pk=pk)
+
+        # Check if the requesting user has permission to change this password
+        if request.user.pk != target_user.pk:
+            return Response(
+                {"detail": "You don't have permission to change this user's password."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={'request': request, 'user': target_user}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Password changed successfully"},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProjectUserAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         project = Project.objects.get(pk=pk)
-        serializer = UserSerializer(project.users, many=True)
+        serializer = UserSerializer(project.users, many=True , context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, pk):
@@ -51,9 +77,8 @@ class ProjectUserAPIView(views.APIView):
             user = User.objects.get(pk=user_id)
             project.users.add(user)
             project.save()
-        serializer = UserSerializer(project.users, many=True)
+        serializer = UserSerializer(project.users, many=True, context={'request': request})
         return Response(serializer.data)
-
 
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
@@ -68,7 +93,6 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Issue.objects.filter(project__creator_id=self.request.user)
-
 
 class MyIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -141,7 +165,6 @@ class ProjectBacklogIssueAPIView(views.APIView):
 
         return Response(serializer.data)
 
-
 class StateViewSet(viewsets.ModelViewSet):
     queryset = State.objects.all()
     serializer_class = StateSerializer
@@ -160,7 +183,6 @@ class ProjectStateViewSet(views.APIView):
         states = State.objects.filter(project=pk)
         serializer = StateSerializer(states, many=True)
         return Response(serializer.data)
-
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -228,12 +250,10 @@ class RoleViewSet(viewsets.ModelViewSet):
     serializer_class = RoleSerializer
     permission_classes = [IsAuthenticated]
 
-
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
-
 
 class LoginView(views.APIView):
     permission_classes = [AllowAny]
@@ -246,8 +266,15 @@ class LoginView(views.APIView):
         connected_user = UserSerializer(user, context={"request": request})
         return Response(connected_user.data, status=status.HTTP_202_ACCEPTED)
 
-
 class LogoutView(views.APIView):
     def get(self, request):
         logout(request)
         return Response(status=status.HTTP_202_ACCEPTED)
+
+class UserProjectAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        projects = Project.objects.filter(creator=pk)
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
