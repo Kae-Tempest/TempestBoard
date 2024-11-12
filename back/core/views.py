@@ -1,13 +1,17 @@
 from django.contrib.auth import login, logout
+from django.utils import timezone
 from markdown2 import Markdown
-from rest_framework import viewsets, views, status
+from rest_framework import viewsets, views, status, generics
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone, ProjectInvitation
 from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
-    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer, PasswordResetSerializer, ResetPasswordUserSerializer
+    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer, PasswordResetSerializer, ResetPasswordUserSerializer, ProjectInvitationListSerializer, \
+    ProjectInvitationSerializer
 
 
 class RegisterAPIView(views.APIView):
@@ -322,10 +326,8 @@ class ResetPasswordPageView(views.APIView):
 
     def post(self, request):
         serializer = ResetPasswordUserSerializer(data=request.data)
-        print('JE SUIS UN SERIALIZER QUI MARCHE')
         if serializer.is_valid():
             serializer.save()
-            print('JE SUIS SAVE ENCULER')
             return Response(
                 {"detail": "Password Successfully updated !"},
                 status=status.HTTP_200_OK
@@ -334,3 +336,63 @@ class ResetPasswordPageView(views.APIView):
             {"detail": serializer.errors},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class ProjectInvitationViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ProjectInvitationListSerializer
+        return ProjectInvitationSerializer
+
+    def get_queryset(self):
+        # Filter invitations by project_id if provided
+        project_id = self.request.query_params.get('project_id')
+        queryset = ProjectInvitation.objects.all()
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        return queryset
+
+    @action(detail=False, methods=['post'])
+    def resend(self, request):
+        """Resend invitation email"""
+        invitation_id = request.data.get('invitation_id')
+        invitation = get_object_or_404(ProjectInvitation, id=invitation_id)
+
+        # Reuse create logic from serializer to resend email
+        serializer = self.get_serializer(data={
+            'email': invitation.email,
+            'project_id': invitation.project_id
+        })
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'message': 'Invitation resent successfully'})
+
+class AcceptInvitationView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        token = request.data.get('token')
+        if not token:
+            raise ValidationError('Token is required')
+
+        invitation = get_object_or_404(
+            ProjectInvitation,
+            token=token,
+            accepted_at__isnull=True
+        )
+
+        # Add user to project
+        project = Project.objects.get(id=invitation.project_id)
+        project.users.add(request.user)
+
+        # Mark invitation as accepted
+        invitation.accepted_at = timezone.now()
+        invitation.save()
+
+        return Response({
+            'message': 'Successfully joined project',
+            'project_id': project.id
+        })

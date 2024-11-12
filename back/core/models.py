@@ -138,3 +138,15 @@ class Milestone(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProjectInvitation(models.Model):
+    email = models.EmailField()
+    project_id = models.IntegerField()
+    token = models.CharField(max_length=100, unique=True)
+    is_user_exists = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'project_invitations'
