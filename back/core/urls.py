@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .consumers import PresenceConsumer, ActivityConsumer
 from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
     CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView, MilestoneViewSet, MilestoneProjectAPIView, MilestoneAdvancementAPIView, \
-    UserProjectAPIView, ChangePasswordView, PasswordResetView, ResetPasswordPageView
+    UserProjectAPIView, ChangePasswordView, PasswordResetView, ResetPasswordPageView, ProjectInvitationViewSet, AcceptInvitationView
 
 app_name = 'core'
 
@@ -17,6 +17,7 @@ router.register(r'tags', TagViewSet, basename='tag')
 router.register(r'states', StateViewSet, basename='state')
 router.register(r'comments', CommentViewSet, basename='comment')
 router.register(r'milestones', MilestoneViewSet, basename='milestone')
+router.register(r'invitations', ProjectInvitationViewSet, basename='project-invitation')
 
 urlpatterns = [
     path('register/', RegisterAPIView.as_view(), name='register'),
@@ -39,6 +40,7 @@ urlpatterns = [
 
     path('password/reset/', PasswordResetView.as_view(), name='password-reset'),
     path('users/password/reset/', ResetPasswordPageView.as_view(), name='reset-password-2'),
+    path('accept/', AcceptInvitationView.as_view(), name='accept-invitation'),
 ]
 
 websocket_urlpatterns = [
