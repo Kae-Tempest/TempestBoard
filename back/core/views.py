@@ -74,17 +74,19 @@ class ChangePasswordView(views.APIView):
 class ProjectUserAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
+    def delete(self, request, pk, user):
+        project = Project.objects.get(pk=pk)
+        user = User.objects.get(pk=user)
+        project.users.remove(user)
+        project.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProjectUsersAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, pk):
         project = Project.objects.get(pk=pk)
-        serializer = UserSerializer(project.users, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, pk):
-        project = Project.objects.get(pk=pk)
-        for user_id in request.data['users']:
-            user = User.objects.get(pk=user_id)
-            project.users.add(user)
-            project.save()
         serializer = UserSerializer(project.users, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -307,6 +309,7 @@ class UserProjectAPIView(views.APIView):
 
 class PasswordResetView(views.APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = PasswordResetSerializer(data=request.data)
         if serializer.is_valid():
@@ -320,6 +323,7 @@ class PasswordResetView(views.APIView):
             {"detail": "Please provide a valid email address."},
             status=status.HTTP_400_BAD_REQUEST
         )
+
 
 class ResetPasswordPageView(views.APIView):
     permission_classes = [AllowAny]
@@ -369,6 +373,7 @@ class ProjectInvitationViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response({'message': 'Invitation resent successfully'})
+
 
 class AcceptInvitationView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
