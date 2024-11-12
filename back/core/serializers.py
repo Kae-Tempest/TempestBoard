@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, update_session_auth_hash
 from rest_framework import serializers
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
@@ -49,6 +49,12 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.context['user']  # Changed to get user from context
         user.set_password(self.validated_data['new_password'])
         user.save()
+
+        # Update session to keep user logged in
+        request = self.context.get('request')
+        if request:
+            update_session_auth_hash(request, user)
+
         return user
 
 class UserSerializer(serializers.ModelSerializer):
