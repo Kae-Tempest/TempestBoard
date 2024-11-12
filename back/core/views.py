@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
 from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
-    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer
+    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer, PasswordResetSerializer, ResetPasswordUserSerializer
 
 
 class RegisterAPIView(views.APIView):
@@ -20,6 +20,7 @@ class RegisterAPIView(views.APIView):
             login(request, serializer.instance)
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -28,6 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return User.objects.all()
 
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -35,6 +37,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Project.objects.filter(users=self.request.user)
+
 
 class ChangePasswordView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -63,12 +66,13 @@ class ChangePasswordView(views.APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProjectUserAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         project = Project.objects.get(pk=pk)
-        serializer = UserSerializer(project.users, many=True , context={'request': request})
+        serializer = UserSerializer(project.users, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, pk):
@@ -79,6 +83,7 @@ class ProjectUserAPIView(views.APIView):
             project.save()
         serializer = UserSerializer(project.users, many=True, context={'request': request})
         return Response(serializer.data)
+
 
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
@@ -93,6 +98,7 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Issue.objects.filter(project__creator_id=self.request.user)
+
 
 class MyIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -110,6 +116,7 @@ class MyIssueAPIView(views.APIView):
             ).convert(issue['description'])
 
         return Response(serializer.data)
+
 
 class ProjectActiveIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -135,6 +142,7 @@ class ProjectActiveIssueAPIView(views.APIView):
             ).convert(issue['description'])
 
         return Response(filtered_data)
+
 
 class ProjectBacklogIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -165,6 +173,7 @@ class ProjectBacklogIssueAPIView(views.APIView):
 
         return Response(serializer.data)
 
+
 class StateViewSet(viewsets.ModelViewSet):
     queryset = State.objects.all()
     serializer_class = StateSerializer
@@ -176,6 +185,7 @@ class StateViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+
 class ProjectStateViewSet(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -183,6 +193,7 @@ class ProjectStateViewSet(views.APIView):
         states = State.objects.filter(project=pk)
         serializer = StateSerializer(states, many=True)
         return Response(serializer.data)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -195,6 +206,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+
 class CommentIssueAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -203,13 +215,15 @@ class CommentIssueAPIView(views.APIView):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
+
 class ActivityAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, pk):
         activities = Activity.objects.filter(issue=pk)
         serializer = ActivitySerializer(activities, many=True)
         return Response(serializer.data)
+
 
 class MilestoneViewSet(viewsets.ModelViewSet):
     queryset = Milestone.objects.all()
@@ -223,6 +237,7 @@ class MilestoneViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
+
 class MilestoneProjectAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -231,29 +246,33 @@ class MilestoneProjectAPIView(views.APIView):
         serializer = MilestoneSerializer(milestone, many=True)
         return Response(serializer.data)
 
+
 class MilestoneAdvancementAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, milestone):
         backlog_issue = Issue.objects.filter(project=pk, milestone=milestone, status__in=['backlog']).count()
-        active_issue = Issue.objects.filter(project=pk,milestone=milestone).exclude(status__in=['backlog', 'completed', 'canceled']).count()
+        active_issue = Issue.objects.filter(project=pk, milestone=milestone).exclude(status__in=['backlog', 'completed', 'canceled']).count()
         completed_issue = Issue.objects.filter(project=pk, milestone=milestone, status__in=['completed']).count()
-        
+
         return Response({
             'backlog_issues': backlog_issue,
             'active_issues': active_issue,
             'completed_issues': completed_issue
         }, status=status.HTTP_200_OK)
 
+
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
     permission_classes = [IsAuthenticated]
 
+
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
+
 
 class LoginView(views.APIView):
     permission_classes = [AllowAny]
@@ -266,10 +285,12 @@ class LoginView(views.APIView):
             connected_user = UserSerializer(user)
             return Response(connected_user.data, status=status.HTTP_202_ACCEPTED)
 
+
 class LogoutView(views.APIView):
     def get(self, request):
         logout(request)
         return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class UserProjectAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -278,3 +299,38 @@ class UserProjectAPIView(views.APIView):
         projects = Project.objects.filter(creator=pk)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
+
+
+class PasswordResetView(views.APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # Always return the same message whether the email exists or not
+            return Response(
+                {"detail": "If an account exists with this email address, you will receive a password reset link shortly."},
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            {"detail": "Please provide a valid email address."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+class ResetPasswordPageView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ResetPasswordUserSerializer(data=request.data)
+        print('JE SUIS UN SERIALIZER QUI MARCHE')
+        if serializer.is_valid():
+            serializer.save()
+            print('JE SUIS SAVE ENCULER')
+            return Response(
+                {"detail": "Password Successfully updated !"},
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            {"detail": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )

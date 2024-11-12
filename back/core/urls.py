@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .consumers import PresenceConsumer, ActivityConsumer
 from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
     CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView, MilestoneViewSet, MilestoneProjectAPIView, MilestoneAdvancementAPIView, \
-    UserProjectAPIView, ChangePasswordView
+    UserProjectAPIView, ChangePasswordView, PasswordResetView, ResetPasswordPageView
 
 app_name = 'core'
 
@@ -36,6 +36,9 @@ urlpatterns = [
 
     path('issues/<int:pk>/comments/', CommentIssueAPIView.as_view(), name='issue-comments'),
     path('issues/<int:pk>/activities/', ActivityAPIView.as_view(), name='issue-activity'),
+
+    path('password/reset/', PasswordResetView.as_view(), name='password-reset'),
+    path('users/password/reset/', ResetPasswordPageView.as_view(), name='reset-password-2'),
 ]
 
 websocket_urlpatterns = [
