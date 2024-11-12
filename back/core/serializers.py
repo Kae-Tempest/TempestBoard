@@ -1,4 +1,9 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, update_session_auth_hash
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import serializers
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
@@ -21,6 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         User.objects.create_user(email, password, **validated_data)
         authenticated_user = authenticate(email=email, password=password)
         return authenticated_user
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True, write_only=True)
@@ -45,6 +51,7 @@ class ChangePasswordSerializer(serializers.Serializer):
             })
 
         return data
+
     def save(self, **kwargs):
         user = self.context['user']  # Changed to get user from context
         user.set_password(self.validated_data['new_password'])
@@ -57,8 +64,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 
         return user
 
+
 class UserSerializer(serializers.ModelSerializer):
     thumbnail = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'thumbnail', 'created_at', 'updated_at']
@@ -70,6 +79,7 @@ class UserSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.thumbnail.url)
         else:
             return ""
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -134,11 +144,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag', 'title', 'description', 'priority', 'status', 'milestone', 'attachment' ,'created_at', 'updated_at']
-        extra_kwargs = {'ticket_id': {'read_only': True}, 'project_tag': { 'read_only': True }, 'attachment': {'required': False}, 'milestone': {'required': False}}
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag', 'title', 'description', 'priority', 'status', 'milestone', 'attachment', 'created_at', 'updated_at']
+        extra_kwargs = {'ticket_id': {'read_only': True}, 'project_tag': {'read_only': True}, 'attachment': {'required': False}, 'milestone': {'required': False}}
 
     def validate(self, attrs):
         attrs.pop('ticket_id', None)
@@ -170,18 +182,21 @@ class IssueSerializer(serializers.ModelSerializer):
         # log Activity -> create issue
         return issue
 
+
 class IssueReadSerializer(serializers.ModelSerializer):
     creator = RegisterSerializer(read_only=True)
     assigned = RegisterSerializer(read_only=True)
+
     class Meta:
         model = Issue
-        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag' ,'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
+        fields = ['id', 'creator', 'assigned', 'ticket_id', 'project', 'project_tag', 'title', 'description', 'priority', 'status', 'created_at', 'updated_at']
         extra_kwargs = {'ticket_id': {'read_only': True}}
+
 
 class StateSerializer(serializers.ModelSerializer):
     class Meta:
         model = State
-        fields = ['id', 'name', 'project', 'is_default'  , 'created_at', 'updated_at']
+        fields = ['id', 'name', 'project', 'is_default', 'created_at', 'updated_at']
         extra_kwargs = {'is_default': {'required': False}}
 
     def create(self, validated_data):
@@ -218,6 +233,7 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -238,6 +254,7 @@ class CommentSerializer(serializers.ModelSerializer):
             # log activity on issue
             return comment
 
+
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
@@ -252,10 +269,11 @@ class ActivitySerializer(serializers.ModelSerializer):
             )
             return activity
 
+
 class MilestoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Milestone
-        fields = ['id', 'name', 'project', 'description', 'status', 'start_date', 'delivery_date','created_at', 'updated_at']
+        fields = ['id', 'name', 'project', 'description', 'status', 'start_date', 'delivery_date', 'created_at', 'updated_at']
 
         def create(self, validated_data):
             milestone = Milestone.objects.create(
@@ -263,3 +281,73 @@ class MilestoneSerializer(serializers.ModelSerializer):
                 project=validated_data['project'],
             )
             return milestone
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True, write_only=True)
+
+    def save(self, **kwargs):
+        email = self.validated_data['email']
+
+        try:
+            user = User.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+
+            # Email
+            subject = "TempestBoard | Password Reset Request"
+            msg = f"""
+Hello,
+You requested to reset your password. Please click on the link below to reset your password:
+{reset_url}
+If you didn't request this, please ignore this email.
+
+This link will expire in 24 hours.
+
+Best regards,
+TempestBord Team
+            """
+
+            # Send Email
+            send_mail(
+                subject=subject,
+                message=msg,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+        except User.DoesNotExist:
+            pass
+
+        return True
+
+
+class ResetPasswordUserSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    uid = serializers.CharField(required=True, write_only=True)
+    token = serializers.CharField(required=True, write_only=True)
+
+    def save(self, **kwargs):
+        print('SAVE BEGIN')
+        password = self.validated_data['password']
+        confirm_password = self.validated_data['confirm_password']
+        if password != confirm_password:
+            raise serializers.ValidationError("Password and Confirm Password does not match")
+        uid = urlsafe_base64_decode(self.validated_data['uid'])
+        print('J AI TON UUID BATARD')
+        user = User.objects.get(pk=uid)
+        print('JE SAIS QUEL USER TU ES FDP')
+        token = default_token_generator.check_token(user, self.validated_data['token'])
+        print('G TON TOKEN ON VA VOIR SI IL MARCHE')
+        if not token:
+            raise serializers.ValidationError("Token is invalid")
+        else:
+            print('ON VA SAVE TON PWD DE MORT')
+            user.set_password(password)
+            user.save()
+            print('C SAVE FDPOKEMON')
+            return True
+

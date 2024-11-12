@@ -3,8 +3,11 @@ import CustomCheckbox from '~/components/Checkbox/LoginCustomCheckbox.vue';
 import {useUserStore} from "~/stores/useUserStore";
 import type {User} from "~/types/global";
 import Toastify from "toastify-js";
+import ResetPasswordLayout from "~/components/layout/ResetPasswordLayout.vue";
 
 useHead({title: 'Login - Tempest Board'})
+
+const showResetPasswordLayout = ref<boolean>(false)
 
 const data = reactive({
   email: '',
@@ -44,7 +47,9 @@ const handleSubmit = async () => {
 
 
 </script>
+
 <template>
+  <ResetPasswordLayout v-model="showResetPasswordLayout" />
   <div id="Auth">
     <div>
       <form @submit.prevent="handleSubmit()" id="login">
@@ -74,9 +79,9 @@ const handleSubmit = async () => {
             @update:checked="handleCheckboxChange"
             v-model="data.remember"
         />
-        <div>
+        <div class="action_btn">
           <NuxtLink to="/register">No account ?</NuxtLink>
-          <NuxtLink to="#">Forgotten password</NuxtLink>
+          <span @click="showResetPasswordLayout = true">Forgotten password</span>
           <button type="submit">
             Login
           </button>
