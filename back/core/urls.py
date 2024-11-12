@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .consumers import PresenceConsumer, ActivityConsumer
 from .views import RegisterAPIView, ProjectViewSet, IssueViewSet, RoleViewSet, TagViewSet, LoginView, LogoutView, MyIssueAPIView, ProjectUserAPIView, StateViewSet, ProjectStateViewSet, \
     CommentIssueAPIView, CommentViewSet, ActivityAPIView, UserViewSet, ProjectActiveIssueAPIView, ProjectBacklogIssueAPIView, MilestoneViewSet, MilestoneProjectAPIView, MilestoneAdvancementAPIView, \
-    UserProjectAPIView, ChangePasswordView, PasswordResetView, ResetPasswordPageView, ProjectInvitationViewSet, AcceptInvitationView
+    UserProjectAPIView, ChangePasswordView, PasswordResetView, ResetPasswordPageView, ProjectInvitationViewSet, AcceptInvitationView, ProjectUsersAPIView
 
 app_name = 'core'
 
@@ -25,7 +25,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('my-issues/', MyIssueAPIView.as_view(), name='my-issues'),
 
-    path('projects/<int:pk>/users/', ProjectUserAPIView.as_view(), name='project-users'),
+    path('projects/<int:pk>/leave/<int:user>/', ProjectUserAPIView.as_view(), name='project-user-leave'),
+    path('projects/<int:pk>/users/', ProjectUsersAPIView.as_view(), name='project-users'),
+
     path('projects/<int:pk>/states/', ProjectStateViewSet.as_view(), name='project-states'),
     path('projects/<int:pk>/active-issues/', ProjectActiveIssueAPIView.as_view(), name='project-active-issues'),
     path('projects/<int:pk>/backlog-issues/', ProjectBacklogIssueAPIView.as_view(), name='project-backlog-issues'),

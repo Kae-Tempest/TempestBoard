@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Project, States} from "~/types/global";
+import type {Project, States, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import WorkflowSettingsModule from "~/components/Project/Workflow/WorkflowSettingsModule.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -12,7 +12,7 @@ const props = defineProps<Props>()
 const showModal = defineModel()
 
 const tabs = ref("users")
-
+const users = ref<User[]>([])
 const projectState = ref<States[]>([])
 const openCreateStateModal = ref<Boolean>(false)
 
@@ -27,8 +27,10 @@ const resetForm = () => {
 }
 
 const handleFetch = async () => {
+  const {data: pUsers} = await useCustomFetch<User[]>(`/projects/${props.project.id}/users/`)
   const {data: projectStateData} = await useCustomFetch<States[]>(`/projects/${props.project.id}/states/`)
   projectState.value = projectStateData.value as States[]
+  users.value = pUsers.value as User[]
 }
 
 watch(() => showModal.value, async (newVal) => {
@@ -62,12 +64,10 @@ onMounted(async () => {
 
 
 const handleSendEmailInvitation = async () => {
-  const { data, error } = await useCustomFetch(`/invitations/`, {
+  await useCustomFetch(`/invitations/`, {
     method: "post",
     body: dataForm
   })
-  if (data) console.log(data)
-  if (error) console.log(error)
 }
 
 </script>
@@ -89,6 +89,7 @@ const handleSendEmailInvitation = async () => {
           <div v-if="tabs === 'users'" class="tabs-right user">
             <div class="field">
               <div class="control">
+                <label>Email:</label>
                 <input type="email" class="input" v-model="dataForm.email"/>
               </div>
             </div>
@@ -96,6 +97,12 @@ const handleSendEmailInvitation = async () => {
               <div class="control">
                 <button class="button" @click="showModal=false; resetForm()" type="button">Cancel</button>
                 <button class="button is-dark" type="submit" @click="handleSendEmailInvitation">Add</button>
+              </div>
+            </div>
+            <div class="list">
+              <h4 class="title is-4">Project's user list</h4>
+              <div v-for="user in users">
+                <div class="username"> - {{user.username}} is {{ project.creator === user.id ? "OWNER" : ""}}</div>
               </div>
             </div>
           </div>
