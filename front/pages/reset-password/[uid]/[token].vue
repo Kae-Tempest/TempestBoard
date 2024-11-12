@@ -15,9 +15,9 @@ const handleResetPassword = async () => {
   })
 
   if(data) {
-    console.log(data)
+    navigateTo('/login')
   } else if (error) {
-    console.log(error)
+    // toast
   }
 }
 </script>
