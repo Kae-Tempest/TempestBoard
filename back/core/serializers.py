@@ -1,12 +1,15 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.urls import reverse, NoReverseMatch
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import serializers
 
-from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone
+from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone, ProjectInvitation
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -331,23 +334,102 @@ class ResetPasswordUserSerializer(serializers.Serializer):
     token = serializers.CharField(required=True, write_only=True)
 
     def save(self, **kwargs):
-        print('SAVE BEGIN')
         password = self.validated_data['password']
         confirm_password = self.validated_data['confirm_password']
         if password != confirm_password:
             raise serializers.ValidationError("Password and Confirm Password does not match")
         uid = urlsafe_base64_decode(self.validated_data['uid'])
-        print('J AI TON UUID BATARD')
         user = User.objects.get(pk=uid)
-        print('JE SAIS QUEL USER TU ES FDP')
         token = default_token_generator.check_token(user, self.validated_data['token'])
-        print('G TON TOKEN ON VA VOIR SI IL MARCHE')
         if not token:
             raise serializers.ValidationError("Token is invalid")
         else:
-            print('ON VA SAVE TON PWD DE MORT')
             user.set_password(password)
             user.save()
-            print('C SAVE FDPOKEMON')
             return True
 
+
+class ProjectInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectInvitation
+        fields = ['email', 'project_id']
+
+    def validate_email(self, value):
+        return value.lower()
+
+    def create(self, validated_data):
+        email = validated_data['email']
+        project_id = validated_data['project_id']
+
+        # Generate unique token for the invitation
+        token = str(uuid.uuid4())
+
+        # Check if user exists
+        user = User.objects.filter(email=email).first()
+
+        # Get the registration URL from settings with a default fallback
+        # Add this to your settings.py: REGISTRATION_URL_NAME = 'your_registration_url_name'
+        registration_url_name = getattr(settings, 'REGISTRATION_URL_NAME', 'register')
+        accept_url_name = getattr(settings, 'ACCEPT_URL_NAME', 'accept-invitation')
+
+        if user:
+            try:
+                accept_path = reverse('accept_invitation')
+                invitation_link = f"{settings.FRONTEND_URL}{accept_path}?token={token}"
+                email_body = (
+                    f'You have been invited to join a project.\n\n'
+                    f'Click here to join: {invitation_link}'
+                )
+            except NoReverseMatch:
+                # Fallback if URL reverse fails
+                invitation_link = f"{settings.FRONTEND_URL}/accept-invitation?token={token}"
+                email_body = (
+                    f'You have been invited to join a project.\n\n'
+                    f'Click here to join: {invitation_link}'
+                )
+        else:
+            # User doesn't exist - send registration invitation
+            try:
+                # Try to get the registration URL using the configured name
+                register_url = reverse(registration_url_name)
+            except NoReverseMatch:
+                # Fallback to a default URL path if the name isn't found
+                register_url = '/register'
+
+            register_link = f"{settings.FRONTEND_URL}{register_url}?token={token}"
+            email_body = (
+                f'You have been invited to join a project.\n\n'
+                f'Since you don\'t have an account yet, please register first: {register_link}\n\n'
+                f'After registration, you\'ll be automatically added to the project.'
+            )
+
+        # Send the email
+        send_mail(
+            'Project Invitation',
+            email_body,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+
+        # Save invitation in database
+        invitation = ProjectInvitation.objects.create(
+            email=email,
+            project_id=project_id,
+            token=token,
+            is_user_exists=bool(user)
+        )
+
+        return invitation
+
+class ProjectInvitationListSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProjectInvitation
+        fields = ['id', 'email', 'created_at', 'accepted_at', 'is_user_exists', 'status']
+
+    def get_status(self, obj):
+        if obj.accepted_at:
+            return 'accepted'
+        return 'pending'
