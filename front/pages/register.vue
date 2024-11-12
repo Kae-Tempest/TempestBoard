@@ -6,7 +6,7 @@ import {useCustomFetch} from "~/composables/useCustomFetch";
 import Toastify from "toastify-js";
 
 useHead({title: 'Register - Tempest Board'})
-
+const route = useRoute()
 const data = reactive({
   username: '',
   email: '',
@@ -22,13 +22,20 @@ const errors = reactive({
 });
 
 const handleSubmit = async () => {
+
   const res = await useCustomFetch<User>('/register/', {
     method: 'post',
-    body: JSON.stringify(data),
+    body: data,
   });
   if (res.data.value != null) {
     const user = res.data.value;
     useUserStore().setUser(user);
+    if(route.query.token) {
+      await useCustomFetch<User>(`/accept/`, {
+        method: 'post',
+        body: {token: route.query.token}
+      })
+    }
     await navigateTo('/project');
   } else if (res.error.value?.data) {
     if (res.error.value?.data?.username) errors.username = res.error.value?.data?.username[0];
