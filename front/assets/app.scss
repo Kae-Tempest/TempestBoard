@@ -388,7 +388,7 @@
     }
   }
 
-  #login, #register {
+  #login, #register, #reset-password {
     input {
       box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
       background-color: var(--broken-white);
@@ -416,21 +416,30 @@
       }
     }
   }
-
+  #reset-password {
+    .actions {
+      text-align: end;
+      & > button {
+        width: auto
+      }
+    }
+  }
   #login {
-    & > div:last-child {
+    & > .action_btn {
       text-align: end;
 
-      & > a {
+      & > a, span {
         color: var(--sky-700);
         font-weight: bold;
         font-size: 0.75rem;
         line-height: 1rem;
         margin: 0 .5rem;
+        width: fit-content;
 
         &:hover {
           text-decoration: underline;
           color: var(--neutral-950);
+          cursor: pointer;
         }
       }
     }
@@ -2473,6 +2482,32 @@
         .right-actions {
           display: flex;
           gap: 12px;
+        }
+      }
+    }
+  }
+  .modal.is-layout {
+    & > .modal-background{
+      opacity: 25%
+    }
+    & > .modal-content {
+      & > .box {
+        & > .control {
+          & > .title {
+            text-align: center;
+            @include SeiraFont(600);
+          }
+          & > .field {
+            & > label {
+              @include SeiraFont(500);
+            }
+          }
+        }
+
+        & > .action-btn {
+          display:flex;
+          justify-content: end;
+          margin-top: .5rem;
         }
       }
     }
