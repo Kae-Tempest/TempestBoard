@@ -1,10 +1,10 @@
 name: tempestboard
 
 on:
-  push:
-    branches:
-      - develop
-      - main
+#  push:
+#    branches:
+#      - develop
+#      - main
   workflow_dispatch:
 
 jobs:
