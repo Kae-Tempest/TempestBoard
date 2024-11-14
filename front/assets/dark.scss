@@ -1,18 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --neutral-900: #171717;
-    --neutral-800: #262626;
-    --neutral-50: #fafafa;
-    --blue-400: #60a5fa;
-    --blue-900: #1e3a8a;
-    --sky-700: #0369a1;
-    --blue-400-rgb: 96, 165, 250;
-    --blue-500-rgb: 59, 130, 246;
-    --blue-600-rgb: 37, 99, 235;
-    --blue-800-rgb: 30, 64, 175;
-  }
 
   @mixin SeiraFont($weight) {
     font-family: "Saira", sans-serif;
@@ -21,12 +9,10 @@
     font-style: normal;
     font-variation-settings: "wdth" 100;
   }
-
   html {
     overflow-y: hidden;
     background-color: var(--neutral-900);
   }
-
   body {
     font-family: 'Inter', sans-serif;
     background-color: var(--neutral-900);
@@ -36,7 +22,6 @@
     padding: 0;
     box-sizing: border-box;
   }
-
   #navbar {
     position: fixed;
     width: 0;
@@ -337,7 +322,6 @@
       }
     }
   }
-
   #Auth {
     min-height: 100vh;
     display: flex;
@@ -363,8 +347,7 @@
       font-size: .75rem;
     }
   }
-
-  #login, #register {
+  #login, #register, #reset-password {
     input {
       box-shadow: 0 .0625em .125em hsla(221, 14%, 4%, .25);
       background-color: var(--neutral-900);
@@ -392,12 +375,20 @@
       }
     }
   }
+  #reset-password {
+    .actions {
+      text-align: end;
 
+      & > button {
+        width: auto
+      }
+    }
+  }
   #login {
     & > div:last-child {
       text-align: end;
 
-      & > a {
+      & > a, span {
         color: var(--sky-700);
         font-weight: bold;
         font-size: 0.75rem;
@@ -411,7 +402,6 @@
       }
     }
   }
-
   #register {
     & > div:last-child {
       text-align: end;
@@ -430,7 +420,6 @@
       }
     }
   }
-
   #checkbox {
     width: 100%;
     display: flex;
@@ -478,7 +467,6 @@
       pointer-events: none;
     }
   }
-
   #my_issue {
     width: 100%;
 
@@ -816,7 +804,6 @@
       }
     }
   }
-
   #project {
     width: 100%;
 
@@ -1110,25 +1097,21 @@
       }
     }
   }
-
   .canceled-issue-icon {
     color: var(--red-500);
     width: 1.5rem;
     height: 1.5rem;
   }
-
   .completed-issue-icon {
     color: var(--green-500);
     width: 1.5rem;
     height: 1.5rem;
   }
-
   .open-issue-icon {
     color: var(--blue-600);
     width: 1.5rem;
     height: 1.5rem;
   }
-
   .inprogress-issue-icon {
     display: flex;
     justify-content: center;
@@ -1146,11 +1129,9 @@
       }
     }
   }
-
   .tooltip {
     position: relative;
   }
-
   .tooltip .tooltip-text {
     visibility: hidden;
     width: 3.75rem;
@@ -1165,12 +1146,10 @@
     opacity: 0;
     transition: opacity 0.3s;
   }
-
   .tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
   }
-
   .modal {
     & > .modal-content > .box {
       .field > .control {
@@ -1205,7 +1184,6 @@
 
     }
   }
-
   .modal.del-issue {
     .modal-content > .box.del-box {
       background-color: var(--neutral-900);
@@ -1215,7 +1193,6 @@
       }
     }
   }
-
   #kanban {
     display: flex;
     overflow-x: auto;
@@ -1318,7 +1295,6 @@
       }
     }
   }
-
   .drag-clone {
     @include SeiraFont(500);
     height: 119px;
@@ -1342,13 +1318,11 @@
       }
     }
   }
-
   .toast {
     background-color: var(--red-400);
     color: var(--neutral-50);
     border: 1px solid black;
   }
-
   #details {
     & > header {
       display: flex;
@@ -1551,10 +1525,12 @@
                     & > .info {
                       display: flex;
                       justify-content: space-between;
+
                       & > .user-date {
                         display: flex;
                         gap: .75rem;
                         margin-left: .75rem;
+
                         & > .user-info {
                           display: flex;
                           gap: .5rem;
@@ -1564,19 +1540,24 @@
                           }
                         }
                       }
+
                       & > .actions {
                         display: flex;
                         padding: .25rem;
+
                         & > .is-resolved {
                           margin: 0 .5rem;
+
                           & > svg {
                             height: 24px;
                             color: var(--green-500)
                           }
                         }
+
                         & > .dropdown.is-right {
                           & > .dropdown-menu {
                             min-width: 5rem;
+
                             & > .dropdown-content {
                               display: flex;
                               justify-content: space-between;
@@ -1615,13 +1596,15 @@
                       margin-left: 1rem;
                       margin-bottom: .125rem;
                     }
+
                     & > .editing-content {
                       margin-top: .375rem;
                       margin-bottom: .125rem;
                       display: flex;
                     }
+
                     & > .comment-answer {
-                      padding: .25rem ;
+                      padding: .25rem;
                       border-top: 1px solid hsla(0, 0%, 100%, 0.25);
                       transition: all .5s ease-in-out;
 
@@ -1631,13 +1614,16 @@
                         border: none;
                         padding: 0;
                       }
+
                       & > .info {
                         display: flex;
                         justify-content: space-between;
+
                         & > .user-date {
                           display: flex;
                           gap: .75rem;
                           margin-left: .75rem;
+
                           & > .user-info {
                             display: flex;
                             gap: .5rem;
@@ -1647,18 +1633,23 @@
                             }
                           }
                         }
+
                         & > .action {
                           display: flex;
+
                           & > .is-resolved {
                             margin: 0 .5rem;
+
                             & > svg {
                               height: 24px;
                               color: var(--green-500)
                             }
                           }
+
                           & > .dropdown.is-right {
                             & > .dropdown-menu {
                               min-width: 5rem;
+
                               & > .dropdown-content {
                                 display: flex;
                                 justify-content: space-between;
@@ -1690,20 +1681,24 @@
                           }
                         }
                       }
+
                       & > .content {
                         margin-top: .375rem;
                         margin-left: 1.5rem
                       }
+
                       & > .editing-content {
                         margin-top: .375rem;
                         margin-bottom: .125rem;
                         display: flex;
                       }
                     }
+
                     & > .input-response {
                       display: flex;
                       padding: .25rem;
                       border-top: 1px solid hsla(0, 0%, 100%, 0.25);
+
                       & > .input {
                         margin-right: .25rem;
                       }
@@ -2221,18 +2216,20 @@
       }
     }
   }
-
   #release {
     .content {
       padding-left: 16rem;
       padding-top: .25rem;
+
       & > header {
         & > .title {
           @include SeiraFont(600)
         }
+
         display: flex;
         justify-content: space-between;
         padding-left: .5rem;
+
         & > .action {
           padding: .5rem;
           display: flex;
@@ -2241,14 +2238,17 @@
           & > .select > select, .search > .input, .create > .button {
             border: 1px solid var(--blue-600);
           }
+
           & > .search {
             height: 40px;
             display: flex;
+
             & > .input {
               border-right: none;
               border-top-right-radius: 0;
               border-bottom-right-radius: 0;
             }
+
             & > .button {
               border: 1px solid var(--blue-600);
               border-left: none;
@@ -2259,6 +2259,7 @@
           }
         }
       }
+
       & > .hero {
         & > table {
           & > thead {
@@ -2267,34 +2268,48 @@
             background-color: var(--blue-600);
             border-top: 1px solid var(--neutral-950);
             border-bottom: 1px solid var(--neutral-950);
+
             & > tr {
               & > th {
                 text-align: center;
-                &.is-tiny { width: 1rem; }
-                &.is-small { width: 9rem; }
+
+                &.is-tiny {
+                  width: 1rem;
+                }
+
+                &.is-small {
+                  width: 9rem;
+                }
               }
             }
           }
+
           & > tbody {
             & > tr {
               & > td {
-                &.is-center { text-align: center; }
+                &.is-center {
+                  text-align: center;
+                }
+
                 &.advancement {
                   & > .advancement-bar {
                     display: flex;
                     gap: 5px;
                     border-radius: 5px;
+
                     & > .backlog {
                       background-color: #6b7280;
                       height: 1.5rem;
                       border-radius: 5px;
                       width: 100%
                     }
+
                     & > .active {
                       background-color: var(--blue-300);
                       height: 1.5rem;
                       display: none;
                     }
+
                     & > .completed {
                       background-color: var(--green-500);
                       height: 1.5rem;
@@ -2304,11 +2319,13 @@
                     }
                   }
                 }
+
                 &.action-menu {
                   & > .action {
                     & > .dropdown.is-right {
                       & > .dropdown-menu {
                         min-width: 5rem;
+
                         & > .dropdown-content {
                           display: flex;
                           justify-content: space-between;
@@ -2346,18 +2363,22 @@
         }
       }
     }
+
     .modal {
       & > .modal-content > .box {
-        & > .field > .control  > .select {
+        & > .field > .control > .select {
           height: auto;
+
           & > select {
             border: 1px solid var(--blue-600);
           }
         }
+
         & > .field.is-grouped > .control {
           display: flex;
           justify-content: space-between;
           width: 100%;
+
           & > .date-picker {
             & > input {
               border: 1px solid var(--blue-600);
@@ -2367,31 +2388,38 @@
       }
     }
   }
-
   #searchbar {
     &.modal {
       justify-content: normal;
+
       & > .searchbar {
         margin-top: 2rem;
         width: 40rem;
+
         & > .input {
           border-radius: .375rem .375rem 0 0;
         }
+
         & > .card-list {
           & > .card {
             &:hover {
               background-color: var(--blue-600);
             }
+
             border-radius: 0;
+
             &:last-child {
               border-radius: 0 0 .375rem .375rem;
             }
+
             margin: 0;
+
             & > .wrapper {
               & > .head {
                 @include SeiraFont(600);
                 display: flex;
                 justify-content: space-between;
+
                 & > .left, .right {
                   display: flex;
                   gap: 1rem;
@@ -2408,13 +2436,12 @@
       }
     }
   }
-
-
   #profile {
     & > .modal > .modal-content > .box {
       padding: 0;
       border-radius: 1rem;
       @include SeiraFont(400);
+
       .profile-header {
         padding: 20px 24px;
         border-top-left-radius: 1rem;
@@ -2460,9 +2487,9 @@
       }
 
 
-
       .edit-form {
         padding: 0 12px 12px;
+
         .form-group {
           margin-bottom: 24px;
 
@@ -2511,7 +2538,8 @@
 
         .delete-btn {
           .button {
-            margin:0;
+            margin: 0;
+
             &.is-confirm {
               transition: all 1s ease-in-out;
               position: absolute;
@@ -2521,6 +2549,7 @@
               margin-top: -100px;
               z-index: -100
             }
+
             &.is-confirm.is-display {
               left: 20%;
               margin-top: -100px;
@@ -2532,6 +2561,30 @@
         .right-actions {
           display: flex;
           gap: 12px;
+        }
+      }
+    }
+  }
+  .modal.is-layout {
+    & > .modal-content {
+      & > .box {
+        & > .control {
+          & > .title {
+            text-align: center;
+            @include SeiraFont(600);
+          }
+
+          & > .field {
+            & > label {
+              @include SeiraFont(500);
+            }
+          }
+        }
+
+        & > .action-btn {
+          display: flex;
+          justify-content: end;
+          margin-top: .5rem;
         }
       }
     }
