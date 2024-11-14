@@ -9,7 +9,7 @@ on:
 jobs:
   front-build:
     name: front-build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -33,3 +33,8 @@ jobs:
         shell: bash
         run: |
           ls -la ./front/dist
+      - name: push artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: front/dist
+          name: 'tempestbaord-artifact-front'
