@@ -1,0 +1,35 @@
+name: tempestboard
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  front-build:
+    name: front-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: front
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: setup-yarn
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+      - name: nuxt-generate
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: generate
+      - name: ls-dist
+        shell: bash
+        run: |
+          pwd
+          ls -la
+          ls -la ./dist
