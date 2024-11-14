@@ -48,10 +48,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: back
+      - name: workdir
+        shell: bash
+        run: |
+          cd back
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: build-dockerfile
         uses: docker/build-push-action@v6
         with:
           push: false
-          file: back/Dockerfile
