@@ -1,10 +1,10 @@
 name: tempestboard-ci
 
 on:
-#  push:
-#    branches:
-#      - develop
-#      - main
+  push:
+    branches:
+      - develop
+      - main
   workflow_dispatch:
 
 
