@@ -50,9 +50,13 @@ jobs:
           sparse-checkout: back
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Verify local registry
+        run: |
+          docker container inspect registry || \
+          docker run -d -p 5000:5000 --restart=always --name registry registry:2
       - name: build-dockerfile
         uses: docker/build-push-action@v6
         with:
-          push: false
+          push: true
           context: back
           tags: localhost:5000/tempestboard/back:latest
