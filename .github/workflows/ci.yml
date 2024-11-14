@@ -40,3 +40,17 @@ jobs:
         with:
           path: front/dist
           name: 'tempestbaord-artifact-front'
+  back-build:
+    name: back-build
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: back
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: build-dockerfile
+        uses: docker/build-push-action@v6
+        with:
+          push: false
