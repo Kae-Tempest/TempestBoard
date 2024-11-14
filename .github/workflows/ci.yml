@@ -23,10 +23,12 @@ jobs:
         uses: borales/actions-yarn@v5
         with:
           cmd: install
+          dir: front
       - name: nuxt-generate
         uses: borales/actions-yarn@v5
         with:
           cmd: generate
+          dir: front
       - name: ls-dist
         shell: bash
         run: |
