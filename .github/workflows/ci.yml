@@ -58,5 +58,4 @@ jobs:
         with:
           push: true
           context: back
-          tags: localhost:5000/tempestboard/back:latest
-          network: host
+          tags: tempestboard/back:latest
