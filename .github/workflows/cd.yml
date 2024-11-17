@@ -43,7 +43,7 @@ jobs:
       - name: get-artifact-front
         uses: actions/download-artifact@v4
         with:
-          name: tempestbaord-artifact-front
+          name: tempestboard-artifact-front
           path: front
       - name: upload-artifact-front
         run: |
