@@ -56,4 +56,4 @@ jobs:
         run: |
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/github-actions.key
-          rsync --delete --temp-dir=/tmp/tempestboard-front  -avz front/deploy/ -e "ssh -p ${{ secrets.SSH_PORT }}" debian@${{ secrets.SSH_HOST }}:/var/www/html/TempestBoard/front/dist/
+          rsync --delete --temp-dir=/tmp/tempestboard-front -avuz front/deploy/ -e "ssh -p ${{ secrets.SSH_PORT }}" debian@${{ secrets.SSH_HOST }}:/var/www/html/TempestBoard/front/dist/
