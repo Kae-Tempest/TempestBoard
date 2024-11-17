@@ -11,18 +11,17 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  WORKDIR: var/www/html/TempestBoard
 
 jobs:
   deploy:
-
     permissions:
       packages: read
       actions: read
-
     name: deploy
     runs-on: self-hosted
     steps:
-      - name: setup-shh
+      - name: setup-ssh
         run: |
           which ssh-agent || (sudo apk update && sudo apk add openssh-client)
           which rsync || (sudo apk update && sudo apk add rsync)
@@ -45,15 +44,34 @@ jobs:
             IdentityFile ~/.ssh/github-actions.key
             StrictHostKeyChecking no
           END
+      - name: prepare-infra
+        run: |
+          ssh vps 'mkdir -p ${{ env.WORKDIR }}/back'
+          ssh vps 'mkdir -p ${{ env.WORKDIR }}/front'
+          ssh vps 'mkdir -p ${{ env.WORKDIR }}/docker'
+          ssh vps 'mkdir -p ${{ env.WORKDIR }}/data'
+          ssh vps 'chown -R www-data ${{ env.WORKDIR }}
       - name: get-artifact-front
         uses: actions/download-artifact@v4
         with:
           name: tempestboard-artifact-front
-          path: front/deploy
-          run-id: '${{ github.event.workflow_run.id }}'
-          github-token: '${{ github.token }}'
+          path: deploy/front
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
       - name: upload-artifact-front
         run: |
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/github-actions.key
-          rsync --delete --temp-dir=/tmp/tempestboard-front -avuz front/deploy/ -e "ssh -p ${{ secrets.SSH_PORT }}" debian@${{ secrets.SSH_HOST }}:/var/www/html/TempestBoard/front/dist/
+          rsync --delete -avuzP ${{ steps.get-artifact-front.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}/front/dist/
+      - name: get-artifact-infra
+        uses: actions/download-artifact@v4
+        with:
+          name: tempestboard-artifact-compose-prod
+          path: deploy/infra
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: upload-artifact-infra
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          rsync --delete -avuzP ${{ steps.get-artifact-infra.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}
