@@ -70,6 +70,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: build-dockerfile
+        id: push
         uses: docker/build-push-action@v6
         with:
           push: true
