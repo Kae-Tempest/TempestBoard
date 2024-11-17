@@ -52,7 +52,7 @@ jobs:
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
       - name: down-docker-compose
         run: |
-          sudo docker compose -f compose-prod.yml down
+          ssh vps 'docker compose -f compose-prod.yml down'
       - name: get-artifact-front
         id: get-artifact-front
         uses: actions/download-artifact@v4
