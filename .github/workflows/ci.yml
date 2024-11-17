@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: front/dist
-          name: 'tempestbaord-artifact-front'
+          name: tempestbaord-artifact-front
   back-build:
 
     permissions:
