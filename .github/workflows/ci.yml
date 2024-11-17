@@ -12,37 +12,37 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-#  front-build:
-#    name: front-build
-#    runs-on: self-hosted
-#    steps:
-#      - name: checkout
-#        uses: actions/checkout@v4
-#        with:
-#          sparse-checkout: front
-#      - name: setup-node
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: 22
-#      - name: setup-yarn
-#        uses: borales/actions-yarn@v5
-#        with:
-#          cmd: install
-#          dir: front
-#      - name: nuxt-generate
-#        uses: borales/actions-yarn@v5
-#        with:
-#          cmd: generate
-#          dir: front
-#      - name: ls-dist
-#        shell: bash
-#        run: |
-#          ls -la ./front/dist
-#      - name: push artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          path: front/dist
-#          name: 'tempestbaord-artifact-front'
+  front-build:
+    name: front-build
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: front
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: setup-yarn
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+          dir: front
+      - name: nuxt-generate
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: generate
+          dir: front
+      - name: ls-dist
+        shell: bash
+        run: |
+          ls -la ./front/dist
+      - name: push artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: front/dist
+          name: 'tempestbaord-artifact-front'
   back-build:
 
     permissions:
