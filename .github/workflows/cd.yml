@@ -50,7 +50,7 @@ jobs:
           ssh vps 'mkdir -p ${{ env.WORKDIR }}/front'
           ssh vps 'mkdir -p ${{ env.WORKDIR }}/docker'
           ssh vps 'mkdir -p ${{ env.WORKDIR }}/data'
-          ssh vps 'chown -R www-data ${{ env.WORKDIR }}
+          ssh vps 'chown -R www-data ${{ env.WORKDIR }}'
       - name: get-artifact-front
         uses: actions/download-artifact@v4
         with:
