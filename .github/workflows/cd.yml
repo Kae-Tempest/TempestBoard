@@ -6,7 +6,7 @@ on:
       - tempestboard-ci
     types:
       - completed
-    workflow_dispatch:
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
