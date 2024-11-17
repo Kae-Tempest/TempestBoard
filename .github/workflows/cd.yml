@@ -56,4 +56,4 @@ jobs:
         run: |
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/github-actions.key
-          rsync --delete -avz front/ vps:/tmp/front
+          rsync --delete -avz front/ -e "ssh -p ${{ secrets.SSH_PORT }}" debian@${{ secrets.SSH_HOST }}:/tmp/front
