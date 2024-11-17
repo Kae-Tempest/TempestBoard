@@ -51,6 +51,7 @@ jobs:
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
       - name: get-artifact-front
+        id: get-artifact-front
         uses: actions/download-artifact@v4
         with:
           name: tempestboard-artifact-front
@@ -63,6 +64,7 @@ jobs:
           ssh-add ~/.ssh/github-actions.key
           rsync --chown=www-data:www-data --delete -avuzP ${{ steps.get-artifact-front.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}/front/dist/
       - name: get-artifact-infra
+        id: get-artifact-infra
         uses: actions/download-artifact@v4
         with:
           name: tempestboard-artifact-compose-prod
