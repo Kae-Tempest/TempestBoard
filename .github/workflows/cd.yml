@@ -6,6 +6,7 @@ on:
       - tempestboard-ci
     types:
       - completed
+    workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -24,7 +25,7 @@ jobs:
           chmod 700 ~/.ssh
           touch ~/.ssh/github-actions.key
           touch ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/private.key
+          chmod 600 ~/.ssh/github-actions.key
           echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/github-actions.key
           # Append keyscan output into known hosts
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
