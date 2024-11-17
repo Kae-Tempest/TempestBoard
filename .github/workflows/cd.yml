@@ -46,10 +46,10 @@ jobs:
           END
       - name: prepare-infra
         run: |
-          ssh vps 'install --owner=www-data -D ${{ env.WORKDIR }}/back'
-          ssh vps 'install --owner=www-data -D ${{ env.WORKDIR }}/front'
-          ssh vps 'install --owner=www-data -D ${{ env.WORKDIR }}/docker'
-          ssh vps 'install --owner=www-data -D ${{ env.WORKDIR }}/data'
+          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/back'
+          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/front'
+          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
+          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
       - name: get-artifact-front
         uses: actions/download-artifact@v4
         with:
