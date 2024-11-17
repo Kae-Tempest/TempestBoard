@@ -40,19 +40,13 @@ jobs:
             IdentityFile ~/.ssh/github-actions.key
             StrictHostKeyChecking no
           END
-          ssh vps 'echo Hello World'
-        
-        
-        
-        
-        
-          
-        
-        
-        
-
-#  - run: |
-#  eval $(ssh-agent -s)
-#  ssh-add ~/.ssh/private.key
-#  echo "Deploy to dev environment"
-#  rsync --rsync-path=/usr/bin/rsync --delete -avuz --exclude=".*" ./docker-compose/docker-compose-prod.yml ${{ vars.REMOTE_USER }}@${{ vars.DEV_PUBLIC_IP_ADDRESS }}:$BASE_DEV_SERVER_PATH/docker-compose-prod.yml
+      - name: get-artifact-front
+        uses: actions/download-artifact@v4
+        with:
+          name: tempestbaord-artifact-front
+          path: front
+      - name: upload-artifact-front
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          rsync --delete -avz front/ vps:/tmp/front
