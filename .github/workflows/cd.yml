@@ -14,6 +14,11 @@ env:
 
 jobs:
   deploy:
+
+    permissions:
+      packages: read
+      id-token: read
+
     name: deploy
     runs-on: self-hosted
     steps:
@@ -45,6 +50,7 @@ jobs:
         with:
           name: tempestboard-artifact-front
           path: front
+          run-id: '${{ github.event.workflow_run.id }}'
       - name: upload-artifact-front
         run: |
           eval $(ssh-agent -s)
