@@ -11,7 +11,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  WORKDIR: var/www/html/TempestBoard
+  WORKDIR: /var/www/html/TempestBoard
 
 jobs:
   deploy:
