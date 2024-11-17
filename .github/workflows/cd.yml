@@ -1,0 +1,57 @@
+name: tempestboard-cd
+
+on:
+  workflow_run:
+    workflows:
+      - tempestboard-ci
+    types:
+      - completed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: self-hosted
+    steps:
+      - name: setup-shh
+        run: |
+          which ssh-agent || (sudo apk update && sudo apk add openssh-client)
+          which rsync || (sudo apk update && sudo apk add rsync)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          touch ~/.ssh/github-actions.key
+          touch ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/private.key
+          echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/github-actions.key
+          # Append keyscan output into known hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          cat >>~/.ssh/config <<END
+          Host vps
+            HostName ${{ secrets.SSH_HOST }}
+            Port ${{ secrets.SSH_PORT }}
+            User debian
+            IdentityFile ~/.ssh/github-actions.key
+            StrictHostKeyChecking no
+          END
+          ssh vps 'echo Hello World'
+        
+        
+        
+        
+        
+          
+        
+        
+        
+
+#  - run: |
+#  eval $(ssh-agent -s)
+#  ssh-add ~/.ssh/private.key
+#  echo "Deploy to dev environment"
+#  rsync --rsync-path=/usr/bin/rsync --delete -avuz --exclude=".*" ./docker-compose/docker-compose-prod.yml ${{ vars.REMOTE_USER }}@${{ vars.DEV_PUBLIC_IP_ADDRESS }}:$BASE_DEV_SERVER_PATH/docker-compose-prod.yml
