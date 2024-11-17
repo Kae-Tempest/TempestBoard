@@ -51,6 +51,7 @@ jobs:
           name: tempestboard-artifact-front
           path: front
           run-id: '${{ github.event.workflow_run.id }}'
+          github-token: '${{ github.token }}'
       - name: upload-artifact-front
         run: |
           eval $(ssh-agent -s)
