@@ -16,6 +16,8 @@ jobs:
     name: front-build
     runs-on: self-hosted
     steps:
+      - name: cleanup old checkout
+        run: chmod +w -R ${GITHUB_WORKSPACE}; rm -rf ${GITHUB_WORKSPACE}/*;
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -55,6 +57,8 @@ jobs:
     name: back-build
     runs-on: self-hosted
     steps:
+      - name: cleanup old checkout
+        run: chmod +w -R ${GITHUB_WORKSPACE}; rm -rf ${GITHUB_WORKSPACE}/*;
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -91,6 +95,8 @@ jobs:
     name: infra-build
     runs-on: self-hosted
     steps:
+      - name: cleanup old checkout
+        run: chmod +w -R ${GITHUB_WORKSPACE}; rm -rf ${GITHUB_WORKSPACE}/*;
       - name: checkout
         uses: actions/checkout@v4
         with:
