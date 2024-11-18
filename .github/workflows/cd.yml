@@ -46,6 +46,7 @@ jobs:
           END
       - name: prepare-infra
         run: |
+          ssh vps 'groups'
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/back'
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/front'
           ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
