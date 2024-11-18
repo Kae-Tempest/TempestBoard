@@ -44,13 +44,12 @@ jobs:
             IdentityFile ~/.ssh/github-actions.key
             StrictHostKeyChecking no
           END
-      - name: prepare-infra
-        run: |
-          ssh vps 'groups'
-          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/back'
-          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/front'
-          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
-          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
+#      - name: prepare-infra
+#        run: |
+#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/back'
+#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/front'
+#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
+#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
       - name: down-docker-compose
         run: |
           ssh vps 'docker compose -f compose-prod.yml down'
