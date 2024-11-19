@@ -81,12 +81,7 @@ jobs:
           rsync --chown=www-data:www-data -avuzP ${{ steps.get-artifact-infra.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}
       - name: create-dot-env
         run: |
-          ssh vps '
-          cat << EOF > ${{ env.WORKDIR }}/back/.env
-          ${{ secrets.DOT_ENV_PROD }}
-          EOF
-          
-          '
+          echo "${{ secrets.DOT_ENV_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/back/.env" > /dev/null
       - name: run-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'
