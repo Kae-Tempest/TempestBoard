@@ -82,7 +82,7 @@ jobs:
       - name: create-dot-env
         run: |
           ssh vps '
-          cat <<"EOT" >> ${{ env.WORKDIR }}/back/.env
+          cat <<'EOT' >> ${{ env.WORKDIR }}/back/.env
           ${{ secrets.DOT_ENV_PROD }}
           EOT'
       - name: run-docker-compose
