@@ -82,7 +82,11 @@ jobs:
       - name: create-dot-env
         run: |
           ssh vps '
-          touch ${{ secrets.DOT_ENV_PROD }} > ${{ env.WORKDIR }}/back/.env'
+          cat << EOF > ${{ env.WORKDIR }}/back/.env
+          ${{ secrets.DOT_ENV_PROD }}
+          EOF
+          
+          '
       - name: run-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'
