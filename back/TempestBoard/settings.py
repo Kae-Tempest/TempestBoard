@@ -34,7 +34,6 @@ DEBUG = os.environ['DEBUG'] == "True"
 
 INSTALLED_APPS = [
     'daphne',
-    'core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +44,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'channels',
-    'channels_redis'
+    'channels_redis',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -191,8 +191,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD']
+EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com' # voir pour passé sur la noreply@tempestboard.gloupi.com
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD'] # voir pour passé sur la noreply@tempestboard.gloupi.com
 DEFAULT_FROM_EMAIL = 'noreply@tempestboard.gloupi.com'
 FRONTEND_URL = 'http://localhost:3000'  # Your frontend URL
 REGISTRATION_URL_NAME = 'register'
