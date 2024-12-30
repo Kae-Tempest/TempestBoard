@@ -20,4 +20,6 @@ EXPOSE 8000
 #RUN python manage.py migrate
 
 # Commande par défaut pour lancer l'application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# PROD
+CMD ["daphne -b 0.0.0.0 -p 8000 TempestBoard.asgi:application"]
