@@ -82,7 +82,6 @@ jobs:
       - name: create-dot-env
         run: |
           echo "${{ secrets.DOT_ENV_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/back/.env" > /dev/null
-          echo "${{ secrets.DOT_ENV_PROD_FRONT }}" | ssh vps "tee ${{ env.WORKDIR }}/front/.env" > /dev/null
       - name: run-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'
