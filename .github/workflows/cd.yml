@@ -53,6 +53,7 @@ jobs:
       - name: down-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml down'
+          ssh vps 'docker compose rm -f'
       - name: get-artifact-front
         id: get-artifact-front
         uses: actions/download-artifact@v4
@@ -84,4 +85,4 @@ jobs:
           echo "${{ secrets.DOT_ENV_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/back/.env" > /dev/null
       - name: run-docker-compose
         run: |
-          ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d --build'
+          ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'
