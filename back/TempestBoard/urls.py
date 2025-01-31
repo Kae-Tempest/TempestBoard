@@ -26,8 +26,8 @@ def alive_view(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('health', alive_view),
-    path(r'api/v1/', include('core.urls', namespace='core')),
+    path('health/', alive_view),
+    path('api/v1/', include('core.urls', namespace='core')),
 ]
 
 if settings.DEBUG:
