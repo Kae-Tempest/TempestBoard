@@ -33,7 +33,7 @@ jobs:
           dir: front
       - name: create-dot-env
         run: |
-         echo "${{ secrets.DOT_ENV_PROD_FRONT }}" | ssh vps "tee ${{ env.WORKDIR }}/front/.env" > /dev/null
+         echo "${{ secrets.DOT_ENV_PROD_FRONT }}" > ${{ env.WORKDIR }}/front/.env
       - name: nuxt-generate
         uses: borales/actions-yarn@v5
         with:
