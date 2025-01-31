@@ -161,15 +161,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:80",
     "http://django:8000",
-    "http://tempestboard.gloupi.com",
+    "https://tempestboard.gloupi.com",
 ]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://localhost:80", "http://django:8000", "http://172.18.0.4:3000", "http://tempestboard.gloupi.com"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://172.18.0.4:3000", "https://tempestboard.gloupi.com"]
 CORS_ALLOW_CREDENTIALS = True
 # WebSocket URL configuration
-CORS_ALLOWED_ORIGINS += [origin.replace('http', 'ws') for origin in CORS_ALLOWED_ORIGINS]
+CORS_ALLOWED_ORIGINS += [origin.replace('https', 'wss') for origin in CORS_ALLOWED_ORIGINS]
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "connection",
     "upgrade",
@@ -178,11 +176,11 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ASGI_APPLICATION = 'TempestBoard.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
-        # 'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('redis', 6379)],
-        }
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        # 'CONFIG': {
+        #     'hosts': [('redis', 6379)],
+        # }
     }
 }
 
