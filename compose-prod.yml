@@ -1,6 +1,7 @@
 services:
   django:
     image: ghcr.io/kae-tempest/tempestboard:develop
+    pull_policy: always
     restart: unless-stopped
     ports:
       - "8000:8000"
