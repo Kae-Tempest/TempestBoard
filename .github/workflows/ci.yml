@@ -10,7 +10,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   front-build:
     name: front-build
@@ -32,6 +31,9 @@ jobs:
         with:
           cmd: install
           dir: front
+      - name: create-dot-env
+        run: |
+         echo "${{ secrets.DOT_ENV_PROD_FRONT }}" | ssh vps "tee ${{ env.WORKDIR }}/front/.env" > /dev/null
       - name: nuxt-generate
         uses: borales/actions-yarn@v5
         with:
