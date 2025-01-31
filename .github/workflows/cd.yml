@@ -53,7 +53,7 @@ jobs:
       - name: down-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml down'
-          ssh vps 'docker compose rm -f'
+          ssh vps 'docker compose rm -f ${{ env.WORKDIR }}/compose-prod.yml'
       - name: get-artifact-front
         id: get-artifact-front
         uses: actions/download-artifact@v4
