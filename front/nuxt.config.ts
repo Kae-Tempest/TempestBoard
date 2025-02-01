@@ -7,9 +7,6 @@ export default defineNuxtConfig({
         head: {
             charset: 'utf-8',
             viewport: 'width=device-width, height=device-height, initial-scale=1',
-        },
-        router: {
-            mode: 'hash'
         }
     },
     hooks: {
