@@ -176,11 +176,11 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ASGI_APPLICATION = 'TempestBoard.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     'hosts': [('redis', 6379)],
-        # }
+        # 'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)],
+        }
     }
 }
 
