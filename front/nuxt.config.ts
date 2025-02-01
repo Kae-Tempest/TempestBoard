@@ -3,6 +3,7 @@ require('dotenv').config({path: '../.env'});
 import {resolve} from 'path'
 
 export default defineNuxtConfig({
+    ssr: false,
     app: {
         head: {
             charset: 'utf-8',
