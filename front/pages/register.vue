@@ -23,15 +23,15 @@ const errors = reactive({
 const handleSubmit = async () => {
 
   const res = await useCustomFetch<User>('/register/', {
-    method: 'post',
-    body: data,
+    method: 'POST',
+    body: JSON.stringify(data),
   });
   if (res) {
     useUserStore().setUser(res);
     if(route.query.token) {
       await useCustomFetch<User>(`/accept/`, {
-        method: 'post',
-        body: {token: route.query.token}
+        method: 'POST',
+        body: JSON.stringify({token: route.query.token})
       })
     }
     await navigateTo('/project');

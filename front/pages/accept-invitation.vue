@@ -5,7 +5,7 @@ const route = useRoute()
 onMounted(() => {
   setTimeout(async () => {
     await useCustomFetch(`/accept/`, {
-      method: 'post',
+      method: 'POST',
       body: {token: route.query.token}
     })
     navigateTo('/project')

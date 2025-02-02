@@ -89,11 +89,11 @@ const handleSendMessage = (action: string) => {
 const handleEdit = async () => {
   if(!issueInfo.value) return
   const res = await useCustomFetch(`/issues/${props.issueId}/`, {
-    method: 'patch',
+    method: 'PATCH',
     body: JSON.stringify(data)
   })
 
-  if(res.data.value) {
+  if(res) {
     if (data.title != issueInfo.value.title) handleSendMessage(ActivityContent.EDIT_TITLE)
     if (data.description != issueInfo.value.description) handleSendMessage(ActivityContent.EDIT_DESCRIPTION)
     if (data.status != issueInfo.value.status) handleSendMessage(ActivityContent.EDIT_STATUS)
