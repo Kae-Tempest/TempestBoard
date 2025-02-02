@@ -9,8 +9,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .models import User, Project, Issue, Role, Tag, State, Comment, Activity, Milestone, ProjectInvitation
-from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
-    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer, PasswordResetSerializer, ResetPasswordUserSerializer, ProjectInvitationListSerializer, \
+from .serializers import RegisterSerializer, ProjectSerializer, IssueSerializer, RoleSerializer, TagSerializer, \
+    LoginSerializer, IssueReadSerializer, StateSerializer, CommentSerializer, \
+    ActivitySerializer, UserSerializer, MilestoneSerializer, ChangePasswordSerializer, PasswordResetSerializer, \
+    ResetPasswordUserSerializer, ProjectInvitationListSerializer, \
     ProjectInvitationSerializer
 
 
@@ -295,7 +297,7 @@ class LoginView(views.APIView):
 class LogoutView(views.APIView):
     def get(self, request):
         logout(request)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
 class UserProjectAPIView(views.APIView):
