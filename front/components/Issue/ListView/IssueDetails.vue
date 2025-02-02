@@ -2,7 +2,6 @@
 
 import type {Issue, Project, User} from "~/types/global";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
-import Toastify from "toastify-js";
 
 interface Props {
   issue: Issue;
@@ -27,23 +26,9 @@ const UpdateAssignedUser = async (u: number) => {
       "assigned": u
     }
   })
-  if (res.error.value) {
-    // TODO : TOAST
-  }
-  if (!res.error.value) {
-    const {data} = await useCustomFetch<User>(`/users/${u}/`);
-    issue.value.assigned = data.value as User
-  } else if (res.error.value) {
-    Toastify({
-      text: "An error as occurred",
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
+
+  if (res) {
+    issue.value.assigned = await useCustomFetch<User>(`/users/${u}/`);
   }
   dropdownIdOpen.value = null
 }

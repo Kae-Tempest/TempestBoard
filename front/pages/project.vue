@@ -13,7 +13,6 @@ useHead({title: 'Project - Tempest Board'})
 
 let user: User | null = useUserStore().getUser;
 const projects = ref<Project[]>([]);
-const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 
 const showSearchBar = ref<boolean>(false)
 const showCreateModal = ref(false)
@@ -26,13 +25,7 @@ const selectedProject = ref<Project | null>(null)
 const {isRefresh} = useRefreshData()
 
 onMounted(async () => {
-  await refresh()
-  if(data.value) {
-    projects.value = data.value as Project[]
-  } else {
-    await refresh()
-    if(data.value) projects.value = data.value as Project[]
-  }
+    projects.value = await useCustomFetch<Project[]>('/projects/')
 })
 
 watch(() => isRefresh.value, async (newVal) => {

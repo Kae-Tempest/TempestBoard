@@ -9,15 +9,11 @@ interface Props {
 const props = defineProps<Props>()
 const showModal = defineModel()
 const isTransferred = defineModel('isTransferred')
-const {data: userList, refresh: userRefresh } = await useCustomFetch<User[]>(`/users/`)
+const userList = await useCustomFetch<User[]>(`/users/`)
 const connected_user = useUserStore().getUser
 
 const data = reactive({
   creator: 0
-})
-
-onMounted(async () => {
-  await userRefresh()
 })
 
 const handleCancel = () => {
@@ -30,14 +26,10 @@ const handleTransfer = async () => {
     method: "patch",
     body: data
   })
-  if(res.data.value) {
+  if(res) {
     data.creator = 0
     isTransferred.value = true
-  } else if (res.error.value) {
-    console.log(res.error.value)
-    // toast ?
   }
-
 }
 
 </script>

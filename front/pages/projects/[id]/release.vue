@@ -23,22 +23,15 @@ const StateFilter = ref<string>("all")
 const MilestoneSearch = ref<string>("")
 const showSearchBar = ref<boolean>(false)
 
-const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
-const {data: Milestones, refresh: refreshMilestone} = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
-
 onMounted(async () => {
-  await refresh()
-  await refreshMilestone()
-  projects.value = data.value as Project[]
-  MilestonesList.value = Milestones.value as MileStone[]
+  projects.value = await useCustomFetch<Project[]>('/projects/')
+  MilestonesList.value = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
 });
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
-    await refresh()
-    await refreshMilestone()
-    projects.value = data.value as Project[]
-    MilestonesList.value = Milestones.value as MileStone[]
+    projects.value = await useCustomFetch<Project[]>('/projects/')
+    MilestonesList.value = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
     user = useUserStore().getUser;
     isRefresh.value = false
   }
@@ -63,7 +56,7 @@ watch(() => MilestoneSearch.value, (newVal) => {
 </script>
 <template>
   <div id="release">
-    <CreateMilestoneModal v-model:modal="openModal" :project="route.params.id[0]"/>
+    <CreateMilestoneModal v-model:modal="openModal" :project="route.params.id"/>
     <EditMilestoneModal v-model:modal="openEditModal" :milestoneID="editMilestoneID"/>
     <SearchBar v-model="showSearchBar"/>
     <Navbar v-if="user" :user="user" :projects="projects" v-model="showSearchBar"/>

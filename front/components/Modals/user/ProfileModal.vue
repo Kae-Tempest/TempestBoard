@@ -27,6 +27,8 @@ const showModal = ref<boolean>(false)
 const projectIndex = ref<number>(0)
 const projectIsTransferred = ref<boolean>(false)
 const showChangePasswordModal = ref<boolean>(false)
+const userProject = ref<Project[]>()
+
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -110,7 +112,7 @@ const handleUpdateProfile = async () => {
 }
 
 const handleDelete = async () => {
-  const { data: userProject } = await useCustomFetch<Project[]>(`/users/${props.user.id}/project/`)
+  userProject.value = await useCustomFetch<Project[]>(`/users/${props.user.id}/project/`)
   userProjects.value = userProject.value?.reverse() as Project[]
   if (userProject.value && userProject.value.length > 0) {
     showProfileModal.value = false
@@ -127,13 +129,13 @@ const handleDelete = async () => {
 }
 
 watch(() => projectIsTransferred.value, async (newVal) => {
-  if(newVal) {
-    if(userProjects.value.length >= projectIndex.value) {
+  if (newVal) {
+    if (userProjects.value.length >= projectIndex.value) {
       projectModal.value = userProjects.value[projectIndex.value]
       projectIndex.value++
       projectIsTransferred.value = false
     }
-    if(userProjects.value.length < projectIndex.value) {
+    if (userProjects.value.length < projectIndex.value) {
       showModal.value = false
       projectIsTransferred.value = false
       await useCustomFetch(`/users/${props.user.id}/`, {
@@ -153,7 +155,7 @@ const handleOpenChangePasswordModal = () => {
 </script>
 
 <template>
-  <TransferOwnerProjectModal :project="projectModal" v-model="showModal" v-model:isTransferred="projectIsTransferred" />
+  <TransferOwnerProjectModal :project="projectModal" v-model="showModal" v-model:isTransferred="projectIsTransferred"/>
   <ChangePasswordModal v-model="showChangePasswordModal" :user="user"/>
   <div id="profile" v-if="user">
     <div :class="{'is-active': showProfileModal}" class="modal">
@@ -166,7 +168,8 @@ const handleOpenChangePasswordModal = () => {
                 <img v-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="avatar"/>
                 <img v-else src="assets/image/user.png" alt="user thumbnail" class="avatar"/>
                 <div class="text-info">
-                  <h2 class="name">{{ user.username }} {{ user.first_name !== "" ? "- " + user.first_name : "" }} {{ user.last_name !== "" ? user.last_name : "" }}</h2>
+                  <h2 class="name">{{ user.username }} {{ user.first_name !== "" ? "- " + user.first_name : "" }}
+                    {{ user.last_name !== "" ? user.last_name : "" }}</h2>
                   <span class="email">{{ user.email }}</span>
                 </div>
               </div>
@@ -202,7 +205,8 @@ const handleOpenChangePasswordModal = () => {
               <div class="photo-upload">
                 <div class="avatar">
                   <img v-if="previewImage" :src="previewImage" alt="">
-                  <img v-else-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
+                  <img v-else-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail"
+                       class="dropdown-thumbnail"/>
                   <img v-else src="assets/image/user.png" alt="user thumbnail" class="dropdown-thumbnail"/>
                 </div>
                 <input class="input" type="file" name="resume" @input="handleSetThumb($event)"/>
@@ -212,9 +216,10 @@ const handleOpenChangePasswordModal = () => {
             <div class="modal-actions">
               <div class="delete-btn">
                 <button class="button is-danger" @click="confirmDelete = !confirmDelete">Delete user</button>
-                <button class="button is-danger is-confirm" :class="{'is-display': confirmDelete}" @click="handleDelete">
+                <button class="button is-danger is-confirm" :class="{'is-display': confirmDelete}"
+                        @click="handleDelete">
                 <span class="icon">
-                  <font-awesome-icon icon="fa-solid fa-trash" />
+                  <font-awesome-icon icon="fa-solid fa-trash"/>
                 </span>
                 </button>
               </div>

@@ -22,15 +22,12 @@ const handleClose = () => {
 }
 
 const handleChangePassword = async () => {
-  const res = await useCustomFetch(`/users/${props.user.id}/change_password/`,{
+  const res = await useCustomFetch(`/users/${props.user.id}/change_password/`, {
     method: "POST",
     body: data
   })
-  if(res.data.value) {
+  if (res) {
     handleClose()
-  } else if (res.error.value) {
-    console.log(res.error.value)
-    // toast ?
   }
 }
 
