@@ -5,6 +5,7 @@ import {ref} from "vue";
 interface Props {
   project: string
 }
+
 const props = defineProps<Props>()
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(300);
@@ -17,21 +18,6 @@ const resetForm = () => {
   data.delivery_date = ""
 }
 
-const handleCreateMilestone = async () => {
-  const res = await useCustomFetch<MileStone>(`/milestones/`, {
-    method: "post",
-    body: data
-  })
-
-  if( res.error.value ) {
-    console.log(res.error.value)
-  } else if ( res.data.value ) {
-    resetForm()
-    showModal.value = false
-    useRefreshData().isRefresh.value = true
-  }
-}
-
 const data = reactive({
   name: "",
   project: props.project,
@@ -40,6 +26,25 @@ const data = reactive({
   delivery_date: "",
   status: "open"
 })
+
+
+const handleCreateMilestone = async () => {
+  data.start_date = new Date(data.start_date)
+  data.delivery_date = new Date(data.delivery_date)
+
+  const res = await useCustomFetch<MileStone>(`/milestones/`, {
+    method: "post",
+    body: JSON.stringify(data)
+  })
+
+  if (res) {
+    resetForm()
+    showModal.value = false
+    useRefreshData().isRefresh.value = true
+  }
+}
+
+
 
 
 </script>
@@ -69,11 +74,13 @@ const data = reactive({
           <div class="control">
             <div class="date-picker">
               <label for="start-date">Start Date</label>
-              <input type="date" name="start-date" id="start-date" class="input is-small" v-model.lazy="data.start_date" required>
+              <input type="date" name="start-date" id="start-date" class="input is-small" v-model.lazy="data.start_date"
+                     required>
             </div>
             <div class="date-picker">
               <label for="delivery-date">Delivery Date</label>
-              <input type="date" name="delivery-date" id="delivery-date" class="input is-small" v-model.lazy="data.delivery_date" required>
+              <input type="date" name="delivery-date" id="delivery-date" class="input is-small"
+                     v-model.lazy="data.delivery_date" required>
             </div>
           </div>
         </div>

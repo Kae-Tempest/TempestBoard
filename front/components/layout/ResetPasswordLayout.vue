@@ -5,16 +5,13 @@ const emailData = reactive({
 })
 
 const handleSendEmail = async () => {
-  const {data, error} = await useCustomFetch(`/password/reset/`, {
+  const data = await useCustomFetch(`/password/reset/`, {
     method: 'post',
     body: emailData
   })
 
   if(data) {
-    console.log(data)
     showLayout.value = false
-  } else if(error) {
-    console.log(error)
   }
 
 }

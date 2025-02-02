@@ -18,9 +18,6 @@ const isResponseSend = defineModel()
 const isEditing = ref<Boolean>(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 
-
-const {data: users, refresh} = await useCustomFetch<User>(`/users/${props.answer.user}`)
-
 // Use the dropdown state composable
 const { activeDropdownId, toggleDropdown, closeDropdown } = useDropdownState()
 
@@ -49,8 +46,7 @@ const handleDropdownClick = (event: Event) => {
 }
 
 onMounted(async () => {
-  await refresh()
-  user.value = users.value
+  user.value = await useCustomFetch<User>(`/users/${props.answer.user}`)
 })
 
 const editedData = reactive({

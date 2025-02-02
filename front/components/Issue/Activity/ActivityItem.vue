@@ -11,8 +11,7 @@ const props = defineProps<Props>()
 const user = ref<User>()
 
 onMounted(async () => {
-  const {data: fetchedUser} = await useCustomFetch<User>(`users/${props.activity.user}`)
-  if(fetchedUser) user.value = fetchedUser.value as User
+  user.value = await useCustomFetch<User>(`/users/${props.activity.user}`)
 })
 
 </script>

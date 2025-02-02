@@ -63,11 +63,9 @@ const data = reactive({
   user: 0,
   content: "",
 })
-const {data: users, refresh} = await useCustomFetch<User>(`/users/${props.comment.user}`)
 
 onMounted(async () => {
-  await refresh()
-  user.value = users.value
+  user.value = await useCustomFetch<User>(`/users/${props.comment.user}`)
 })
 
 const handleShowResponseInput = () => {
@@ -121,21 +119,19 @@ const handleSendCommentaryResponse = async () => {
       method: "POST",
       body: {...data},
     })
-    if (res.error.value) console.log('error')
-    if (res.data.value) {
+    if (res) {
       if (!props.comment.is_thread) {
-        const resp = await useCustomFetch(`/comments/${res.data.value.comment_parent}/`, {
+        const resp = await useCustomFetch<Comment>(`/comments/${res.comment_parent}/`, {
           method: "PATCH",
           body: {
             is_thread: true
           }
         })
-        if (resp.error.value) console.log('error')
-        if (resp.data.value) {
-          comment.value.is_thread = (resp.data.value as Comment).is_thread
+        if (resp) {
+          comment.value.is_thread = resp.is_thread
         }
       } if (props.comment.is_resolved) {
-        await useCustomFetch(`/comments/${res.data.value.comment_parent}/`, {
+        await useCustomFetch(`/comments/${res.comment_parent}/`, {
           method: "PATCH",
           body: {
             is_resolved: false

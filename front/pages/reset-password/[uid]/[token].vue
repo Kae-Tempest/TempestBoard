@@ -9,15 +9,13 @@ const dataPwd = reactive({
 })
 
 const handleResetPassword = async () => {
-  const {data, error} = await useCustomFetch(`/users/password/reset/`, {
+  const data = await useCustomFetch(`/users/password/reset/`, {
     method: "POST",
     body: dataPwd
   })
 
   if(data) {
     navigateTo('/login')
-  } else if (error) {
-    // toast
   }
 }
 </script>

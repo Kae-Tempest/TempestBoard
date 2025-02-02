@@ -18,17 +18,13 @@ let activeDiv: HTMLElement | null
 let completedDiv: HTMLElement | null
 
 onMounted(async () => {
-
-  const {data} = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
-  advancementData.value = data.value as Advancement
+  advancementData.value = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
   await updateBar()
 })
 
 watch(() => props.milestone, async (newVal) => {
   if(newVal) {
-
-    const {data} = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
-    advancementData.value = data.value as Advancement
+    advancementData.value = await useCustomFetch<Advancement>(`/projects/${props.milestone.project}/advancement/${props.milestone.id}/`)
     await updateBar()
   }
 })
