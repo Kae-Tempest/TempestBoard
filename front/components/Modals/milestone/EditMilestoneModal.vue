@@ -12,10 +12,9 @@ const count = ref(300);
 const milestone = ref<MileStone>()
 
 watch(() => props.milestoneID, async (newVal) => {
-  if(newVal) {
+  if (newVal) {
     if (props.milestoneID !== 0) {
-      const {data} = await useCustomFetch<MileStone>(`/milestones/${props.milestoneID}/`)
-      milestone.value = data.value as MileStone
+      milestone.value = await useCustomFetch<MileStone>(`/milestones/${props.milestoneID}/`)
       await updateData()
     }
   }
@@ -44,9 +43,7 @@ const handleUpdateMilestone = async () => {
     body: data
   })
 
-  if (res.error.value) {
-    console.log(res.error.value)
-  } else if (res.data.value) {
+  if (res) {
     resetForm()
     showModal.value = false
     useRefreshData().isRefresh.value = true
@@ -103,11 +100,13 @@ const data = reactive({
           <div class="control">
             <div class="date-picker">
               <label for="start-date">Start Date</label>
-              <input type="date" name="start-date" id="start-date" class="input is-small" v-model.lazy="data.start_date" required>
+              <input type="date" name="start-date" id="start-date" class="input is-small" v-model.lazy="data.start_date"
+                     required>
             </div>
             <div class="date-picker">
               <label for="delivery-date">Delivery Date</label>
-              <input type="date" name="delivery-date" id="delivery-date" class="input is-small" v-model.lazy="data.delivery_date" required>
+              <input type="date" name="delivery-date" id="delivery-date" class="input is-small"
+                     v-model.lazy="data.delivery_date" required>
             </div>
           </div>
         </div>

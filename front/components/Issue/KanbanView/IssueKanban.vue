@@ -13,11 +13,11 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const {data: allStates, refresh} = await useCustomFetch<States[]>('/states/')
+const allStates = ref<States[]>()
+allStates.value = await useCustomFetch<States[]>('/states/')
 const statesFilter = ref<States[]>([])
 
 onMounted(async () => {
-  await refresh()
   if (props.filter && allStates.value) {
     if(props.filter === 'active') statesFilter.value = allStates.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
     if(props.filter === 'backlog') statesFilter.value = allStates.value.filter(s => s.name === 'backlog');

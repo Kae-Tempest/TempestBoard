@@ -3,7 +3,6 @@
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
 import type {Project, User} from "~/types/global";
-import Toastify from "toastify-js";
 
 type formType = {
   creator: number | undefined,
@@ -78,7 +77,7 @@ const handleCreate = async () => {
     body: formData,
   })
 
-  if (res.data.value !== null) {
+  if (res) {
     const createdProjectId = (res.data.value as Project).id
     for (const state of defaultStates) {
       await useCustomFetch('/states/', {
@@ -94,21 +93,6 @@ const handleCreate = async () => {
     resetForm()
     isRefresh.value = true
     showModal.value = false
-  }
-  if (res.error.value !== null) {
-    if (res.error.value.data?.name) error.name = res.error.value.data?.name[0]
-    if (res.error.value.data?.description) error.description = res.error.value.data?.description[0]
-    if (res.error.value.data?.thumbnail) error.thumbnail = res.error.value.data?.thumbnail[0]
-    Toastify({
-      text: 'An error occurred',
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
   }
 }
 

@@ -27,31 +27,21 @@ const projects = ref<Project[]>([])
 const {isRefresh} = useRefreshData()
 const showSearchBar = ref<boolean>(false)
 
-const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
-const {data: issueData, refresh: issueRefresh} = await useCustomFetch(`/my-issues/`, {immediate: false})
-const {data: userList, refresh: userRefresh } = await useCustomFetch<User[]>(`/users/`)
-
 onMounted(async () => {
-  await refresh()
-  await issueRefresh()
-  await userRefresh()
-  projects.value = data.value as Project[]
-
-  issueArray.value = issueData.value as Issue[]
+  projects.value = await useCustomFetch<Project[]>('/projects/')
+  issueArray.value = await useCustomFetch(`/my-issues/`)
   AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned.id === user?.id)
   CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
 
-  users.value = userList.value
+  users.value = await useCustomFetch<User[]>(`/users/`)
 });
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
-    await issueRefresh()
-    issueArray.value = issueData.value as Issue[]
+    issueArray.value = await useCustomFetch(`/my-issues/`)
     AssignedIssues.value = issueArray.value.filter((issue) => issue.assigned.id === user?.id)
     CreateIssues.value = issueArray.value.filter((issue) => issue.creator.id === user?.id)
-    await refresh()
-    projects.value = data.value as Project[]
+    projects.value = await useCustomFetch<Project[]>('/projects/')
     user = useUserStore().getUser;
     isRefresh.value = false
   }

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Issue, Project, States, User} from "~/types/global"
+import type {Project, States, User} from "~/types/global"
 import {ActivityContent} from "~/enums/AcitivityContentEnum"
 
 import {useUserStore} from "~/stores/useUserStore";
-import Toastify from "toastify-js";
 
 interface Props {
   projects: Project[];
@@ -67,8 +66,7 @@ watch(() => props.state, (newVal) => {
 
 watch(() => data.project, async (newVal) => {
   if (newVal != 0) {
-    const {data: projectState} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
-    projectStates.value = projectState.value as States[]
+    projectStates.value = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
   }
 });
 
@@ -82,28 +80,13 @@ const resetForm = () => {
 
 const handleSubmit = async () => {
   if (data.title.length < 3) errors.title = "Title must be at least 3 characters long";
-  // if (data.description.length < 3) errors.description = "Description must be at least 3 characters long";
   const res = await useCustomFetch('/issues/', {
         method: 'POST',
         body: JSON.stringify(data),
       }
   )
-  if (res.error.value !== null) {
-    errors.title = res.error.value?.data.title[0];
-    errors.description = res.error.value?.data.description[0];
-    Toastify({
-      text: 'An error occurred',
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
-  }
-  if (res.data.value) {
-    wsActivityMessage.issue = (res.data.value as Issue).id
+  if (res) {
+    wsActivityMessage.issue = res.id
     wsActivityMessage.user = user!.id
     sendMessage(JSON.stringify(wsActivityMessage))
     isRefresh.value = true

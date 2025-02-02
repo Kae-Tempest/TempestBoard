@@ -10,6 +10,7 @@ import {reactive} from "vue";
 import CommentCard from "~/components/Issue/Activity/CommentCard.vue";
 import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {ContentType} from "~/enums/content-type.enum";
 
 const {sendMessage, receivedMessage} = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
@@ -62,6 +63,9 @@ const isResponseSend = ref<boolean>(false)
 const {isRefresh} = useRefreshData()
 const user: User | null = useUserStore().getUser
 const route = useRoute()
+const projectSate = ref<States[]>()
+const commentIssue = ref<Comment[]>()
+const activityIssue = ref<Activity[]>()
 
 
 const data = reactive({
@@ -132,7 +136,7 @@ watch(() => issueInfo.value?.issue.status, (newVal) => {
 watch(() => selectedProject.value, async (newVal) => {
   if (newVal !== 0) {
     let projectID = newVal as number
-    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
+    projectSate.value = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
     if (props.filter && projectSate.value) {
       if(props.filter === 'active') projectStates.value = projectSate.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
       if(props.filter === 'backlog') projectStates.value = projectSate.value.filter(s => s.name === 'backlog');
@@ -157,12 +161,12 @@ watch(() => selectedState.value, (newVal) => {
 
 watch(() => issueInfo.value?.project.id, async (newVal) => {
   if (newVal !== 0) {
-    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
+    projectSate.value = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
     if (props.filter && projectSate.value) {
       if(props.filter === 'active') issueProjectStates.value = projectSate.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
       if(props.filter === 'backlog') issueProjectStates.value = projectSate.value.filter(s => s.name === 'backlog');
     } else {
-      issueProjectStates.value = projectSate.value as States[]
+      issueProjectStates.value = projectSate
     }
   }
 })
@@ -275,15 +279,15 @@ const handleCreateComment = async () => {
   formData.append('attachment', commentData.attachment as Blob || '')
   formData.append('issue', issueInfo.value?.issue.id.toString() || '')
   formData.append('user', user!.id.toString() || '')
-
   const res = await useCustomFetch('/comments/', {
     method: 'POST',
     body: formData,
-  })
-  if (res.data.value) {
+  }, ContentType.applicationMultipartFormData)
+
+  if (res) {
     commentData.content = ""
     isRefresh.value = true
-    activitiesList.value = addCommentToMergedArray(activitiesList.value, res.data.value as Comment)
+    activitiesList.value = addCommentToMergedArray(activitiesList.value, res)
     setTimeout(async () => {
       await updateMergedList()
     }, 1000)
@@ -312,8 +316,8 @@ const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[])
 
 const updateMergedList = async () => {
   if (!issueInfo.value) return
-  const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
-  const {data: activityIssue} = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
+  commentIssue.value = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
+  activityIssue.value = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
   activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[], activityIssue.value as Activity[])
 }
 

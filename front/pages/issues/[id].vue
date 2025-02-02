@@ -10,6 +10,7 @@ import ActivityItem from "~/components/Issue/Activity/ActivityItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import SearchBar from "~/components/SearchBar.vue";
+import {ContentType} from "~/enums/content-type.enum";
 
 const {sendMessage, receivedMessage} = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
@@ -44,6 +45,10 @@ const {isRefresh} = useRefreshData()
 const route = useRoute()
 let user: User | null = useUserStore().getUser
 
+const issue = ref<Issue>()
+const projectsData = ref<Project[]>()
+const users = ref<User[]>()
+const project = ref<Project>()
 
 const data = reactive({
   status: issueInfo.value !== null ? issueInfo.value.issue.status : ""
@@ -56,9 +61,9 @@ const commentData = reactive<formType>({
   attachment: null
 })
 
-const {data: issue, refresh: issueRefresh} = await useCustomFetch<Issue>(`/issues/${route.params.id}/`)
-const {data: projectsData, refresh: projectsRefresh} = await useCustomFetch<Project[]>('/projects/')
-const {data: users, refresh: usersRefresh} = await useCustomFetch<User[]>(`/users/`)
+issue.value = await useCustomFetch<Issue>(`/issues/${route.params.id}/`)
+projectsData.value = await useCustomFetch<Project[]>('/projects/')
+users.value = await useCustomFetch<User[]>(`/users/`)
 
 const projects = projectsData.value || []
 const showSearchBar = ref<boolean>(false)
@@ -70,9 +75,8 @@ onBeforeUpdate(async () => {
     }
   })
   if (issueInfo.value === null) {
-    await issueRefresh()
     if (issue.value) {
-      const {data: project} = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
+      project.value = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
       if (project.value && issue.value) {
         if (users.value && issue.value.creator) {
           issue.value.creator = users.value.find(u => u.id === issue.value?.creator.id) || users.value[0]
@@ -97,9 +101,8 @@ onMounted(async () => {
     }
   })
   if (issueInfo.value === null) {
-    await issueRefresh()
     if (issue.value) {
-      const {data: project} = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
+      project.value = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
       if (project.value && issue.value) {
         if (users.value && issue.value.creator) {
           issue.value.creator = users.value.find(u => u.id === issue.value?.creator.id) || users.value[0]
@@ -125,8 +128,7 @@ watch(() => issueInfo.value?.issue.status, (newVal) => {
 
 watch(() => issueInfo.value?.project.id, async (newVal) => {
   if (newVal !== 0) {
-    const {data: projectSate} = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
-    issueProjectStates.value = projectSate.value as States[]
+    issueProjectStates.value = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
   }
 })
 
@@ -151,9 +153,9 @@ watch(() => isResponseSend.value, async (newVal) => {
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
-    await issueRefresh()
-    await projectsRefresh()
-    await usersRefresh()
+    issue.value = await useCustomFetch<Issue>(`/issues/${route.params.id}/`)
+    projectData.value = await useCustomFetch<Project[]>('/projects/')
+    users.value = await useCustomFetch<User[]>(`/users/`)
     user = useUserStore().getUser;
     isRefresh.value = false
   }
@@ -188,11 +190,11 @@ const handleCreateComment = async () => {
   const res = await useCustomFetch('/comments/', {
     method: 'POST',
     body: formData,
-  })
-  if (res.data.value) {
+  }, ContentType.applicationMultipartFormData)
+  if (res) {
     commentData.content = ""
     isRefresh.value = true
-    activitiesList.value = addCommentToMergedArray(activitiesList.value, res.data.value as Comment)
+    activitiesList.value = addCommentToMergedArray(activitiesList.value, res)
     setTimeout(async () => {
       await updateMergedList()
     }, 1000)
@@ -221,9 +223,9 @@ const mergeCommentsAndActivities = (comments: Comment[], activities: Activity[])
 
 const updateMergedList = async () => {
   if (!issueInfo.value) return
-  const {data: commentIssue} = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
-  const {data: activityIssue} = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
-  activitiesList.value = mergeCommentsAndActivities(commentIssue.value as Comment[], activityIssue.value as Activity[])
+  const commentIssue = await useCustomFetch<Comment[]>(`/issues/${issueInfo.value.issue.id}/comments/`)
+  const activityIssue = await useCustomFetch<Activity[]>(`/issues/${issueInfo.value.issue.id}/activities`)
+  activitiesList.value = mergeCommentsAndActivities(commentIssue as Comment[], activityIssue as Activity[])
 }
 
 const addCommentToMergedArray = (mergedArray: MergedItem[], newComment: Omit<Comment, 'id' | 'created_at' | 'updated_at'>): MergedItem[] => {
@@ -300,7 +302,8 @@ const handleUpdateAssigned = async () => {
                 </div>
               </div>
               <div class="comment-input">
-                <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content" @keydown.enter="handleCreateComment">
+                <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content"
+                       @keydown.enter="handleCreateComment">
                 <button class="button" @click="handleCreateComment">
                   <span class="icon">
                     <font-awesome-icon icon="fa-solid fa-paper-plane"/>
@@ -322,7 +325,9 @@ const handleUpdateAssigned = async () => {
             <option v-if="issueInfo.project.id === 0" value="in_progress">In Progress</option>
             <option v-if="issueInfo.project.id === 0" value="completed">Completed</option>
             <option v-if="issueInfo.project.id === 0" value="canceled">Canceled</option>
-            <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0" v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
+            <option v-if="issueInfo.project.id !== 0 && issueProjectStates.length > 0"
+                    v-for="state in issueProjectStates" :value="state.name">{{ useCapitalize(state.name) }}
+            </option>
           </select>
         </div>
 
@@ -333,7 +338,9 @@ const handleUpdateAssigned = async () => {
           <div class="infos">
             <div class="info">
               <div class="important-info">
-                <div v-if="!isAssignedClicked" @click="AssignedUpdate = issueInfo.issue.assigned.username; isAssignedClicked = true;" class="assigned">Assigned: {{
+                <div v-if="!isAssignedClicked"
+                     @click="AssignedUpdate = issueInfo.issue.assigned.username; isAssignedClicked = true;"
+                     class="assigned">Assigned: {{
                     issueInfo.issue.assigned.username
                   }}
                 </div>
@@ -342,7 +349,8 @@ const handleUpdateAssigned = async () => {
                     Assigned:
                   </div>
                   <div>
-                    <input class="input" list="project-users" type="text" @keydown.enter="handleUpdateAssigned" v-model="AssignedUpdate"/>
+                    <input class="input" list="project-users" type="text" @keydown.enter="handleUpdateAssigned"
+                           v-model="AssignedUpdate"/>
                     <button class="button" @click="handleUpdateAssigned">
                       <span class="icon">
                         <font-awesome-icon icon="fa-solid fa-paper-plane"/>
@@ -364,8 +372,20 @@ const handleUpdateAssigned = async () => {
                 </div>
               </div>
               <div class="date-info">
-                <div>Created : {{ new Date(issueInfo.issue.created_at).toLocaleString('en-GB', {day: 'numeric', month: "short"}) }}</div>
-                <div>Updated : {{ new Date(issueInfo.issue.updated_at).toLocaleString('en-GB', {day: 'numeric', month: "short"}) }}</div>
+                <div>Created : {{
+                    new Date(issueInfo.issue.created_at).toLocaleString('en-GB', {
+                      day: 'numeric',
+                      month: "short"
+                    })
+                  }}
+                </div>
+                <div>Updated : {{
+                    new Date(issueInfo.issue.updated_at).toLocaleString('en-GB', {
+                      day: 'numeric',
+                      month: "short"
+                    })
+                  }}
+                </div>
               </div>
             </div>
             <div class="time">

@@ -3,7 +3,6 @@ import {reactive} from 'vue';
 import {useUserStore} from '~/stores/useUserStore';
 import type {User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
-import Toastify from "toastify-js";
 
 useHead({title: 'Register - Tempest Board'})
 const route = useRoute()
@@ -27,9 +26,8 @@ const handleSubmit = async () => {
     method: 'post',
     body: data,
   });
-  if (res.data.value != null) {
-    const user = res.data.value;
-    useUserStore().setUser(user);
+  if (res) {
+    useUserStore().setUser(res);
     if(route.query.token) {
       await useCustomFetch<User>(`/accept/`, {
         method: 'post',
@@ -37,22 +35,6 @@ const handleSubmit = async () => {
       })
     }
     await navigateTo('/project');
-  } else if (res.error.value?.data) {
-    if (res.error.value?.data?.username) errors.username = res.error.value?.data?.username[0];
-    if (res.error.value?.data?.email) errors.email = res.error.value?.data?.email[0];
-    if (res.error.value?.data?.password) errors.password = res.error.value?.data?.password[0];
-    if (res.error.value?.data?.confirm_password) errors.confirm_password = res.error.value?.data?.confirm_password[0];
-  } else {
-    Toastify({
-      text: "An Error as occurred",
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
   }
 }
 </script>

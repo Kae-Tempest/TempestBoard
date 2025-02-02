@@ -7,8 +7,7 @@ const showSearchBar = defineModel()
 const searchBarRef = ref<HTMLElement | null>(null)
 const search = ref<string>("")
 const issueList = ref<Issue[]>([])
-const {data: issueData, refresh: issueRefresh} = await useCustomFetch<Issue[]>(`/my-issues/`)
-const {data: ProjectData, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
+const ProjectData = await useCustomFetch<Project[]>('/projects/')
 
 onUnmounted(() => {
   document.removeEventListener('keydown', event => {
@@ -24,9 +23,7 @@ onMounted(async () => {
       showSearchBar.value = false
     }
   })
-  await issueRefresh()
-  await refresh()
-  issueList.value = issueData.value as Issue[]
+  issueList.value = await useCustomFetch<Issue[]>(`/my-issues/`)
 })
 
 watch(() => search.value, (newVal) => {

@@ -15,6 +15,7 @@ const SelectedState = ref("");
 const count = ref(500);
 const projectStates = ref<States[]>([])
 const issueInfo = ref<Issue>()
+const issue = ref<Issue>()
 const { sendMessage } = useWebSocket('ws/activity/')
 const wsActivityMessage = reactive({
   type: "activity",
@@ -48,15 +49,14 @@ const resetForm = () => {
 
 watch(showModal, async () => {
   count.value = 500
-  const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
-  const {data: projectState } = await useCustomFetch<States[]>(`/projects/${issue.value?.project}/states`)
+  issue.value = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
   if(!issue.value) return
   data.title = issue.value.title;
   data.description = issue.value.description;
   data.priority = issue.value.priority;
   data.status = issue.value.status;
   issueInfo.value = issue.value
-  projectStates.value = projectState.value as States[]
+  projectStates.value = await useCustomFetch<States[]>(`/projects/${issue.value?.project}/states`)
   count.value = count.value - data.description.length
   SelectedPriority.value = data.priority.toLowerCase()
   SelectedState.value = data.status

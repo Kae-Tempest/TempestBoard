@@ -10,11 +10,11 @@ interface Props {
 
 defineProps<Props>()
 const IssueInfo = defineModel<{issue: Issue, project: Project} | null>()
-
+const project = ref<Project>()
 
 const handleSetIssue = async (issue: Issue, projectID: number) => {
   if (IssueInfo.value?.issue.id !== issue.id) {
-    const {data: project} = await useCustomFetch<Project>(`projects/${projectID}`)
+    project.value = await useCustomFetch<Project>(`/projects/${projectID}`)
     if(!project.value) return
     IssueInfo.value = { issue: issue, project: project.value }
   } else return IssueInfo.value
