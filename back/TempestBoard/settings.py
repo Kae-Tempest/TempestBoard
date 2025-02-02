@@ -188,5 +188,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com'  # voir pour passé sur la noreply@tempestboard.gloupi.com
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD']  # voir pour passé sur la noreply@tempestboard.gloupi.com
 DEFAULT_FROM_EMAIL = 'noreply@tempestboard.gloupi.com'
-FRONTEND_URL = 'http://localhost:3000'  # Your frontend URL
+FRONTEND_URL = os.environ.get('FRONTEND_URL')  # Your frontend URL
 REGISTRATION_URL_NAME = 'register'
