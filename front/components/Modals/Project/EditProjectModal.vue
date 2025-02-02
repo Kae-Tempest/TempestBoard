@@ -2,6 +2,7 @@
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project} from "~/types/global";
 import {reactive, watch} from "vue";
+import {ContentType} from "~/enums/content-type.enum";
 
 const showModal = defineModel()
 const {isRefresh} = useRefreshData()
@@ -83,7 +84,7 @@ const handleEdit = async () => {
   const res = await useCustomFetch(`/projects/${props.project.id}/`, {
     method: 'PATCH',
     body: formData
-  })
+  }, ContentType.applicationMultipartFormData)
   if (res) {
     showModal.value = false
     isRefresh.value = true
