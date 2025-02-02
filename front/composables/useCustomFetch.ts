@@ -58,7 +58,9 @@ export async function useCustomFetch<T>(
         throw new Error(JSON.stringify({code: resp.status, detail: errorDetails.detail}));
 
     }
-
+    if (resp.ok && resp.statusText === "No Content") {
+        return resp.statusText
+    }
     if (resp.ok && resp.status === 204 || resp.ok && resp.status === 202) {
         try {
             return resp.json()
