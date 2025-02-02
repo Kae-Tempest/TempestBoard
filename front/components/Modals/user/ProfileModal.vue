@@ -73,7 +73,6 @@ const data = reactive<formType>({
   first_name: props.user.first_name,
   last_name: props.user.last_name,
   username: props.user.username,
-  email: props.user.email
 })
 
 const handleSetThumb = (e: Event) => {
@@ -81,7 +80,6 @@ const handleSetThumb = (e: Event) => {
   if (target instanceof HTMLInputElement && target.files) {
     const file = target.files[0]
     data.thumbnail = file
-
     // Create a URL for the preview image
     if (previewImage.value) {
       URL.revokeObjectURL(previewImage.value)
@@ -96,7 +94,6 @@ const handleUpdateProfile = async () => {
   formData.append('last_name', data.last_name)
   formData.append('username', data.username)
   formData.append('thumbnail', data.thumbnail as Blob || '')
-  formData.append('email', data.email)
 
   const res = await useCustomFetch<User>(`/users/${props.user.id}/`, {
     method: "PATCH",
@@ -190,7 +187,7 @@ const handleOpenChangePasswordModal = () => {
 
             <div class="form-group">
               <label>Email address</label>
-              <input type="email" class="input" v-model="data.email"/>
+              <input type="email" disabled class="input" v-model="data.email"/>
             </div>
 
             <div class="form-group">

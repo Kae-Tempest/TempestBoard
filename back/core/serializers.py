@@ -74,14 +74,26 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'thumbnail', 'created_at', 'updated_at']
+        extra_kwargs = {'thumbnail': {'required': False}}
 
     def get_thumbnail(self, obj):
         request = self.context.get('request')
         if obj.thumbnail != "":
-            print(obj.thumbnail, 'thumbnail')
             return request.build_absolute_uri(obj.thumbnail.url)
         else:
             return ""
+
+    def update(self, instance, validated_data):
+        if 'thumbnail' in self.context['request'].FILES:
+            instance.thumbnail = self.context['request'].FILES['thumbnail']
+
+        instance.first_name = validated_data['first_name']
+        instance.last_name = validated_data['last_name']
+        instance.username = validated_data['username']
+
+        instance.save()
+        return instance
+
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -112,7 +124,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         # First try with base name
         exact_name_exists = Project.objects.filter(
-            creator=validated_data['creator'],
+            creator=original_project.creator,
             name=base_name
         ).exclude(id=instance.id).exists()
 
