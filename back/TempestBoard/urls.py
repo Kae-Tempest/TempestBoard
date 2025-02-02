@@ -22,12 +22,13 @@ from django.urls import path, include
 
 def alive_view(request):
     return HttpResponse("Hello World")
-
-
+def get_img(request, dir, img):
+    return
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('health/', alive_view),
     path('api/v1/', include('core.urls', namespace='core')),
+    path('/media/thumbnail/<str:dir>/<str:img>', get_img)
 ]
 
 if settings.DEBUG:
