@@ -4,6 +4,7 @@ import {reactive} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import TransferOwnerProjectModal from "~/components/Modals/user/TransferOwnerProjectModal.vue";
 import ChangePasswordModal from "~/components/Modals/user/ChangePasswordModal.vue";
+import {ContentType} from "~/enums/content-type.enum";
 
 interface Props {
   user: User
@@ -100,11 +101,10 @@ const handleUpdateProfile = async () => {
   const res = await useCustomFetch<User>(`/users/${props.user.id}/`, {
     method: "PATCH",
     body: formData
-  })
+  }, ContentType.applicationMultipartFormData)
 
-  if (res.error.value) return
-  if (res.data.value) {
-    useUserStore().setUser(res.data.value)
+  if (res) {
+    useUserStore().setUser(res)
     showProfileModal.value = false
     resetForm()
     useRefreshData().isRefresh.value = true
@@ -121,7 +121,7 @@ const handleDelete = async () => {
     projectIndex.value++
   } else {
     await useCustomFetch(`/users/${props.user.id}/`, {
-      method: "delete"
+      method: "DELETE"
     })
     useUserStore().clearUser()
     navigateTo('/login')
@@ -139,7 +139,7 @@ watch(() => projectIsTransferred.value, async (newVal) => {
       showModal.value = false
       projectIsTransferred.value = false
       await useCustomFetch(`/users/${props.user.id}/`, {
-        method: "delete"
+        method: "DELETE"
       })
       useUserStore().clearUser()
       navigateTo('/login')
