@@ -44,12 +44,6 @@ jobs:
             IdentityFile ~/.ssh/github-actions.key
             StrictHostKeyChecking no
           END
-#      - name: prepare-infra
-#        run: |
-#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/back'
-#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/front'
-#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/docker'
-#          ssh vps 'install --owner=www-data -D -d ${{ env.WORKDIR }}/data'
       - name: down-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml down'
@@ -82,6 +76,9 @@ jobs:
       - name: create-dot-env
         run: |
           echo "${{ secrets.DOT_ENV_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/back/.env" > /dev/null
+      - name: create-dot-env
+        run: |
+          echo "${{ secrets.HTACCESS_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/front/dist/.htaccess" > /dev/null
       - name: run-docker-compose
         run: |
           ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'
