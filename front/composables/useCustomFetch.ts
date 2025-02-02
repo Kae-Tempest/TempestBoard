@@ -60,7 +60,11 @@ export async function useCustomFetch<T>(
     }
 
     if (resp.ok && resp.status === 204 || resp.ok && resp.status === 202) {
-        return resp.statusText
+        try {
+            return resp.json()
+        } catch (e) {
+            return resp.statusText
+        }
     }
 
     return resp.json()
