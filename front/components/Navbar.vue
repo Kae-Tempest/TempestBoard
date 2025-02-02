@@ -30,6 +30,10 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', () => isDropDownOpen.value = false)
 })
 
+watch(() => props.user, (newVal) => {
+  if(newVal) thumbnail.value = newVal.thumbnail
+})
+
 
 const logout = async () => {
   await useCustomFetch('/logout/')
