@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./media:/media
+      - ./back/media:/app/media
     tty: true
     env_file:
       - ./back/.env
