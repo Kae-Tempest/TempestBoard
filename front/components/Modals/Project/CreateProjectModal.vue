@@ -83,11 +83,11 @@ const handleCreate = async () => {
     for (const state of defaultStates) {
       await useCustomFetch('/states/', {
         method: 'POST',
-        body: {
+        body: JSON.stringify({
           name: state,
           project: createdProjectId,
           is_default: true
-        }
+        })
       })
     }
 
