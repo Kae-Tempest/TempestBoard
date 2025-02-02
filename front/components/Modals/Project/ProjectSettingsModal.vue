@@ -62,8 +62,8 @@ onMounted(async () => {
 
 const handleSendEmailInvitation = async () => {
   await useCustomFetch(`/invitations/`, {
-    method: "post",
-    body: dataForm
+    method: "POST",
+    body: JSON.stringify(dataForm)
   })
 }
 
@@ -99,7 +99,7 @@ const handleSendEmailInvitation = async () => {
             <div class="list">
               <h4 class="title is-4">Project's user list</h4>
               <div v-for="user in users">
-                <div class="username"> - {{user.username}} is {{ project.creator === user.id ? "OWNER" : ""}}</div>
+                <div class="username"> - {{user.username}} is {{ project.creator === user.id ? "OWNER" : "MEMBER"}}</div>
               </div>
             </div>
           </div>

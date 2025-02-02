@@ -6,7 +6,7 @@ const emailData = reactive({
 
 const handleSendEmail = async () => {
   const data = await useCustomFetch(`/password/reset/`, {
-    method: 'post',
+    method: 'POST',
     body: emailData
   })
 

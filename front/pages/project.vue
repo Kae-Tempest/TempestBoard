@@ -30,8 +30,7 @@ onMounted(async () => {
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
-    await refresh()
-    projects.value = data.value as Project[]
+    projects.value = await useCustomFetch<Project[]>('/projects/')
     user = useUserStore().getUser
     isRefresh.value = false
   }

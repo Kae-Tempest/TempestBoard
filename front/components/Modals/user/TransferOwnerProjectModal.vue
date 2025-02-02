@@ -23,7 +23,7 @@ const handleCancel = () => {
 const handleTransfer = async () => {
   if(!props.project) return
   const res = await useCustomFetch(`/projects/${props.project.id}/`, {
-    method: "patch",
+    method: "PATCH",
     body: data
   })
   if(res) {

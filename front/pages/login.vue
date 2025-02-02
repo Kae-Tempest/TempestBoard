@@ -22,7 +22,7 @@ const handleCheckboxChange = (newValue: any) => {
 
 const handleSubmit = async () => {
   const res = await useCustomFetch('/login/', {
-    method: 'post',
+    method: 'POST',
     body: JSON.stringify(data),
   });
   if (res) {

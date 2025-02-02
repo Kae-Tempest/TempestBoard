@@ -98,7 +98,7 @@ const handleUpdateProfile = async () => {
   formData.append('email', data.email)
 
   const res = await useCustomFetch<User>(`/users/${props.user.id}/`, {
-    method: "patch",
+    method: "PATCH",
     body: formData
   })
 

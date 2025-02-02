@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import type {Project, States} from "~/types/global";
-import Toastify from "toastify-js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 interface Props {
@@ -71,68 +70,39 @@ const handleUpsertState = async (stateID: number) => {
   if(isCreating.value) {
     const res = await useCustomFetch<States>(`/states/`,{
       method: 'POST',
-      body: {
+      body: JSON.stringify({
         name: data.name.trim(),
         project: props.project.id
-      }
+      })
     })
 
-    if(res.data.value) {
+    if(res) {
       projectStatesRef.value.map(s => {
         if(s.id === -1) {
-          s.name = res.data.value?.name ? res.data.value.name : data.name
-          s.id = res.data.value?.id ? res.data.value.id : projectStatesRef.value.length
+          s.name = res.name ? res.name : data.name
+          s.id = res.id ? res.id : projectStatesRef.value.length
         }
       })
       data.name = ""
       isCreating.value = false
       CreateStateRef.value = false
-    } else if (res.error.value?.data){
-      Toastify({
-        text: res.error.value.data?.name[0],
-        duration: 5000,
-        newWindow: true,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        className: "toast",
-      }).showToast();
     }
 
   } else if (!isCreating.value) {
     const res = await useCustomFetch(`/states/${stateID}/`,{
       method: 'PATCH',
-      body: {
+      body: JSON.stringify({
         name: data.name.trim()
-      }
+      })
     })
 
-    if(res.data.value) {
+    if(res) {
       projectStatesRef.value.map(s => {
         if(s.id === stateID) {
           s.name = data.name
         }
       })
       data.name = ""
-    } else if (res.error.value?.message){
-      Toastify({
-        text: "Error during updating states",
-        duration: 5000,
-        newWindow: true,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        className: "toast",
-      }).showToast();
-      if(isCreating.value) {
-        projectStatesRef.value.pop()
-        data.name = ""
-        isCreating.value = false
-        CreateStateRef.value = false
-      }
-      // toast
     }
   }
 }

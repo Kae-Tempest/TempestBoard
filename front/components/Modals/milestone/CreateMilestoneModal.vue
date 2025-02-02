@@ -33,7 +33,7 @@ const handleCreateMilestone = async () => {
   data.delivery_date = new Date(data.delivery_date)
 
   const res = await useCustomFetch<MileStone>(`/milestones/`, {
-    method: "post",
+    method: "POST",
     body: JSON.stringify(data)
   })
 

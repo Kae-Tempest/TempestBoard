@@ -32,9 +32,7 @@ onBeforeUnmount(() => {
 
 
 const logout = async () => {
-  await useCustomFetch('/logout/', {
-    method: 'GET'
-  })
+  await useCustomFetch('/logout/')
   navigateTo('/login')
 }
 
