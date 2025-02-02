@@ -1,5 +1,6 @@
 import {ContentType} from "~/enums/content-type.enum";
 import {ResponseType} from "~/enums/response-type.enum";
+import {useHandleError} from "~/composables/useHandleError";
 
 interface CustomRequestInit extends RequestInit {
     query?: Record<string, any>;
@@ -53,7 +54,9 @@ export async function useCustomFetch<T>(
 
     if (!resp.ok) {
         const errorDetails = await resp.json();
+        useHandleError(JSON.stringify({code: resp.status, detail: errorDetails.detail}))
         throw new Error(JSON.stringify({code: resp.status, detail: errorDetails.detail}));
+
     }
 
     if (resp.ok && resp.status === 204 || resp.ok && resp.status === 202) {
