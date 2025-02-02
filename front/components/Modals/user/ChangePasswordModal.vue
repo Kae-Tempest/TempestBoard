@@ -24,7 +24,7 @@ const handleClose = () => {
 const handleChangePassword = async () => {
   const res = await useCustomFetch(`/users/${props.user.id}/change_password/`, {
     method: "POST",
-    body: data
+    body: JSON.stringify(data)
   })
   if (res) {
     handleClose()
