@@ -158,6 +158,10 @@ AUTHENTICATION_BACKENDS = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
