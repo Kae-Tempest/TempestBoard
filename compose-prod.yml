@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    volumes:
+      - /media:/media
     tty: true
     env_file:
       - ./back/.env
