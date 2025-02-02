@@ -24,7 +24,7 @@ const handleTransfer = async () => {
   if(!props.project) return
   const res = await useCustomFetch(`/projects/${props.project.id}/`, {
     method: "PATCH",
-    body: data
+    body: JSON.stringify(data)
   })
   if(res) {
     data.creator = 0

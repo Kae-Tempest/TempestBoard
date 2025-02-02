@@ -32,7 +32,7 @@ const handleOpenSettingsModal = (project: Project) => {
 
 const handleLeaveProject = async (project: Project) => {
   await useCustomFetch(`/projects/${project.id}/leave/${props.user.id}/`, {
-    method: "delete",
+    method: "DELETE",
   })
   useRefreshData().isRefresh.value = true
 }

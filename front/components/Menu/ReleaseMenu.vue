@@ -31,7 +31,7 @@ const handleDropdownClick = (event: Event) => {
 
 const handleDeleteMilestone = async () => {
   await useCustomFetch(`/milestones/${props.milestone.id}/`,{
-    method: 'delete'
+    method: 'DELETE'
   })
   useRefreshData().isRefresh.value = true
 }
