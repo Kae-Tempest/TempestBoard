@@ -2,7 +2,7 @@
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
-import type {Project, User} from "~/types/global";
+import type {User} from "~/types/global";
 import {ContentType} from "~/enums/content-type.enum";
 
 type formType = {
@@ -79,7 +79,7 @@ const handleCreate = async () => {
   }, ContentType.applicationMultipartFormData)
 
   if (res) {
-    const createdProjectId = (res.data.value as Project).id
+    const createdProjectId = res.id
     for (const state of defaultStates) {
       await useCustomFetch('/states/', {
         method: 'POST',
