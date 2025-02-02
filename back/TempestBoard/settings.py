@@ -176,11 +176,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ASGI_APPLICATION = 'TempestBoard.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
-        # 'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('redis', 6379)],
-        }
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     }
 }
 
@@ -189,8 +185,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com' # voir pour passé sur la noreply@tempestboard.gloupi.com
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD'] # voir pour passé sur la noreply@tempestboard.gloupi.com
+EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com'  # voir pour passé sur la noreply@tempestboard.gloupi.com
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD']  # voir pour passé sur la noreply@tempestboard.gloupi.com
 DEFAULT_FROM_EMAIL = 'noreply@tempestboard.gloupi.com'
 FRONTEND_URL = 'http://localhost:3000'  # Your frontend URL
 REGISTRATION_URL_NAME = 'register'
