@@ -16,6 +16,20 @@ const draggedItem = ref(0)
 const showModal = ref(false);
 const selectedState = ref("")
 
+const filteredState = computed(() => filterUniqueState(props.States))
+
+const filterUniqueState = (states: States[]): States[] => {
+  const uniqueStates = new Map<string, States>();
+
+  states.forEach(state => {
+    if (!uniqueStates.has(state.name) || state.updated_at > uniqueStates.get(state.name)!.updated_at) {
+      uniqueStates.set(state.name, state);
+    }
+  });
+
+  return Array.from(uniqueStates.values());
+}
+
 watch(() => showModal.value, (newVal) => {
   if (!newVal) selectedState.value = ""
 })
@@ -57,7 +71,7 @@ const onDrop = async (e: DragEvent, state: string) => {
 <template>
   <div id="kanban">
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-    <div v-for="state in States" :key="state" class="state-list" @drop="onDrop($event, state.name)" @dragenter.prevent @dragover.prevent>
+    <div v-for="state in filteredState" :key="state.name" class="state-list" @drop="onDrop($event, state.name)" @dragenter.prevent @dragover.prevent>
       <div class="header">
         <div class="state-name">{{ useCapitalize(state.name) }}</div>
         <div class="action-icon">
@@ -66,9 +80,9 @@ const onDrop = async (e: DragEvent, state: string) => {
               <font-awesome-icon icon="fa-solid fa-ellipsis"/>
             </span>
           </div>
-          <div class="button is-small">
+          <div class="button is-small" @click="showModal=true; selectedState=state.name">
             <span class="icon">
-              <font-awesome-icon icon="fa-solid fa-plus" @click="showModal=true; selectedState=state.name"/>
+              <font-awesome-icon icon="fa-solid fa-plus"/>
             </span>
           </div>
         </div>
@@ -80,11 +94,10 @@ const onDrop = async (e: DragEvent, state: string) => {
           <div class="issue">
             <div class="issue-title">{{ issue.title }}</div>
             <div class="issue-desc">
-              <span>
-                {{ issue.description }}
-              </span></div>
+              <span v-html="issue.description"></span>
+            </div>
             <div class="issue-footer">
-              <span>{{ project.name.substring(0, 3).toUpperCase() }}-{{ issue.ticket_id }}</span>
+              <span>{{ issue.project_tag }}-{{ issue.ticket_id }}</span>
               <div class="icon">
                 <PriorityIcon :priority="issue.priority"/>
               </div>

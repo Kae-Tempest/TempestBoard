@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project, User} from "~/types/global";
 import MenuProject from "~/components/Menu/MenuProject.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
-import Toastify from "toastify-js";
+import ProfileModal from "~/components/Modals/user/ProfileModal.vue";
 
 interface Props {
   user: User
@@ -12,12 +12,14 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const showSearchBar = defineModel()
 
-const isDropDownOpen = ref(false);
-const isShowModal = ref(false)
-const thumbnail = ref('')
+const isDropDownOpen = ref<boolean>(false);
+const isShowModal = ref<boolean>(false)
+const thumbnail = ref<string>('')
+const showProfileModal = ref<boolean>(false)
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('click', () => isDropDownOpen.value = false)
   if (props.user.thumbnail) {
     thumbnail.value = props.user.thumbnail
@@ -28,26 +30,14 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', () => isDropDownOpen.value = false)
 })
 
+watch(() => props.user, (newVal) => {
+  if(newVal) thumbnail.value = newVal.thumbnail
+})
+
 
 const logout = async () => {
-  await useCustomFetch('/logout/', {
-    method: 'GET'
-  })
-  useUserStore().setUser(null)
+  await useCustomFetch('/logout/')
   navigateTo('/login')
-}
-
-const testToast = () => {
-  Toastify({
-    text: "Je suis un test",
-    duration: 5000,
-    newWindow: true,
-    close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    className: "toast",
-  }).showToast();
 }
 
 
@@ -55,6 +45,7 @@ const testToast = () => {
 
 <template>
   <CreateIssueModal :projects="projects" v-model:modal="isShowModal"/>
+  <ProfileModal :user="user" v-model="showProfileModal"/>
   <div id="navbar">
     <div>
       <div>
@@ -70,17 +61,16 @@ const testToast = () => {
           <div class="dropdown-menu" id="user-menu">
             <div class="dropdown-content">
               <ul>
-                <li>
-                  <NuxtLink to="#">Profile</NuxtLink>
+                <li @click="showProfileModal = true">
+                  Profile
                 </li>
-                <li>
-                  <NuxtLink to="#">Settings</NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink to="/project">Project</NuxtLink>
-                </li>
-                <li>
-                  <button @click="logout()">
+                <NuxtLink to="/project">
+                  <li>
+                    Project
+                  </li>
+                </NuxtLink>
+                <li @click="logout()">
+                  <button>
                     Logout
                   </button>
                 </li>
@@ -96,7 +86,7 @@ const testToast = () => {
         <font-awesome-icon icon="fa-solid fa-pen-to-square"/>
         New Issue
       </button>
-      <button @click="testToast">
+      <button @click="showSearchBar = true;">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
       </button>
     </div>
@@ -109,13 +99,6 @@ const testToast = () => {
 
         <li v-for="project in projects">
           <MenuProject :project="project"/>
-        </li>
-
-        <li>
-          <NuxtLink to="#">Roadmap</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="#">Dashboard</NuxtLink>
         </li>
       </ul>
     </nav>

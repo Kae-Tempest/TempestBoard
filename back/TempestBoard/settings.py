@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,24 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_3^1k8l1x)zj7i@&*^0w=#xh1ppvyz%i^)eoew$bb*38stv2n6'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = ["Content-Type", "x-csrftoken"]
+DEBUG = os.environ['DEBUG'] == "True"
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,8 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_extensions',
+    'channels',
+    'channels_redis',
     'core',
-    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -82,8 +76,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'TempestBoard.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -164,4 +156,41 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django", "172.18.0.4", "tempestboard.gloupi.com"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://django:8000",
+    "https://tempestboard.gloupi.com",
+]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://172.18.0.4:3000", "https://tempestboard.gloupi.com"]
+CORS_ALLOW_CREDENTIALS = True
+# WebSocket URL configuration
+CORS_ALLOWED_ORIGINS += [origin.replace('https', 'wss') for origin in CORS_ALLOWED_ORIGINS]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "connection",
+    "upgrade",
+]
+
+ASGI_APPLICATION = 'TempestBoard.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
+# settings.py additions
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'katsuhiko.tempest@gmail.com'  # voir pour passé sur la noreply@tempestboard.gloupi.com
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PWD']  # voir pour passé sur la noreply@tempestboard.gloupi.com
+DEFAULT_FROM_EMAIL = 'noreply@tempestboard.gloupi.com'
+FRONTEND_URL = os.environ.get('FRONTEND_URL')  # Your frontend URL
+REGISTRATION_URL_NAME = 'register'

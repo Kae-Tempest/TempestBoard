@@ -1,0 +1,84 @@
+name: tempestboard-cd
+
+on:
+  workflow_run:
+    workflows:
+      - tempestboard-ci
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  WORKDIR: /var/www/html/TempestBoard
+
+jobs:
+  deploy:
+    permissions:
+      packages: read
+      actions: read
+    name: deploy
+    runs-on: self-hosted
+    steps:
+      - name: setup-ssh
+        run: |
+          which ssh-agent || (sudo apk update && sudo apk add openssh-client)
+          which rsync || (sudo apk update && sudo apk add rsync)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          touch ~/.ssh/github-actions.key
+          touch ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/github-actions.key
+          echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/github-actions.key
+          # Append keyscan output into known hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          cat >>~/.ssh/config <<END
+          Host vps
+            HostName ${{ secrets.SSH_HOST }}
+            Port ${{ secrets.SSH_PORT }}
+            User debian
+            IdentityFile ~/.ssh/github-actions.key
+            StrictHostKeyChecking no
+          END
+      - name: down-docker-compose
+        run: |
+          ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml down'
+      - name: get-artifact-front
+        id: get-artifact-front
+        uses: actions/download-artifact@v4
+        with:
+          name: tempestboard-artifact-front
+          path: deploy/front
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: upload-artifact-front
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          rsync --chown=www-data:www-data --delete -avuzP ${{ steps.get-artifact-front.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}/front/dist/
+      - name: get-artifact-infra
+        id: get-artifact-infra
+        uses: actions/download-artifact@v4
+        with:
+          name: tempestboard-artifact-compose-prod
+          path: deploy/infra
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: upload-artifact-infra
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/github-actions.key
+          rsync --chown=www-data:www-data -avuzP ${{ steps.get-artifact-infra.outputs.download-path }}/ -e "ssh -p ${{ secrets.SSH_PORT }}" --rsync-path 'sudo rsync' debian@${{ secrets.SSH_HOST }}:${{ env.WORKDIR }}
+      - name: create-dot-env
+        run: |
+          echo "${{ secrets.DOT_ENV_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/back/.env" > /dev/null
+      - name: create-dot-env
+        run: |
+          echo "${{ secrets.HTACCESS_PROD }}" | ssh vps "tee ${{ env.WORKDIR }}/front/dist/.htaccess" > /dev/null
+      - name: run-docker-compose
+        run: |
+          ssh vps 'docker compose -f ${{ env.WORKDIR }}/compose-prod.yml up -d'

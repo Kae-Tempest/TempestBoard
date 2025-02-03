@@ -2,8 +2,8 @@
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {reactive} from "vue";
-import type {Project} from "~/types/global";
-import Toastify from "toastify-js";
+import type {User} from "~/types/global";
+import {ContentType} from "~/enums/content-type.enum";
 
 type formType = {
   creator: number | undefined,
@@ -14,7 +14,7 @@ type formType = {
 }
 
 const showModal = defineModel()
-const user = useUserStore().getUser();
+const user: User | null = useUserStore().getUser;
 const {isRefresh} = useRefreshData()
 const defaultStates = ['backlog', 'open', 'in_progress', 'completed', 'canceled']
 
@@ -76,39 +76,24 @@ const handleCreate = async () => {
   const res = await useCustomFetch('/projects/', {
     method: 'POST',
     body: formData,
-  })
+  }, ContentType.applicationMultipartFormData)
 
-  if (res.data.value !== null) {
-    const createdProjectId = (res.data.value as Project).id
+  if (res) {
+    const createdProjectId = res.id
     for (const state of defaultStates) {
       await useCustomFetch('/states/', {
         method: 'POST',
-        body: {
+        body: JSON.stringify({
           name: state,
           project: createdProjectId,
-          isdefault: true
-        }
+          is_default: true
+        })
       })
     }
 
     resetForm()
     isRefresh.value = true
     showModal.value = false
-  }
-  if (res.error.value !== null) {
-    if (res.error.value.data?.name) error.name = res.error.value.data?.name[0]
-    if (res.error.value.data?.description) error.description = res.error.value.data?.description[0]
-    if (res.error.value.data?.thumbnail) error.thumbnail = res.error.value.data?.thumbnail[0]
-    Toastify({
-      text: 'An error occurred',
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
   }
 }
 

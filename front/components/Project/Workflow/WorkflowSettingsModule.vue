@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type {Project, States} from "~/types/global";
-import Toastify from "toastify-js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 interface Props {
   projectStates: States[];
@@ -15,11 +15,6 @@ const isCreating = ref<Boolean>(false)
 const data = reactive({
   name: ""
 })
-
-const error = reactive({
-  name: ""
-})
-
 const projectStatesRef = computed(() => props.projectStates)
 
 watch(() => CreateStateRef.value, () => {
@@ -29,13 +24,14 @@ watch(() => CreateStateRef.value, () => {
       id: -1,
       name: "",
       project: props.project.id,
-      isdefault: false,
+      is_default: false,
       created_at: new Date(),
       updated_at: new Date(),
     }
-
-    projectStatesRef.value.push(newState)
-    editedState.value = newState.name
+    setTimeout(() => {
+      projectStatesRef.value.push(newState)
+      editedState.value = newState.name
+    }, 100)
   }
 })
 
@@ -48,7 +44,7 @@ watch(() => editedState.value, (newVal) => {
 })
 
 const handleDelete = async (stateID: number) => {
-  const res = await useCustomFetch(`/states/${stateID}/`, {
+  await useCustomFetch(`/states/${stateID}/`, {
     method: 'DELETE',
   })
 
@@ -59,7 +55,6 @@ const handleDelete = async (stateID: number) => {
   })
 
 }
-
 
 const handleCancel = () => {
   editedState.value = ''
@@ -75,68 +70,39 @@ const handleUpsertState = async (stateID: number) => {
   if(isCreating.value) {
     const res = await useCustomFetch<States>(`/states/`,{
       method: 'POST',
-      body: {
+      body: JSON.stringify({
         name: data.name.trim(),
         project: props.project.id
-      }
+      })
     })
 
-    if(res.data.value) {
+    if(res) {
       projectStatesRef.value.map(s => {
         if(s.id === -1) {
-          s.name = res.data.value?.name ? res.data.value.name : data.name
-          s.id = res.data.value?.id ? res.data.value.id : projectStatesRef.value.length
+          s.name = res.name ? res.name : data.name
+          s.id = res.id ? res.id : projectStatesRef.value.length
         }
       })
       data.name = ""
       isCreating.value = false
       CreateStateRef.value = false
-    } else if (res.error.value?.data){
-      Toastify({
-        text: res.error.value.data?.name[0],
-        duration: 5000,
-        newWindow: true,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        className: "toast",
-      }).showToast();
     }
 
   } else if (!isCreating.value) {
     const res = await useCustomFetch(`/states/${stateID}/`,{
       method: 'PATCH',
-      body: {
+      body: JSON.stringify({
         name: data.name.trim()
-      }
+      })
     })
 
-    if(res.data.value) {
+    if(res) {
       projectStatesRef.value.map(s => {
         if(s.id === stateID) {
           s.name = data.name
         }
       })
       data.name = ""
-    } else if (res.error.value?.message){
-      Toastify({
-        text: "Error during updating states",
-        duration: 5000,
-        newWindow: true,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        className: "toast",
-      }).showToast();
-      if(isCreating.value) {
-        projectStatesRef.value.pop()
-        data.name = ""
-        isCreating.value = false
-        CreateStateRef.value = false
-      }
-      // toast
     }
   }
 }
@@ -152,7 +118,7 @@ const handleUpsertState = async (stateID: number) => {
       <div v-if="editedState === state.name" class="state-name">
         <input type="text" class="input" :placeholder="state.name" v-model="data.name">
       </div>
-      <div v-if="!state.isdefault && editedState !== state.name" class="state-options">
+      <div v-if="!state.is_default && editedState !== state.name" class="state-options">
         <div class="edit-icon" @click="editedState = state.name; data.name = state.name">
           <button class="button">
             <span class="icon">
@@ -168,7 +134,7 @@ const handleUpsertState = async (stateID: number) => {
           </button>
         </div>
       </div>
-      <div v-if="!state.isdefault && editedState === state.name" class="state-options">
+      <div v-if="!state.is_default && editedState === state.name" class="state-options">
         <div class="check-icon">
           <button class="button" @click="handleUpsertState(state.id)">
            <span class="icon">

@@ -2,7 +2,6 @@
 
 import type {Issue, Project, User} from "~/types/global";
 import PriorityIcon from "~/components/Icon/PriorityIcon.vue";
-import Toastify from "toastify-js";
 
 interface Props {
   issue: Issue;
@@ -19,7 +18,6 @@ const issue = computed(() => props.issue)
 const projects = computed(() => props.projects)
 const project = computed(() => projects.value.find(p => p.id === issue.value.project))
 
-const users = ref<User[] | null>([]);
 
 const UpdateAssignedUser = async (u: number) => {
   const res = await useCustomFetch(`/issues/${props.issue.id}/`, {
@@ -28,23 +26,9 @@ const UpdateAssignedUser = async (u: number) => {
       "assigned": u
     }
   })
-  if (res.error.value) {
-    // TODO : TOAST
-  }
-  if (!res.error.value) {
-    const {data} = await useCustomFetch<User>(`/users/${u}/`);
-    issue.value.assigned = data.value as User
-  } else if (res.error.value) {
-    Toastify({
-      text: "An error as occurred",
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
+
+  if (res) {
+    issue.value.assigned = await useCustomFetch<User>(`/users/${u}/`);
   }
   dropdownIdOpen.value = null
 }
@@ -71,7 +55,7 @@ const onClickUser = () => {
             <PriorityIcon :priority="issue.priority"/>
           </div>
           <div class="tag-number">
-            {{ project.name.substring(0, 3).toUpperCase() }}-{{ issue.ticket_id }}
+            {{ issue.project_tag }}-{{ issue.ticket_id }}
           </div>
           <div class="title-issue">{{ issue.title }}</div>
         </div>
@@ -85,10 +69,10 @@ const onClickUser = () => {
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                  <div v-for="user in project.users.filter(u => u != issue.assigned.id)" class="users-list">
-                    <div v-if="project.users.length >= 2" @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item">{{ users?.find(u => u.id === user)?.username }}</div>
+                  <div v-if="users && users?.length > 0" v-for="user in project.users.filter(u => u != issue.assigned.id)" class="users-list">
+                    <div v-if="project.users.length > 1" @click="IssueAssignedClicked = true; UpdateAssignedUser(user)" class="dropdown-item">{{ users?.find(u => u.id === user)?.username }}</div>
                   </div>
-                  <div class="any-user" v-if="project.users.length == 1">Any User..</div>
+                  <div class="any-user" v-if="project.users.length == 1">No User..</div>
                 </div>
               </div>
             </div>

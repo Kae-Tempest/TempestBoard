@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from 'vue'
-import type {Project, States} from "~/types/global";
+import type {Project, States, User} from "~/types/global"
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
+
 import {useUserStore} from "~/stores/useUserStore";
-import Toastify from "toastify-js";
 
 interface Props {
   projects: Project[];
@@ -11,9 +12,17 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const { sendMessage } = useWebSocket('ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: ActivityContent.CREATE_ISSUE,
+  issue: 0,
+  user: 0,
+})
+
 const showModal = defineModel('modal', {type: Boolean, required: true})
 const count = ref(500);
-const user = useUserStore().getUser();
+const user: User | null = useUserStore().getUser;
 const projectStates = ref<States[]>([])
 const {isRefresh} = useRefreshData();
 
@@ -57,8 +66,7 @@ watch(() => props.state, (newVal) => {
 
 watch(() => data.project, async (newVal) => {
   if (newVal != 0) {
-    const {data: projectState} = await useCustomFetch<States[]>(`/project/${newVal}/states`)
-    projectStates.value = projectState.value
+    projectStates.value = await useCustomFetch<States[]>(`/projects/${newVal}/states`)
   }
 });
 
@@ -72,27 +80,15 @@ const resetForm = () => {
 
 const handleSubmit = async () => {
   if (data.title.length < 3) errors.title = "Title must be at least 3 characters long";
-  // if (data.description.length < 3) errors.description = "Description must be at least 3 characters long";
   const res = await useCustomFetch('/issues/', {
         method: 'POST',
         body: JSON.stringify(data),
       }
   )
-  if (res.error.value !== null) {
-    errors.title = res.error.value?.data.title[0];
-    errors.description = res.error.value?.data.description[0];
-    Toastify({
-      text: 'An error occurred',
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
-  }
-  if (res.data.value !== null) {
+  if (res) {
+    wsActivityMessage.issue = res.id
+    wsActivityMessage.user = user!.id
+    sendMessage(JSON.stringify(wsActivityMessage))
     isRefresh.value = true
     showModal.value = false;
     resetForm();
@@ -127,11 +123,11 @@ const handleSubmit = async () => {
               <div class="select">
                 <select v-model="data.priority">
                   <option disabled value="">Priority</option>
-                  <option>Urgent</option>
-                  <option>High</option>
-                  <option>Neutral</option>
-                  <option>Low</option>
-                  <option>Minor</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="high">High</option>
+                  <option value="neutral">Neutral</option>
+                  <option value="low">Low</option>
+                  <option value="minor">Minor</option>
                 </select>
               </div>
               <div class="select">

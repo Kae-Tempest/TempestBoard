@@ -8,7 +8,7 @@ interface Props {
   user: User
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const showEditModal = defineModel('edit')
 const showDeleteModal = defineModel('delete')
@@ -30,6 +30,13 @@ const handleOpenSettingsModal = (project: Project) => {
   showSettingsModal.value = true
 }
 
+const handleLeaveProject = async (project: Project) => {
+  await useCustomFetch(`/projects/${project.id}/leave/${props.user.id}/`, {
+    method: "DELETE",
+  })
+  useRefreshData().isRefresh.value = true
+}
+
 </script>
 
 <template>
@@ -43,23 +50,29 @@ const handleOpenSettingsModal = (project: Project) => {
         <h2>{{ project.name }}</h2>
         <p>{{ project.description }}</p>
         <div class="content-footer">
-          <div v-if="user?.id == project.creator" class="btn-action">
-            <button class="button" @click="handleOpenDeleteModal(project)">
+          <div class="btn-action">
+            <button v-if="user?.id == project.creator" class="button" @click="handleOpenDeleteModal(project)">
               <span class="icon is-small">
                 <font-awesome-icon icon="fa-solid fa-trash-can"/>
               </span>
             </button>
-            <button class="button" @click="handleOpenEditModal(project)">
+            <button v-if="user?.id == project.creator" class="button" @click="handleOpenEditModal(project)">
               <span class="icon is-small">
                 <font-awesome-icon icon="fa-solid fa-pen"/>
               </span>
             </button>
-            <button class="button" @click="handleOpenSettingsModal(project)">
+            <button v-if="user?.id == project.creator" class="button" @click="handleOpenSettingsModal(project)">
               <span class="icon is-small">
                 <font-awesome-icon icon="fa-solid fa-gear"/>
               </span>
             </button>
+            <button v-if="user?.id != project.creator" class="button" @click="handleLeaveProject(project)">
+              <span class="icon is-small">
+                <font-awesome-icon icon="fa-solid fa-trash-can"/>
+              </span>
+            </button>
           </div>
+
           <div class="date">
             <time dateTime="2016-1-1">Created: {{ new Date(project.created_at).toLocaleString('en-GB', {day: 'numeric', month: "short", year: "numeric"}) }}</time>
             <time dateTime="2016-1-1">Updated: {{ new Date(project.updated_at).toLocaleString('en-GB', {day: 'numeric', month: "short", year: "numeric"}) }}</time>

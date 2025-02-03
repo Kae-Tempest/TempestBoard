@@ -1,0 +1,111 @@
+name: tempestboard-ci
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+jobs:
+  front-build:
+    name: front-build
+    runs-on: self-hosted
+    steps:
+      - name: cleanup old checkout
+        run: echo "GOPROXY=off" >> $GITHUB_ENV
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: front
+          sparse-checkout-cone-mode: false
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: setup-yarn
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+          dir: front
+      - name: create-dot-env
+        run: |
+         echo "${{ secrets.DOT_ENV_PROD_FRONT }}" > ./front/.env
+      - name: nuxt-generate
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: generate
+          dir: front
+      - name: ls-dist
+        shell: bash
+        run: |
+          ls -la ./front/dist
+      - name: push artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: front/dist
+          name: tempestboard-artifact-front
+  back-build:
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    name: back-build
+    runs-on: self-hosted
+    steps:
+      - name: cleanup old checkout
+        run: echo "GOPROXY=off" >> $GITHUB_ENV
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: back
+          sparse-checkout-cone-mode: false
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: build-dockerfile
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          load: true
+          context: back
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+  infra-build:
+    name: infra-build
+    runs-on: self-hosted
+    steps:
+      - name: cleanup old checkout
+        run: echo "GOPROXY=off" >> $GITHUB_ENV
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: compose-prod.yml
+          sparse-checkout-cone-mode: false
+      - name: push artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: compose-prod.yml
+          name: tempestboard-artifact-compose-prod

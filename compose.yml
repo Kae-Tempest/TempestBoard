@@ -17,6 +17,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./front:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     tty: true
@@ -32,7 +33,7 @@ services:
         soft: 98304
         hard: 98304
     ports:
-      - "6932:5432"
+      - "7032:5432"
     volumes:
       - ./docker/postgresql/postgresql.conf:/etc/postgresql.conf
       - ./data/postgresql:/var/lib/postgresql/data
@@ -48,3 +49,11 @@ services:
       test: [ "CMD", "pg_isready" ]
       timeout: 5s
       retries: 300
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./cache:/data

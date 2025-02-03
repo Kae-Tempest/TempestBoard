@@ -11,8 +11,11 @@ const props = defineProps<Props>()
 const showModal = defineModel()
 const {isRefresh} = useRefreshData()
 
-const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
-const {data: project} = await useCustomFetch<Project>(`/projects/${issue.value?.project}/`)
+const issue = ref<Issue>()
+const project = ref<Project>()
+
+issue.value = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
+project.value = await useCustomFetch<Project>(`/projects/${issue.value.project}/`)
 
 const handleDelete = async () => {
   await useCustomFetch(`/issues/${props.issueId}/`, {

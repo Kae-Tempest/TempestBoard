@@ -2,7 +2,7 @@
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type {Project} from "~/types/global";
 import {reactive, watch} from "vue";
-import Toastify from "toastify-js";
+import {ContentType} from "~/enums/content-type.enum";
 
 const showModal = defineModel()
 const {isRefresh} = useRefreshData()
@@ -84,25 +84,10 @@ const handleEdit = async () => {
   const res = await useCustomFetch(`/projects/${props.project.id}/`, {
     method: 'PATCH',
     body: formData
-  })
-  if (res.data.value !== null) {
+  }, ContentType.applicationMultipartFormData)
+  if (res) {
     showModal.value = false
     isRefresh.value = true
-  }
-  if (res.error.value !== null) {
-    if (res.error.value.data?.name) error.name = res.error.value.data?.name[0]
-    if (res.error.value.data?.description) error.description = res.error.value.data?.description[0]
-    if (res.error.value.data?.thumbnail) error.thumbnail = res.error.value.data?.thumbnail[0]
-    Toastify({
-      text: 'An error occurred',
-      duration: 5000,
-      newWindow: true,
-      close: true,
-      gravity: "top", // `top` or `bottom`
-      position: "right", // `left`, `center` or `right`
-      stopOnFocus: true, // Prevents dismissing of toast on hover
-      className: "toast",
-    }).showToast();
   }
 }
 </script>

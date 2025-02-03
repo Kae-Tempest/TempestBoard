@@ -9,7 +9,7 @@ interface Props {
 
 defineProps<Props>()
 
-const isMenuOpen = ref(false)
+const isMenuOpen = ref(true)
 
 </script>
 
@@ -26,15 +26,15 @@ const isMenuOpen = ref(false)
             <span>Issues</span>
             <ul>
               <li>
-                <NuxtLink to="#">Active</NuxtLink>
+                <NuxtLink :to="{ name: 'projects-id-active' , params: { id: project.id }}">Active</NuxtLink>
               </li>
               <li>
-                <NuxtLink to="#">Backlog</NuxtLink>
+                <NuxtLink :to="{ name: 'projects-id-backlog' , params: { id: project.id }}">Backlog</NuxtLink>
               </li>
             </ul>
           </li>
           <li>
-            <NuxtLink to="#">Releases</NuxtLink>
+            <NuxtLink :to="{ name: 'projects-id-release' , params: { id: project.id }}">Releases</NuxtLink>
           </li>
           <li>
             <span>Repos</span>

@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue'
-import type {Project} from "~/types/global";
+import type {Project, User} from "~/types/global";
 import {useCustomFetch} from "~/composables/useCustomFetch";
 import CreateProjectModal from "~/components/Modals/Project/CreateProjectModal.vue";
 import {useUserStore} from "~/stores/useUserStore";
 import EditProjectModal from "~/components/Modals/Project/EditProjectModal.vue";
 import DeleteProjectModal from "~/components/Modals/Project/DeleteProjectModal.vue";
 import ProjectSettingsModal from "~/components/Modals/Project/ProjectSettingsModal.vue";
+import SearchBar from "~/components/SearchBar.vue";
 
 useHead({title: 'Project - Tempest Board'})
 
-const user = useUserStore().getUser();
+let user: User | null = useUserStore().getUser;
 const projects = ref<Project[]>([]);
-const {data, refresh} = await useCustomFetch<Project[]>('/projects/', {immediate: false})
 
-
+const showSearchBar = ref<boolean>(false)
 const showCreateModal = ref(false)
 const showEditModal = ref<Boolean>(false)
 const showDeleteModal = ref<Boolean>(false)
@@ -25,14 +25,13 @@ const selectedProject = ref<Project | null>(null)
 const {isRefresh} = useRefreshData()
 
 onMounted(async () => {
-  await refresh()
-  projects.value = data.value as Project[]
+    projects.value = await useCustomFetch<Project[]>('/projects/')
 })
 
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
-    await refresh()
-    projects.value = data.value as Project[]
+    projects.value = await useCustomFetch<Project[]>('/projects/')
+    user = useUserStore().getUser
     isRefresh.value = false
   }
 });
@@ -40,7 +39,8 @@ watch(() => isRefresh.value, async (newVal) => {
 </script>
 <template>
   <div id="project">
-    <Navbar v-if="user" :user="user" :projects="projects"/>
+    <SearchBar v-model="showSearchBar"/>
+    <Navbar v-if="user" :user="user" :projects="projects" v-model="showSearchBar"/>
     <header>
       <nav class="breadcrumb is-medium" aria-label="breadcrumbs">
         <ul>
@@ -58,7 +58,8 @@ watch(() => isRefresh.value, async (newVal) => {
         <ProjectSettingsModal v-if="selectedProject" :project="selectedProject" v-model="showSettingsModal"/>
         <!--   Project List   -->
         <div v-for="project in projects.sort((p, p2) => p.id - p2.id)">
-          <CardProjectCard :project="project" :user="user" v-model:edit="showEditModal" v-model:delete="showDeleteModal" v-model:settings="showSettingsModal" v-model:selectedProject="selectedProject"/>
+          <CardProjectCard v-if="user" :project="project" :user="user" v-model:edit="showEditModal" v-model:delete="showDeleteModal" v-model:settings="showSettingsModal"
+                           v-model:selectedProject="selectedProject"/>
         </div>
       </div>
     </div>

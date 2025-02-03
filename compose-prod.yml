@@ -1,0 +1,39 @@
+services:
+  django:
+    image: ghcr.io/kae-tempest/tempestboard:develop
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./back/media:/app/media
+    tty: true
+    env_file:
+      - ./back/.env
+    depends_on:
+      - db
+  db:
+    image: postgres:16-alpine
+    command: postgres -c config_file=/etc/postgresql.conf
+    shm_size: '4gb'
+    ulimits:
+      nofile:
+        soft: 98304
+        hard: 98304
+    ports:
+      - "6932:5432"
+    volumes:
+      - ./docker/postgresql/postgresql.conf:/etc/postgresql.conf
+      - ./data/postgresql:/var/lib/postgresql/data
+      - ./docker/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'tempestboard'
+      ALLOW_IP_RANGE: 0.0.0.0/0
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      timeout: 5s
+      retries: 300

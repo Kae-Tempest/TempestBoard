@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import type {Issue} from "~/types/global";
-import {ref} from "vue";
+import type {Issue, States} from "~/types/global"
+import {ActivityContent} from "~/enums/AcitivityContentEnum"
+import {reactive, ref} from "vue";
 
 interface Props {
   issueId: number | null
@@ -12,7 +13,16 @@ const {isRefresh} = useRefreshData()
 const SelectedPriority = ref("");
 const SelectedState = ref("");
 const count = ref(500);
-
+const projectStates = ref<States[]>([])
+const issueInfo = ref<Issue>()
+const issue = ref<Issue>()
+const { sendMessage } = useWebSocket('ws/activity/')
+const wsActivityMessage = reactive({
+  type: "activity",
+  content: "",
+  issue: 0,
+  user: 0,
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -39,17 +49,17 @@ const resetForm = () => {
 
 watch(showModal, async () => {
   count.value = 500
-  const {data: issue} = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
-  data.title = issue.value?.title || "Any Issue";
-  data.description = issue.value?.description || "Any Issue";
-  data.priority = issue.value?.priority || "Any Issue";
-  data.status = issue.value?.status || "Any Issue";
-
+  issue.value = await useCustomFetch<Issue>(`/issues/${props.issueId}/`)
+  if(!issue.value) return
+  data.title = issue.value.title;
+  data.description = issue.value.description;
+  data.priority = issue.value.priority;
+  data.status = issue.value.status;
+  issueInfo.value = issue.value
+  projectStates.value = await useCustomFetch<States[]>(`/projects/${issue.value?.project}/states`)
   count.value = count.value - data.description.length
-
   SelectedPriority.value = data.priority.toLowerCase()
   SelectedState.value = data.status
-
 })
 
 const data = reactive({
@@ -59,11 +69,37 @@ const data = reactive({
   status: ""
 })
 
+watch(() => SelectedPriority.value, newVal => {
+  if(newVal) data.priority = SelectedPriority.value
+})
+
+watch(() => SelectedState.value, newVal => {
+  if(newVal) data.status = SelectedState.value
+})
+
+
+const handleSendMessage = (action: string) => {
+  if(!props.issueId) return
+  wsActivityMessage.issue = props.issueId
+  wsActivityMessage.user = useUserStore().user!.id
+  wsActivityMessage.content = action
+  sendMessage(JSON.stringify(wsActivityMessage))
+}
+
 const handleEdit = async () => {
-  await useCustomFetch(`/issues/${props.issueId}/`, {
-    method: 'patch',
+  if(!issueInfo.value) return
+  const res = await useCustomFetch(`/issues/${props.issueId}/`, {
+    method: 'PATCH',
     body: JSON.stringify(data)
   })
+
+  if(res) {
+    if (data.title != issueInfo.value.title) handleSendMessage(ActivityContent.EDIT_TITLE)
+    if (data.description != issueInfo.value.description) handleSendMessage(ActivityContent.EDIT_DESCRIPTION)
+    if (data.status != issueInfo.value.status) handleSendMessage(ActivityContent.EDIT_STATUS)
+    if (data.priority != issueInfo.value.priority) handleSendMessage(ActivityContent.EDIT_PRIORITY)
+  }
+
   isRefresh.value = true
   showModal.value = false
 }
@@ -104,10 +140,7 @@ const handleEdit = async () => {
               <div class="select">
                 <select v-model="SelectedState">
                   <option disabled value="">State</option>
-                  <option value="open">Open</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="canceled">Canceled</option>
+                  <option v-for="state in projectStates" :value="state.name">{{ useCapitalize(state.name) }}</option>
                 </select>
               </div>
             </div>
