@@ -99,7 +99,7 @@ body {
           & > ul {
             display: flex;
             flex-direction: column;
-
+            cursor: pointer;
             :hover {
               opacity: 50;
             }
