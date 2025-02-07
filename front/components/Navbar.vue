@@ -40,7 +40,7 @@ const logout = async () => {
   <div id="navbar">
     <div>
       <div>
-        <img src="https://placehold.co/30" alt=""/>
+        <img src="assets/image/icon.png" alt="Icon app" />
         <h1>
           <NuxtLink to="/">Tempest Board</NuxtLink>
         </h1>

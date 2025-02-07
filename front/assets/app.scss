@@ -78,6 +78,9 @@ body {
 
       & > img {
         border-radius: .25rem;
+        height: 30px;
+        width: 30px;
+        transform: scale(3);
       }
 
       & > h1 > a {
