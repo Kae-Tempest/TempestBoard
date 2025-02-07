@@ -70,7 +70,7 @@ onMounted(async () => {
 
 const handleShowResponseInput = () => {
   if (showMenu.value) return
-  showResponseInput.value = true
+  showResponseInput.value = !showResponseInput.value
 }
 
 const resetForm = () => {
@@ -98,10 +98,10 @@ const handleDeleteComment = async () => {
 }
 
 const handleEditComment = async () => {
-  showMenu.value = false
+  closeDropdown()
   if(!isEditing.value) isEditing.value = true
   else {
-    await useCustomFetch(`comments/${props.comment.id}/`, {
+    await useCustomFetch(`/comments/${props.comment.id}/`, {
       method: 'PATCH',
       body: JSON.stringify({...editedData})
     })
@@ -220,14 +220,14 @@ const handleUnresolved = async () => {
         </div>
       </div>
     </div>
-    <div class="is-flex is-justify-content-space-between ">
-      <div class="content" v-if="!isEditing">
+    <div class="is-flex is-justify-content-space-between" v-if="!isEditing">
+      <div class="content" >
         {{ comment.content }}
       </div>
       <span> <font-awesome-icon icon="fa-regular fa-chevron-down"/> </span>
     </div>
     <form @submit.prevent="handleEditComment" v-if="isEditing" class="editing-content">
-      <input type="text" class="input" v-model="editedData.content" @keydown.enter="handleEditComment">
+      <input type="text" class="input" v-model="editedData.content">
       <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
@@ -239,8 +239,8 @@ const handleUnresolved = async () => {
       <CommentResponse :answer="answer" :comment="comment" v-model="isResponseSend" v-else-if="answer.is_resolved && comment.is_resolved"/>
     </div>
 
-    <form @submit.prevent="handleSendCommentaryResponse" v-if="showResponseInput || commentAnswer.length > 0" class="input-response">
-      <input type="text" placeholder="Leave your comment..." class="input" v-model.trim="data.content" @keydown.enter="handleSendCommentaryResponse">
+    <form @submit.prevent="handleSendCommentaryResponse" v-if="showResponseInput && !isEditing || commentAnswer.length > 0 && !isEditing" class="input-response">
+      <input type="text" placeholder="Leave your comment..." class="input" v-model.trim="data.content">
       <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
