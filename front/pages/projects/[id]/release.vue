@@ -19,6 +19,7 @@ const openModal = ref<boolean>(false)
 const openEditModal = ref<boolean>(false)
 const editMilestoneID = ref<number>(0)
 const MilestonesList = ref<MileStone[]>([])
+const InitialMilestonesList = ref<Milestones[]>([])
 const StateFilter = ref<string>("all")
 const MilestoneSearch = ref<string>("")
 const showSearchBar = ref<boolean>(false)
@@ -26,6 +27,7 @@ const showSearchBar = ref<boolean>(false)
 onMounted(async () => {
   projects.value = await useCustomFetch<Project[]>('/projects/')
   MilestonesList.value = await useCustomFetch<MileStone[]>(`/projects/${route.params.id}/milestones`)
+  InitialMilestonesList.value = MilestonesList.value
 });
 
 watch(() => isRefresh.value, async (newVal) => {
@@ -38,19 +40,19 @@ watch(() => isRefresh.value, async (newVal) => {
 });
 
 watch(() => StateFilter.value, (newVal) => {
-  if (newVal === "all" && Milestones.value) {
+  if (newVal === "all" && InitialMilestonesList.value) {
     StateFilter.value = "all"
-    MilestonesList.value = Milestones.value
+    MilestonesList.value = InitialMilestonesList.value
   }
-  if (newVal !== "all" && Milestones.value) {
-    MilestonesList.value = Milestones.value.filter(m => m.status === newVal)
+  if (newVal !== "all" && InitialMilestonesList.value) {
+    MilestonesList.value = InitialMilestonesList.value.filter(m => m.status === newVal)
   }
 })
 
 watch(() => MilestoneSearch.value, (newVal) => {
-  if (newVal && Milestones.value) {
-    MilestonesList.value = Milestones.value.filter(m => m.name.includes(newVal))
-  } else if (Milestones.value) MilestonesList.value = Milestones.value
+  if (newVal && InitialMilestonesList.value) {
+    MilestonesList.value = InitialMilestonesList.value.filter(m => m.name.includes(newVal))
+  } else if (MilestonesList.value) MilestonesList.value = InitialMilestonesList.value
 })
 
 </script>
