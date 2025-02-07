@@ -1541,11 +1541,15 @@ body {
                     }
 
                   }
-
-                  & > .content {
-                    margin-top: .375rem;
-                    margin-left: 1rem;
-                    margin-bottom: .125rem;
+                  & > div {
+                    & > .content {
+                      margin-top: .375rem;
+                      margin-left: 1rem;
+                      margin-bottom: .125rem;
+                    }
+                    & > span {
+                      margin-right: .375rem;
+                    }
                   }
 
                   & > .editing-content {

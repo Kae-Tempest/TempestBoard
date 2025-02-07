@@ -16,24 +16,15 @@ const showSearchBar = defineModel()
 
 const isDropDownOpen = ref<boolean>(false);
 const isShowModal = ref<boolean>(false)
-const thumbnail = ref<string>('')
 const showProfileModal = ref<boolean>(false)
 
 onMounted(async () => {
   document.addEventListener('click', () => isDropDownOpen.value = false)
-  if (props.user.thumbnail) {
-    thumbnail.value = props.user.thumbnail
-  }
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', () => isDropDownOpen.value = false)
 })
-
-watch(() => props.user, (newVal) => {
-  if(newVal) thumbnail.value = newVal.thumbnail
-})
-
 
 const logout = async () => {
   await useCustomFetch('/logout/')
@@ -55,7 +46,7 @@ const logout = async () => {
         </h1>
         <div :class="{'is-active' : isDropDownOpen}" class="dropdown is-right">
           <div class="dropdown-trigger" aria-controls="user-menu" aria-haspopup="true" @click.stop="isDropDownOpen = !isDropDownOpen">
-            <img v-if="thumbnail" :src="thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
+            <img v-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
             <img v-else src="assets/image/user.png" alt="user thumbnail" class="dropdown-thumbnail"/>
           </div>
           <div class="dropdown-menu" id="user-menu">

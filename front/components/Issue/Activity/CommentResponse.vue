@@ -158,7 +158,7 @@ const handleUnresolved = async () => {
     <!-- if attachment show attchment -->
   </div>
   <form @submit.prevent="handleEditComment" v-if="isEditing" class="editing-content">
-    <input type="text" class="input" v-model="editedData.content" @keydown.enter="handleEditComment">
+    <input type="text" class="input" v-model="editedData.content">
     <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
