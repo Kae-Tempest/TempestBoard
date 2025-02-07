@@ -166,7 +166,7 @@ watch(() => issueInfo.value?.project.id, async (newVal) => {
       if(props.filter === 'active') issueProjectStates.value = projectSate.value.filter(s => s.name !== 'backlog' && s.name !== 'completed' && s.name !== 'canceled');
       if(props.filter === 'backlog') issueProjectStates.value = projectSate.value.filter(s => s.name === 'backlog');
     } else {
-      issueProjectStates.value = projectSate
+      issueProjectStates.value = projectSate.value
     }
   }
 })

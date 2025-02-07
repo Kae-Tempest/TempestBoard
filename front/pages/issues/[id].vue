@@ -154,7 +154,7 @@ watch(() => isResponseSend.value, async (newVal) => {
 watch(() => isRefresh.value, async (newVal) => {
   if (newVal) {
     issue.value = await useCustomFetch<Issue>(`/issues/${route.params.id}/`)
-    projectData.value = await useCustomFetch<Project[]>('/projects/')
+    projectsData.value = await useCustomFetch<Project[]>('/projects/')
     users.value = await useCustomFetch<User[]>(`/users/`)
     user = useUserStore().getUser;
     isRefresh.value = false
@@ -302,8 +302,7 @@ const handleUpdateAssigned = async () => {
                 </div>
               </div>
               <form @submit.prevent="handleCreateComment" class="comment-input">
-                <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content"
-                       @keydown.enter="handleCreateComment">
+                <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content">
                 <button class="button" type="submit">
                   <span class="icon">
                     <font-awesome-icon icon="fa-solid fa-paper-plane"/>
