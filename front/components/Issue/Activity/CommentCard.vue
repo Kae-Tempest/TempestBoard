@@ -220,8 +220,11 @@ const handleUnresolved = async () => {
         </div>
       </div>
     </div>
-    <div class="content" v-if="!isEditing">
-      {{ comment.content }}
+    <div class="is-flex is-justify-content-space-between ">
+      <div class="content" v-if="!isEditing">
+        {{ comment.content }}
+      </div>
+      <span> <font-awesome-icon icon="fa-regular fa-chevron-down"/> </span>
     </div>
     <form @submit.prevent="handleEditComment" v-if="isEditing" class="editing-content">
       <input type="text" class="input" v-model="editedData.content" @keydown.enter="handleEditComment">
