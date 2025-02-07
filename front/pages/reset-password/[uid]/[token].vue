@@ -11,7 +11,7 @@ const dataPwd = reactive({
 const handleResetPassword = async () => {
   const data = await useCustomFetch(`/users/password/reset/`, {
     method: "POST",
-    body: dataPwd
+    body: JSON.stringify(dataPwd)
   })
 
   if(data) {
