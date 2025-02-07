@@ -1888,6 +1888,10 @@ body {
 
       & > .input {
         border-radius: .375rem .375rem 0 0;
+        &:focus {
+          border:none;
+          box-shadow: none;
+        }
       }
 
       & > .card-list {
