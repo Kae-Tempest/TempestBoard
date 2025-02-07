@@ -221,7 +221,7 @@ const handleOpenChangePasswordModal = () => {
                 </button>
               </div>
               <div class="right-actions">
-                <button class="button" @click="resetForm(); showProfileModal=false">Cancel</button>
+                <button class="button" type="reset" @click="resetForm(); showProfileModal=false">Cancel</button>
                 <button class="button is-dark" type="submit">Save changes</button>
               </div>
             </div>

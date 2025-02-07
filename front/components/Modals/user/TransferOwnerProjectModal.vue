@@ -46,7 +46,7 @@ const handleTransfer = async () => {
             </select>
           </div>
           <div class="actions">
-            <button class="button" @click="handleCancel">Cancel</button>
+            <button class="button" type="reset" @click="handleCancel">Cancel</button>
             <button class="button is-dark" type="submit">Save changes</button>
           </div>
         </form>
