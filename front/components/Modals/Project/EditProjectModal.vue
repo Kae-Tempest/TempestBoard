@@ -129,7 +129,7 @@ const handleEdit = async () => {
         </div>
         <div class="field">
           <div class="control">
-            <button class="button" @click="showModal=false; resetForm()">
+            <button class="button" type="reset" @click="showModal=false; resetForm()">
               Cancel
             </button>
             <button class="button is-dark" type="submit">

@@ -136,7 +136,7 @@ const handleCreate = async () => {
         </div>
         <div class="field">
           <div class="control">
-            <button class="button" @click="showModal=false; resetForm()" type="button">Cancel</button>
+            <button class="button" @click="showModal=false; resetForm()" type="reset">Cancel</button>
             <button class="button is-dark" type="submit">Create</button>
           </div>
         </div>

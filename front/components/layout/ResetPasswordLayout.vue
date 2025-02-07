@@ -31,7 +31,7 @@ const handleSendEmail = async () => {
           </div>
         </div>
         <div class="action-btn">
-          <button class="button" @click="showLayout = false; emailData.email = ''">Cancel</button>
+          <button class="button" type="reset" @click="showLayout = false; emailData.email = ''">Cancel</button>
           <button class="button is-dark">Send</button>
         </div>
       </form>

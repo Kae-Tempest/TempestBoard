@@ -143,7 +143,7 @@ const handleUpsertState = async (stateID: number) => {
           </button>
         </div>
         <div class="xmark-icon">
-          <button class="button is-dark" @click="handleCancel">
+          <button class="button is-dark" type="reset" @click="handleCancel">
             <span class="icon">
               <font-awesome-icon icon="fa-solid fa-xmark" />
             </span>

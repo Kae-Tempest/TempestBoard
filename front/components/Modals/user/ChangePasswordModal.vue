@@ -49,7 +49,7 @@ const handleChangePassword = async () => {
             <input type="password" class="input" id="new_password_confirm" v-model="data.new_password_confirm">
           </div>
           <div class="action_button">
-            <button class="button" @click="handleClose">Cancel</button>
+            <button class="button" type="reset" @click="handleClose">Cancel</button>
             <button class="button is-dark" type="submit">Save changes</button>
           </div>
         </div>

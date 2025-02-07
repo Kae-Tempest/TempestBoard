@@ -49,7 +49,7 @@ onMounted(() => {
     <div class="modal-content">
       <form @submit.prevent="handleDelete" class="box del-box">
         <h4>Are you sure you want to delete the issue {{ project?.name.substring(0, 3).toUpperCase() }}-{{ issue?.ticket_id }}?</h4>
-        <button class="button" @click="showModal = false">
+        <button class="button" type="reset" @click="showModal = false">
           Cancel
         </button>
         <button class="button is-dark" type="submit">
