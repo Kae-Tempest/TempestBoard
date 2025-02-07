@@ -36,17 +36,17 @@ const isMenuOpen = ref(true)
           <li>
             <NuxtLink :to="{ name: 'projects-id-release' , params: { id: project.id }}">Releases</NuxtLink>
           </li>
-          <li>
-            <span>Repos</span>
-            <ul>
-              <li>
-                <NuxtLink to="#">Pull Requests</NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="#">Issues</NuxtLink>
-              </li>
-            </ul>
-          </li>
+  <!--          <li>-->
+  <!--            <span>Repos</span>-->
+  <!--            <ul>-->
+  <!--              <li>-->
+  <!--                <NuxtLink to="#">Pull Requests</NuxtLink>-->
+  <!--              </li>-->
+  <!--              <li>-->
+  <!--                <NuxtLink to="#">Issues</NuxtLink>-->
+  <!--              </li>-->
+  <!--            </ul>-->
+  <!--          </li>-->
         </ul>
       </div>
     </div>
