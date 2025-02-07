@@ -43,7 +43,7 @@ onMounted(() => {
       <form @submit.prevent="handleDelete()" class="box del-box">
         <h4>Are you sure you want to delete {{ project?.name }}?</h4>
         <div class="btn-action">
-          <button class="button" @click="showModal=false">Cancel</button>
+          <button class="button" type="reset" @click="showModal=false">Cancel</button>
           <button class="button is-dark" type="submit">Delete</button>
         </div>
       </form>

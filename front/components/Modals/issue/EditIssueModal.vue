@@ -146,7 +146,7 @@ const handleEdit = async () => {
             </div>
           </div>
         </div>
-        <button class="button" @click="showModal=false; resetForm()">
+        <button class="button" type="reset" @click="showModal=false; resetForm()">
           Cancel
         </button>
         <button class="button is-dark" type="submit">
