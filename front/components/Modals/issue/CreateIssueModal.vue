@@ -102,7 +102,7 @@ const handleSubmit = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box">
+      <form @submit.prevent="handleSubmit()" class="box">
         <div class="field">
           <div class="control">
             <label for="title">Issue Title</label>
@@ -154,10 +154,10 @@ const handleSubmit = async () => {
           Cancel
         </button>
         <button
-            class="button is-dark" @click="handleSubmit()">
+            class="button is-dark" type="submit">
           Create
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </template>

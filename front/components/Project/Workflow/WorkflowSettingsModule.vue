@@ -126,17 +126,17 @@ const handleUpsertState = async (stateID: number) => {
             </span>
           </button>
         </div>
-        <div class="trash-icon">
-          <button class="button is-dark" @click="handleDelete(state.id)">
+        <form @submit.prevent="handleDelete(state.id)" class="trash-icon">
+          <button class="button is-dark" type="submit">
             <span class="icon">
               <font-awesome-icon icon="fa-solid fa-trash" />
             </span>
           </button>
-        </div>
+        </form>
       </div>
-      <div v-if="!state.is_default && editedState === state.name" class="state-options">
+      <form @submit.prevent="handleUpsertState(state.id)" v-if="!state.is_default && editedState === state.name" class="state-options">
         <div class="check-icon">
-          <button class="button" @click="handleUpsertState(state.id)">
+          <button class="button" type="submit">
            <span class="icon">
             <font-awesome-icon icon="fa-solid fa-check" />
            </span>
@@ -149,7 +149,7 @@ const handleUpsertState = async (stateID: number) => {
             </span>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>

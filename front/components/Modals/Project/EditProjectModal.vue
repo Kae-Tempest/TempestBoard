@@ -96,7 +96,7 @@ const handleEdit = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box edit-box">
+      <form @submit.prevent="handleEdit" class="box edit-box">
         <h3>Update Project</h3>
         <div class="field">
           <label class="label">Name</label>
@@ -132,12 +132,12 @@ const handleEdit = async () => {
             <button class="button" @click="showModal=false; resetForm()">
               Cancel
             </button>
-            <button class="button is-dark" @click="handleEdit">
+            <button class="button is-dark" type="submit">
               Edit
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
