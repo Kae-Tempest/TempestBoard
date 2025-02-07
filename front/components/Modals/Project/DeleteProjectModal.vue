@@ -40,13 +40,13 @@ onMounted(() => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box del-box">
+      <form @submit.prevent="handleDelete()" class="box del-box">
         <h4>Are you sure you want to delete {{ project?.name }}?</h4>
         <div class="btn-action">
           <button class="button" @click="showModal=false">Cancel</button>
-          <button class="button is-dark" @click="handleDelete()">Delete</button>
+          <button class="button is-dark" type="submit">Delete</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>

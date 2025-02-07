@@ -64,7 +64,7 @@ const onClickUser = () => {
             <div class="dropdown" :class="{'is-active': dropdownIdOpen === issue.id}">
               <div class="dropdown-trigger">
                 <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                  <span @click="onClickUser" class="tag">{{ issue.assigned.username }}</span>
+                  <span @click="onClickUser" class="tag">{{ issue.assigned.username || "Error"}}</span>
                 </button>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
