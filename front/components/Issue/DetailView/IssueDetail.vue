@@ -253,11 +253,10 @@ const updateIssueArray = (arr: Issue[], issue: Issue) => {
 
 const handleUpdate = async () => {
   if (!issueInfo.value) return
-  const res = await useCustomFetch(`/issues/${issueInfo.value.issue.id}/`, {
+  const updatedIssue = await useCustomFetch<Issue>(`/issues/${issueInfo.value.issue.id}/`, {
     method: 'PATCH',
     body: JSON.stringify({status: data.status}),
   });
-  const updatedIssue: Issue = res.data.value as Issue
   wsActivityMessage.issue = updatedIssue.id
   wsActivityMessage.user = user!.id
   sendMessage(JSON.stringify(wsActivityMessage))
@@ -450,14 +449,14 @@ const handleUpdateAssigned = async () => {
                   </template>
                 </div>
               </div>
-              <div class="comment-input">
+              <form @submit.prevent="handleCreateComment" class="comment-input">
                 <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content" @keydown.enter="handleCreateComment">
-                <button class="button" @click="handleCreateComment">
+                <button class="button" type="submit">
                   <span class="icon">
                     <font-awesome-icon icon="fa-solid fa-paper-plane"/>
                   </span>
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

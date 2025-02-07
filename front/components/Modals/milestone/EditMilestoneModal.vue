@@ -1,8 +1,8 @@
-<script setup lang="ts">
-import type {MileStone} from "~/types/global";
-import {ref} from "vue";
+  <script setup lang="ts">
+  import type {MileStone} from "~/types/global";
+  import {ref} from "vue";
 
-interface Props {
+  interface Props {
   milestoneID: number
 }
 
@@ -66,7 +66,7 @@ const data = reactive({
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box">
+      <form @submit.prevent="handleUpdateMilestone" class="box">
         <div class="field">
           <div class="control">
             <label for="version" class="version">Milestone Version</label>
@@ -114,10 +114,10 @@ const data = reactive({
           Cancel
         </button>
         <button
-            class="button is-dark" @click="handleUpdateMilestone">
+            class="button is-dark" type="submit">
           Update
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </template>

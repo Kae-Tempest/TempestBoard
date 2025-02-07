@@ -103,7 +103,7 @@ const handleEditComment = async () => {
   else {
     await useCustomFetch(`comments/${props.comment.id}/`, {
       method: 'PATCH',
-      body: {...editedData}
+      body: JSON.stringify({...editedData})
     })
     isRefresh.value = true
     isResponseSend.value = true
@@ -117,15 +117,15 @@ const handleSendCommentaryResponse = async () => {
     if (data.user === 0 && data.content === "") return
     const res = await useCustomFetch<Comment>(`/comments/`, {
       method: "POST",
-      body: {...data},
+      body: JSON.stringify({...data}),
     })
     if (res) {
       if (!props.comment.is_thread) {
         const resp = await useCustomFetch<Comment>(`/comments/${res.comment_parent}/`, {
           method: "PATCH",
-          body: {
+          body: JSON.stringify({
             is_thread: true
-          }
+          })
         })
         if (resp) {
           comment.value.is_thread = resp.is_thread
@@ -133,9 +133,9 @@ const handleSendCommentaryResponse = async () => {
       } if (props.comment.is_resolved) {
         await useCustomFetch(`/comments/${res.comment_parent}/`, {
           method: "PATCH",
-          body: {
+          body: JSON({
             is_resolved: false
-          }
+          })
         })
       }
       resetForm()
@@ -223,26 +223,26 @@ const handleUnresolved = async () => {
     <div class="content" v-if="!isEditing">
       {{ comment.content }}
     </div>
-    <div v-if="isEditing" class="editing-content">
+    <form @submit.prevent="handleEditComment" v-if="isEditing" class="editing-content">
       <input type="text" class="input" v-model="editedData.content" @keydown.enter="handleEditComment">
-      <button class="button" @click="handleEditComment">
+      <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
         </span>
       </button>
-    </div>
+    </form>
     <div v-for="answer in commentAnswer" class="comment-answer"  :class="{'is-response': answer.is_resolved && comment.is_resolved, 'is-not-response': !answer.is_resolved && comment.is_resolved }">
       <CommentResponse :answer="answer" :comment="comment" v-model="isResponseSend" v-if="!answer.is_resolved && !comment.is_resolved"/>
       <CommentResponse :answer="answer" :comment="comment" v-model="isResponseSend" v-else-if="answer.is_resolved && comment.is_resolved"/>
     </div>
 
-    <div v-if="showResponseInput || commentAnswer.length > 0" class="input-response">
+    <form @submit.prevent="handleSendCommentaryResponse" v-if="showResponseInput || commentAnswer.length > 0" class="input-response">
       <input type="text" placeholder="Leave your comment..." class="input" v-model.trim="data.content" @keydown.enter="handleSendCommentaryResponse">
-      <button class="button" @click="handleSendCommentaryResponse">
+      <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
         </span>
       </button>
-    </div>
+    </form>
   </div>
 </template>

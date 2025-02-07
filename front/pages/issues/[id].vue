@@ -284,7 +284,7 @@ const handleUpdateAssigned = async () => {
           <div class="content">
             <h2>{{ issueInfo.issue.title }}</h2>
             <div v-if="issueInfo.issue.description" v-html="issueInfo.issue.description"></div>
-            <div v-if="issueInfo.issue.description === ''">Any Description</div> <!-- TODO: '<p></p>\n Support -->
+            <div v-if="issueInfo.issue.description === ''">Any Description</div>
             <hr>
             <div class="activity">
               <!--  commentaire  -->
@@ -301,15 +301,15 @@ const handleUpdateAssigned = async () => {
                   </template>
                 </div>
               </div>
-              <div class="comment-input">
+              <form @submit.prevent="handleCreateComment" class="comment-input">
                 <input type="text" placeholder="Leave your comment..." class="input" v-model="commentData.content"
                        @keydown.enter="handleCreateComment">
-                <button class="button" @click="handleCreateComment">
+                <button class="button" type="submit">
                   <span class="icon">
                     <font-awesome-icon icon="fa-solid fa-paper-plane"/>
                   </span>
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

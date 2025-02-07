@@ -37,7 +37,7 @@ const handleChangePassword = async () => {
   <div class="modal" :class="{'is-active': showModal}">
     <div class="modal-background" @click="handleClose"></div>
     <div class="modal-content">
-      <div class="box">
+      <form @submit.prevent="handleChangePassword" class="box">
         <h2 class="title is-2 title">Change Password !</h2>
         <div class="field">
           <div class="control">
@@ -50,10 +50,10 @@ const handleChangePassword = async () => {
           </div>
           <div class="action_button">
             <button class="button" @click="handleClose">Cancel</button>
-            <button class="button is-dark" @click="handleChangePassword">Save changes</button>
+            <button class="button is-dark" type="submit">Save changes</button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
