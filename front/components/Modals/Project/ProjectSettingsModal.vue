@@ -85,6 +85,7 @@ const handleSendEmailInvitation = async () => {
 
           <div v-if="tabs === 'users'" class="tabs-right user">
             <div class="field">
+              <h4 class="title is-4">Add User to your project</h4>
               <div class="control">
                 <label>Email:</label>
                 <input type="email" class="input" v-model="dataForm.email"/>
