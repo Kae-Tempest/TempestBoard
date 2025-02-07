@@ -26,8 +26,9 @@ onMounted(async () => {
   issueList.value = await useCustomFetch<Issue[]>(`/my-issues/`)
 })
 
-watch(() => search.value, (newVal) => {
-  if (newVal) issueList.value = issueData.value?.filter(i => i.title.includes(newVal)) as Issue[]
+watch(() => search.value, async (newVal) => {
+  if (newVal) issueList.value = issueList.value?.filter(i => i.title.includes(newVal) || i.description.includes(newVal))
+  if (newVal == "") issueList.value = await useCustomFetch<Issue[]>(`/my-issues/`)
 })
 
 
@@ -39,7 +40,7 @@ watch(() => search.value, (newVal) => {
     <div class="searchbar" ref="searchBarRef">
       <input type="text" class="input" v-model="search">
       <div class="card-list">
-        <div v-if="search !== '' && issueList && ProjectData" v-for="issue in issueList" class="card" :key="issue.id">
+        <div v-if="issueList && ProjectData" v-for="issue in issueList" class="card" :key="issue.id">
           <div class="wrapper" @click="navigateTo(`/issues/${issue.id}`)">
             <div class="head">
               <div class="left">
