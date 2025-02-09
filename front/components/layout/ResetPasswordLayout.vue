@@ -22,7 +22,7 @@ const handleSendEmail = async () => {
   <div class="modal is-layout" :class="{'is-active': showLayout}">
     <div class="modal-background" @click="showLayout = false; emailData.email = ''"></div>
     <div class="modal-content">
-      <div class="box">
+      <form @submit.prevent="handleSendEmail" class="box">
         <div class="control">
         <h2 class="title is-2">Reset Password</h2>
           <div class="field">
@@ -31,10 +31,10 @@ const handleSendEmail = async () => {
           </div>
         </div>
         <div class="action-btn">
-          <button class="button" @click="showLayout = false; emailData.email = ''">Cancel</button>
-          <button class="button is-dark" @click="handleSendEmail">Send</button>
+          <button class="button" type="reset" @click="showLayout = false; emailData.email = ''">Cancel</button>
+          <button class="button is-dark">Send</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>

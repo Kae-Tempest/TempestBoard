@@ -38,7 +38,7 @@ const handleTransfer = async () => {
     <div class="modal" :class="{'is-active': showModal}">
       <div class="modal-background" @click="handleCancel"></div>
       <div class="modal-content">
-        <div class="box">
+        <form @submit.prevent="handleTransfer()" class="box">
           <h2>Owner Transfer - {{ project?.name }}</h2>
           <div class="select">
             <select v-if="userList" v-model="data.creator">
@@ -46,10 +46,10 @@ const handleTransfer = async () => {
             </select>
           </div>
           <div class="actions">
-            <button class="button" @click="handleCancel">Cancel</button>
-            <button class="button is-dark" @click="handleTransfer()">Save changes</button>
+            <button class="button" type="reset" @click="handleCancel">Cancel</button>
+            <button class="button is-dark" type="submit">Save changes</button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
 </template>

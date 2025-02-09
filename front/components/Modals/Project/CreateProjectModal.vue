@@ -103,7 +103,7 @@ const handleCreate = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box create-box">
+      <form @submit.prevent="handleCreate" class="box create-box">
         <h3>Create Project</h3>
         <div class="field">
           <label class="label">Name</label>
@@ -136,11 +136,11 @@ const handleCreate = async () => {
         </div>
         <div class="field">
           <div class="control">
-            <button class="button" @click="showModal=false; resetForm()" type="button">Cancel</button>
-            <button class="button is-dark" type="submit" @click="handleCreate">Create</button>
+            <button class="button" @click="showModal=false; resetForm()" type="reset">Cancel</button>
+            <button class="button is-dark" type="submit">Create</button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>

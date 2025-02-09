@@ -78,6 +78,9 @@ body {
 
       & > img {
         border-radius: .25rem;
+        height: 30px;
+        width: 30px;
+        transform: scale(3);
       }
 
       & > h1 > a {
@@ -99,7 +102,7 @@ body {
           & > ul {
             display: flex;
             flex-direction: column;
-
+            cursor: pointer;
             :hover {
               opacity: 50;
             }
@@ -1541,11 +1544,15 @@ body {
                     }
 
                   }
-
-                  & > .content {
-                    margin-top: .375rem;
-                    margin-left: 1rem;
-                    margin-bottom: .125rem;
+                  & > div {
+                    & > .content {
+                      margin-top: .375rem;
+                      margin-left: 1rem;
+                      margin-bottom: .125rem;
+                    }
+                    & > span {
+                      margin-right: .375rem;
+                    }
                   }
 
                   & > .editing-content {
@@ -1884,6 +1891,10 @@ body {
 
       & > .input {
         border-radius: .375rem .375rem 0 0;
+        &:focus {
+          border:none;
+          box-shadow: none;
+        }
       }
 
       & > .card-list {

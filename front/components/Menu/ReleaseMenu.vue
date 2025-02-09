@@ -8,6 +8,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const showModal = defineModel()
+const showDeleteModal = defineModel('deleteModal')
 const milestoneID = defineModel('milestoneID')
 const dropdownRef = ref<HTMLElement | null>(null)
 const {activeDropdownId, toggleDropdown, closeDropdown} = useDropdownState()
@@ -29,12 +30,7 @@ const handleDropdownClick = (event: Event) => {
   event.stopPropagation()
 }
 
-const handleDeleteMilestone = async () => {
-  await useCustomFetch(`/milestones/${props.milestone.id}/`,{
-    method: 'DELETE'
-  })
-  useRefreshData().isRefresh.value = true
-}
+
 </script>
 
 <template>
@@ -49,7 +45,7 @@ const handleDeleteMilestone = async () => {
       </div>
       <div class="dropdown-menu" id="dropdown-menu" role="menu" v-if="isDropdownOpen">
         <div class="dropdown-content">
-          <div class="item-menu" @click="handleDeleteMilestone">
+          <div class="item-menu" @click="showDeleteModal = true; milestoneID = milestone.id">
             <font-awesome-icon icon="fa-regular fa-trash-can" />
           </div>
           <div class="item-menu" @click="showModal = true; milestoneID = milestone.id">

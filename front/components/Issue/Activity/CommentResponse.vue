@@ -67,7 +67,7 @@ const handleEditComment = async () => {
   else {
     await useCustomFetch(`comments/${props.answer.id}/`, {
       method: 'PATCH',
-      body: {...editedData}
+      body: JSON.stringify({...editedData})
     })
     isRefresh.value = true
     isResponseSend.value = true
@@ -157,12 +157,12 @@ const handleUnresolved = async () => {
     {{ answer.content }}
     <!-- if attachment show attchment -->
   </div>
-  <div v-if="isEditing" class="editing-content">
-    <input type="text" class="input" v-model="editedData.content" @keydown.enter="handleEditComment">
-    <button class="button" @click="handleEditComment">
+  <form @submit.prevent="handleEditComment" v-if="isEditing" class="editing-content">
+    <input type="text" class="input" v-model="editedData.content">
+    <button class="button" type="submit">
         <span class="icon">
           <font-awesome-icon icon="fa-solid fa-paper-plane"/>
         </span>
     </button>
-  </div>
+  </form>
 </template>

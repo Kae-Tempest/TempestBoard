@@ -25,6 +25,7 @@ const count = ref(500);
 const user: User | null = useUserStore().getUser;
 const projectStates = ref<States[]>([])
 const {isRefresh} = useRefreshData();
+const route = useRoute().params
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', event => {
@@ -49,7 +50,7 @@ const data = reactive({
   title: "",
   description: "",
   priority: "",
-  project: 0,
+  project: parseInt(route.id),
   status: props.state ? props.state : "",
   tags: null
 });
@@ -102,7 +103,7 @@ const handleSubmit = async () => {
   <div :class="{'is-active': showModal}" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div class="box">
+      <form @submit.prevent="handleSubmit()" class="box">
         <div class="field">
           <div class="control">
             <label for="title">Issue Title</label>
@@ -132,8 +133,9 @@ const handleSubmit = async () => {
               </div>
               <div class="select">
                 <select v-model="data.project">
-                  <option disabled value="0">Project</option>
-                  <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
+                  <option v-if="!route.id" disabled value="0">Project</option>
+                  <option v-if="route.id && projects.length > 1" :value="parseInt(route.id)">{{ projects.filter(p => p.id == parseInt(route.id))[0].name }}</option>
+                  <option v-for="project in projects.filter(p => p.id !== parseInt(route.id))" :value="project.id">{{ project.name }}</option>
                 </select>
               </div>
               <div class="select">
@@ -150,14 +152,14 @@ const handleSubmit = async () => {
             </div>
           </div>
         </div>
-        <button class="button" @click="showModal=false; resetForm()">
+        <button class="button" type="reset" @click="showModal=false; resetForm()">
           Cancel
         </button>
         <button
-            class="button is-dark" @click="handleSubmit()">
+            class="button is-dark" type="submit">
           Create
         </button>
-      </div>
+      </form>
     </div>
   </div>
 </template>

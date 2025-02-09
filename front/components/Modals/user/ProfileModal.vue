@@ -176,7 +176,7 @@ const handleOpenChangePasswordModal = () => {
             </div>
           </div>
 
-          <div class="edit-form">
+          <form @submit.prevent="handleUpdateProfile" class="edit-form">
             <div class="form-group">
               <label>Name</label>
               <div class="name-inputs">
@@ -221,11 +221,11 @@ const handleOpenChangePasswordModal = () => {
                 </button>
               </div>
               <div class="right-actions">
-                <button class="button" @click="resetForm(); showProfileModal=false">Cancel</button>
-                <button class="button is-dark" @click="handleUpdateProfile">Save changes</button>
+                <button class="button" type="reset" @click="resetForm(); showProfileModal=false">Cancel</button>
+                <button class="button is-dark" type="submit">Save changes</button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

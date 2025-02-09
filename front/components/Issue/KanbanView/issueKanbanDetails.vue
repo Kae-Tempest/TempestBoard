@@ -71,7 +71,7 @@ const onDrop = async (e: DragEvent, state: string) => {
 <template>
   <div id="kanban">
     <CreateIssueModal :projects="Projects" v-model:modal="showModal" :state="selectedState"/>
-    <div v-for="state in filteredState" :key="state.name" class="state-list" @drop="onDrop($event, state.name)" @dragenter.prevent @dragover.prevent>
+    <div v-for="state in filteredState" :key="state.name" class="state-list" @drop="onDrop($event, state.name)" @dragend="draggedItem = -1" @dragenter.prevent @dragover.prevent>
       <div class="header">
         <div class="state-name">{{ useCapitalize(state.name) }}</div>
         <div class="action-icon">
@@ -89,8 +89,8 @@ const onDrop = async (e: DragEvent, state: string) => {
       </div>
       <div v-for="project in Projects" key="project.id" class="issue-list">
         <div v-for="issue in issueArray.filter(i => i.project === project.id).filter(i => i.status === state.name).sort((a,b) => a.ticket_id - b.ticket_id)"
-             :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
-             class="issue-card" :class="{'dragging': draggedItem === issue.id}">
+            :key="issue.id" draggable="true" @dragstart="startDrag($event, issue)"
+            class="issue-card" :class="{'dragging': draggedItem === issue.id}">
           <div class="issue">
             <div class="issue-title">{{ issue.title }}</div>
             <div class="issue-desc">

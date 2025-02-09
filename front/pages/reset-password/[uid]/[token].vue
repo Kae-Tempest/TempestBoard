@@ -11,7 +11,7 @@ const dataPwd = reactive({
 const handleResetPassword = async () => {
   const data = await useCustomFetch(`/users/password/reset/`, {
     method: "POST",
-    body: dataPwd
+    body: JSON.stringify(dataPwd)
   })
 
   if(data) {
@@ -22,7 +22,7 @@ const handleResetPassword = async () => {
 
 <template>
   <div id="Auth">
-    <div>
+    <form @submit.prevent="handleResetPassword">
       <div id="reset-password">
         <div>
           <label for="">New Password</label>
@@ -33,9 +33,9 @@ const handleResetPassword = async () => {
           <input type="password" class="input" v-model="dataPwd.confirm_password">
         </div>
       <div class="actions">
-        <button class="button" @click="handleResetPassword">Change Password</button>
+        <button class="button" type="submit">Change Password</button>
       </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>

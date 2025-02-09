@@ -1,14 +1,22 @@
 import {createToast} from 'mosha-vue-toastify';
+import type {User} from "~/types/global";
+import {useUserStore} from "~/stores/useUserStore";
 
 export const useHandleError = (error: string) => {
     const err = JSON.parse(error)
-    if (err.code === 403 && err.detail == "Authentication credentials were not provided.") {
+    let user: User | null = useUserStore().getUser;
+    if (err.code === 403 && err.detail == "Authentication credentials were not provided." && user) {
         navigateTo('/login');
         createToast(
             {title: 'Unauthorized', description: "Could not verify user."},
             {showIcon: 'true', timeout: 5000, type: 'danger', transition: 'bounce'}
         )
         return
+    }
+
+    if (err.code === 403 && !user) {
+        navigateTo('/login');
+        return;
     }
 
     switch (err.code) {
