@@ -70,7 +70,7 @@ onMounted(async () => {
 
 const handleShowResponseInput = () => {
   if (showMenu.value) return
-  showResponseInput.value = !showResponseInput.value
+  showResponseInput.value = true
 }
 
 const resetForm = () => {
