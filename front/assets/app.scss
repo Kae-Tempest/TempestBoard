@@ -927,6 +927,7 @@ body {
       position: sticky;
       top: 0;
       padding: .5rem 1rem;
+      overflow-x: hidden;
 
       & > .state-name {
         @include SeiraFont(600);
@@ -941,6 +942,7 @@ body {
 
     & > .issue-list {
       padding: .5rem 1rem;
+      overflow-x: auto;
 
       & > .issue-card {
         @include SeiraFont(500);
