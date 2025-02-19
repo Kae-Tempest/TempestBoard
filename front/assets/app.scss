@@ -924,7 +924,7 @@ body {
     & > .header {
       display: flex;
       justify-content: space-between;
-      position: fixed;
+      position: sticky;
       top: 0;
       padding: .5rem 1rem;
       overflow-x: hidden;
