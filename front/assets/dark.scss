@@ -21,12 +21,16 @@
 
     & > div {
       & > div {
-        & > h1 > a {
-          color: var(--neutral-50);
+        & > img {
+          width: 100%;
+          transform: translateX(-10px);
         }
 
         & > div > div {
           & > img {
+            margin-left: 10px;
+            width: 30px;
+            height: 30px;
             border: solid 2px var(--blue-600);
           }
 
