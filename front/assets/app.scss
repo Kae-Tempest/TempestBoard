@@ -942,7 +942,7 @@ body {
 
     & > .issue-list {
       padding: .5rem 1rem;
-      overflow-x: auto;
+      overflow-x: scroll;
 
       & > .issue-card {
         @include SeiraFont(500);
