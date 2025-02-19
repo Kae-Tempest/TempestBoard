@@ -18,6 +18,8 @@ const isDropDownOpen = ref<boolean>(false);
 const isShowModal = ref<boolean>(false)
 const showProfileModal = ref<boolean>(false)
 
+const { isDark } = useSystemTheme()
+
 onMounted(async () => {
   document.addEventListener('click', () => isDropDownOpen.value = false)
 })
@@ -40,14 +42,13 @@ const logout = async () => {
   <div id="navbar">
     <div>
       <div>
-        <img src="assets/image/icon.png" alt="Icon app" />
-        <h1>
-          <NuxtLink to="/">Tempest Board</NuxtLink>
-        </h1>
+        <img v-if="!isDark" src="assets/image/icon_dark.png" alt="Icon app" />
+        <img v-if="isDark" src="assets/image/icon_white.png" alt="Icon app" />
         <div :class="{'is-active' : isDropDownOpen}" class="dropdown is-right">
           <div class="dropdown-trigger" aria-controls="user-menu" aria-haspopup="true" @click.stop="isDropDownOpen = !isDropDownOpen">
             <img v-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
-            <img v-else src="assets/image/user.png" alt="user thumbnail" class="dropdown-thumbnail"/>
+            <img v-else-if="!isDark" src="assets/image/user.png" alt="user thumbnail" class="dropdown-thumbnail"/>
+            <img v-else-if="isDark" src="assets/image/user_light.png" alt="user thumbnail" class="dropdown-thumbnail"/>
           </div>
           <div class="dropdown-menu" id="user-menu">
             <div class="dropdown-content">
