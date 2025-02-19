@@ -417,7 +417,6 @@ body {
 
   & > div.content {
     padding-left: 16rem;
-    overflow-y: scroll;
     height: 100vh;
 
     & > .header {
@@ -495,6 +494,7 @@ body {
     }
 
     & > .issues {
+      overflow-y: auto;
       & > div {
         & > .menu {
           position: relative;
