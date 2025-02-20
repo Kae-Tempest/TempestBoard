@@ -47,8 +47,8 @@ const returntoHome = () => {
   <div id="navbar">
     <div>
       <div>
-        <img v-if="!isDark" onclick="returntoHome()" src="assets/image/icon_dark.png" alt="Icon app" />
-        <img v-if="isDark" onclick="returntoHome()" src="assets/image/icon_white.png" alt="Icon app" />
+        <img v-if="!isDark" @click="returntoHome()" src="assets/image/icon_dark.png" alt="Icon app" />
+        <img v-if="isDark" @click="returntoHome()" src="assets/image/icon_white.png" alt="Icon app" />
         <div :class="{'is-active' : isDropDownOpen}" class="dropdown is-right">
           <div class="dropdown-trigger" aria-controls="user-menu" aria-haspopup="true" @click.stop="isDropDownOpen = !isDropDownOpen">
             <img v-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
