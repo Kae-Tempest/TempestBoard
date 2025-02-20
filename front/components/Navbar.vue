@@ -5,6 +5,7 @@ import type {Project, User} from "~/types/global";
 import MenuProject from "~/components/Menu/MenuProject.vue";
 import CreateIssueModal from "~/components/Modals/issue/CreateIssueModal.vue";
 import ProfileModal from "~/components/Modals/user/ProfileModal.vue";
+import {navigateTo} from "#imports";
 
 interface Props {
   user: User
@@ -34,6 +35,10 @@ const logout = async () => {
 }
 
 
+const returntoHome = () => {
+  navigateTo('/')
+}
+
 </script>
 
 <template>
@@ -42,8 +47,8 @@ const logout = async () => {
   <div id="navbar">
     <div>
       <div>
-        <img v-if="!isDark" src="assets/image/icon_dark.png" alt="Icon app" />
-        <img v-if="isDark" src="assets/image/icon_white.png" alt="Icon app" />
+        <img v-if="!isDark" onclick="returntoHome()" src="assets/image/icon_dark.png" alt="Icon app" />
+        <img v-if="isDark" onclick="returntoHome()" src="assets/image/icon_white.png" alt="Icon app" />
         <div :class="{'is-active' : isDropDownOpen}" class="dropdown is-right">
           <div class="dropdown-trigger" aria-controls="user-menu" aria-haspopup="true" @click.stop="isDropDownOpen = !isDropDownOpen">
             <img v-if="user.thumbnail" :src="user.thumbnail" alt="user thumbnail" class="dropdown-thumbnail"/>
