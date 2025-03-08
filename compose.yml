@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    command: postgres -c config_file=/etc/postgresql.conf
+    shm_size: '4gb'
+    ulimits:
+      nofile:
+        soft: 98304
+        hard: 98304
+    ports:
+      - "6932:5432"
+    volumes:
+      - ./docker/postgresql/postgresql.conf:/etc/postgresql.conf
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh
+    env_file: './api/.env'
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      timeout: 5s
+      retries: 300
+  api:
+    build:
+      context: ./api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/usr/src/app
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+
+#networks:
+#  docker-monitoring_public:
+#    external: true
