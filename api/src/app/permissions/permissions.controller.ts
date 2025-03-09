@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -12,21 +11,29 @@ import {
 } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { Permission } from '@shared/entities/Permission.entity';
+import { Permission as Perm } from '@shared/enums/permissions.enum';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { JwtAuthGuard } from '@core/auth/guards/jwt.guard';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
 
 @Controller('permissions')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Perm.MANAGE_PERMISSIONS)
   public async getAll(): Promise<Permission[]> {
     return this.permissionsService.getAll();
   }
 
   @Get(':id')
+  @RequirePermissions(Perm.MANAGE_PERMISSIONS)
   public async getById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Permission> {
@@ -34,6 +41,7 @@ export class PermissionsController {
   }
 
   @Post()
+  @RequirePermissions(Perm.ADMIN_ACCESS)
   public async create(
     @Body() payload: CreatePermissionDto,
   ): Promise<Permission> {
@@ -41,6 +49,7 @@ export class PermissionsController {
   }
 
   @Put(':id')
+  @RequirePermissions(Perm.ADMIN_ACCESS)
   public async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdatePermissionDto,
@@ -49,7 +58,7 @@ export class PermissionsController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @RequirePermissions(Perm.ADMIN_ACCESS)
   public async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.permissionsService.delete(id);
   }

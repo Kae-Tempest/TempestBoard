@@ -15,26 +15,33 @@ import { Milestone } from '@shared/entities/Milestone.entity';
 import { CreateMilestoneDto } from '@app/milestones/dto/create-milestone.dto';
 import { UpdateMilestoneDto } from '@app/milestones/dto/update-milestone.dto';
 import { ApiTags } from '@nestjs/swagger';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
+import { Permission } from '@shared/enums/permissions.enum';
 
 @ApiTags('Milestones')
 @Controller('milestones')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 export class MilestonesController {
   constructor(private readonly milestoneService: MilestonesService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.ADMIN_ACCESS)
   async findAll(): Promise<Milestone[]> {
     return this.milestoneService.findAll();
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_MILESTONE)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Milestone> {
     return this.milestoneService.findById(id);
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.CREATE_MILESTONE)
   async create(
     @Body() createMilestoneDto: CreateMilestoneDto,
   ): Promise<Milestone> {
@@ -42,7 +49,7 @@ export class MilestonesController {
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_MILESTONE)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMilestoneDto: UpdateMilestoneDto,
@@ -51,7 +58,7 @@ export class MilestonesController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.DELETE_MILESTONE)
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.milestoneService.delete(id);
   }

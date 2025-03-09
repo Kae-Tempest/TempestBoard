@@ -23,32 +23,39 @@ import { UpdateProjectDto } from '@app/projects/dto/update-project.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '@shared/entities/Role.entity';
 import { Tag } from '@shared/entities/Tag.entity';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
+import { Permission } from '@shared/enums/permissions.enum';
 
 @ApiTags('Projects')
 @Controller('projects')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.CREATE_PROJECT)
   async create(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
     return await this.projectsService.create(createProjectDto);
   }
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.ADMIN_ACCESS)
   async findAll(): Promise<Project[]> {
     return await this.projectsService.getAll();
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_PROJECT)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Project> {
     return await this.projectsService.getOneById(id);
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_PROJECT)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateProjectDto,
@@ -57,13 +64,14 @@ export class ProjectsController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.DELETE_PROJECT)
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return await this.projectsService.delete(id);
   }
 
   @Patch('/:id/thumbnail')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_PROJECT)
+  @RequirePermissions(Permission.UPLOAD_ATTACHMENT)
   @UseInterceptors(FileInterceptor('thumbnail'))
   async updateThumbnail(
     @Param('id', ParseIntPipe) id: number,
@@ -73,7 +81,8 @@ export class ProjectsController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_PROJECT)
+  @RequirePermissions(Permission.DELETE_ATTACHMENT)
   async deleteThumbnail(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Project> {
@@ -81,13 +90,13 @@ export class ProjectsController {
   }
 
   @Get(':id/states')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_PROJECT)
   async getStates(@Param('id', ParseIntPipe) id: number): Promise<State[]> {
     return await this.projectsService.getStateOfProject(id);
   }
 
   @Get(':id/active-issues')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_ISSUE)
   async getActiveIssues(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Issue[]> {
@@ -95,7 +104,7 @@ export class ProjectsController {
   }
 
   @Get(':id/backlog-issues')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_ISSUE)
   async getBacklogIssues(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Issue[]> {
@@ -103,7 +112,7 @@ export class ProjectsController {
   }
 
   @Get(':id/milestone')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_MILESTONE)
   async getMilestones(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Milestone[]> {
@@ -111,7 +120,7 @@ export class ProjectsController {
   }
 
   @Get(':id/milestone/advancement')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_MILESTONE)
   async getMilestoneAdvancement(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{
@@ -124,13 +133,13 @@ export class ProjectsController {
   }
 
   @Get('/:id/roles')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_ROLE)
   async getRoles(@Param('id', ParseIntPipe) id: number): Promise<Role[]> {
     return this.projectsService.getRolesOfProject(id);
   }
 
-  @Get('/:id/roles')
-  @UseGuards(JwtAuthGuard)
+  @Get('/:id/tags')
+  @RequirePermissions(Permission.VIEW_TAG)
   async getTags(@Param('id', ParseIntPipe) id: number): Promise<Tag[]> {
     return this.projectsService.getTagsOfProject(id);
   }

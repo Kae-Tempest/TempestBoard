@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Project } from '@shared/entities/Project.entity';
 import { Permission } from '@shared/entities/Permission.entity';
+import { User } from '@shared/entities/User.entity';
 
 @Entity('roles')
 @Index(['project', 'name'], { unique: true })
@@ -39,6 +40,20 @@ export class Role {
     },
   })
   permissions: Permission[];
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+  })
+  users: User[];
 
   @CreateDateColumn({
     type: 'timestamp',

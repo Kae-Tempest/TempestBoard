@@ -1,27 +1,42 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '@shared/entities/User.entity';
-import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStragy } from './strategies/local.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersService } from 'src/app/users/users.service';
-import { ResetPassword } from '@shared/entities/ResetPassword.entity';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { PermissionsGuard } from './guards/permissions.guard';
+import { Role } from '@shared/entities/Role.entity';
+import { User } from '@shared/entities/User.entity';
+import { Project } from '@shared/entities/Project.entity';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from '../filters/http-exception.filter';
 
 @Module({
   imports: [
-    PassportModule,
-    TypeOrmModule.forFeature([User, ResetPassword]),
-    JwtModule.register({
-      secret: process.env.SECRET,
-      signOptions: {
-        expiresIn: '1d',
-      },
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [],
+      inject: [],
+      useFactory: () => ({
+        secret: process.env.JWTSECRET || 'your-secret-key',
+        signOptions: {
+          expiresIn: process.env.EXPIRE_IN || '1d',
+        },
+      }),
     }),
+    TypeOrmModule.forFeature([User, Role, Project]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, LocalStragy, JwtStrategy, UsersService],
+  providers: [
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+    PermissionsGuard,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
+  exports: [JwtAuthGuard, RolesGuard, PermissionsGuard],
 })
 export class AuthModule {}

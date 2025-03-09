@@ -14,31 +14,39 @@ import { JwtAuthGuard } from '@core/auth/guards/jwt.guard';
 import { Role } from '@shared/entities/Role.entity';
 import { CreateRoleDto } from '@app/roles/dto/create-role.dto';
 import { UpdateRoleDto } from '@app/roles/dto/update-role.dto';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
+import { Permission } from '@shared/enums/permissions.enum';
 
 @Controller('roles')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.ADMIN_ACCESS)
   async getAll(): Promise<Role[]> {
     return this.rolesService.getAll();
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.MANAGE_PERMISSIONS)
   async getById(@Param('id', ParseIntPipe) id: number): Promise<Role> {
     return this.rolesService.getById(id);
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.CREATE_ROLE)
   async create(@Body() payload: CreateRoleDto): Promise<Role> {
     return this.rolesService.create(payload);
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_ROLE)
+  @RequirePermissions(Permission.MANAGE_PERMISSIONS)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateRoleDto,
@@ -47,7 +55,7 @@ export class RolesController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.DELETE_ROLE)
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.rolesService.delete(id);
   }

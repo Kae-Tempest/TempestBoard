@@ -17,26 +17,32 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@shared/entities/User.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
+import { Permission } from '@shared/enums/permissions.enum';
 
 @ApiTags('Users')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.ADMIN_ACCESS)
   async getAll(): Promise<User[]> {
     return await this.usersService.findAll();
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_USERS)
   async getOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return await this.usersService.findOneById(id);
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateUserDto,
@@ -45,13 +51,12 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
   async deleteOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return await this.usersService.delete(id);
   }
 
   @Post(':id/avatar')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.UPLOAD_ATTACHMENT)
   @UseInterceptors(FileInterceptor('avatar'))
   async uploadAvatar(
     @Param('id', ParseIntPipe) id: number,
@@ -61,7 +66,7 @@ export class UsersController {
   }
 
   @Delete(':id/avatar')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.DELETE_ATTACHMENT)
   async deleteAvatar(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.usersService.deleteThumbnail(id);
   }

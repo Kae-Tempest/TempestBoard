@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from '@shared/entities/Role.entity';
 
 @Entity('users')
 @Index(['email'], { unique: true })
@@ -33,6 +35,9 @@ export class User {
 
   @Column({ nullable: true })
   thumbnail: string;
+
+  @ManyToMany(() => Role, (role: Role) => role.users)
+  roles: Role[];
 
   @CreateDateColumn({
     type: 'timestamp',

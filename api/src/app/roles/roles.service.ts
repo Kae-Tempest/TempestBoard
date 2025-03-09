@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from '@shared/entities/Project.entity';
 import { Permission } from '@shared/entities/Permission.entity';
+import { User } from '@shared/entities/User.entity';
 import { CreateRoleDto } from '@app/roles/dto/create-role.dto';
 import { UpdateRoleDto } from '@app/roles/dto/update-role.dto';
 
@@ -16,18 +17,20 @@ export class RolesService {
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   public async getAll(): Promise<Role[]> {
     return this.roleRepository.find({
-      relations: ['permissions', 'project'],
+      relations: ['permissions', 'project', 'users'],
     });
   }
 
   public async getById(id: number): Promise<Role> {
     const role: Role | null = await this.roleRepository.findOne({
       where: { id },
-      relations: ['permissions', 'project'],
+      relations: ['permissions', 'project', 'users'],
     });
     if (!role) {
       throw new NotFoundException('Role not found');
@@ -62,10 +65,25 @@ export class RolesService {
       }
     }
 
+    const userList: User[] = [];
+
+    if (payload.users && payload.users.length > 0) {
+      for (const userId of payload.users) {
+        const user: User | null = await this.userRepository.findOne({
+          where: { id: userId },
+        });
+        if (!user) {
+          throw new NotFoundException(`User with id ${userId} not found`);
+        }
+        userList.push(user);
+      }
+    }
+
     const newRole: Role = this.roleRepository.create({
       name: payload.name,
       project,
       permissions: permissionList,
+      users: userList,
     });
     return await this.roleRepository.save(newRole);
   }
@@ -73,7 +91,7 @@ export class RolesService {
   public async update(id: number, payload: UpdateRoleDto): Promise<Role> {
     const role: Role | null = await this.roleRepository.findOne({
       where: { id },
-      relations: ['permissions'],
+      relations: ['permissions', 'users'],
     });
 
     if (!role) {
@@ -110,6 +128,21 @@ export class RolesService {
         permissionList.push(permission);
       }
       role.permissions = permissionList;
+    }
+
+    if (payload.users) {
+      const userList: User[] = [];
+
+      for (const userId of payload.users) {
+        const user: User | null = await this.userRepository.findOne({
+          where: { id: userId },
+        });
+        if (!user) {
+          throw new NotFoundException(`User with id ${userId} not found`);
+        }
+        userList.push(user);
+      }
+      role.users = userList;
     }
 
     return await this.roleRepository.save(role);

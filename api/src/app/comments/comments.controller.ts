@@ -15,26 +15,33 @@ import { Comment } from '@shared/entities/Comment.entity';
 import { CreateCommentDto } from '@app/comments/dto/create-comment.dto';
 import { UpdateCommentDto } from '@app/comments/dto/update-comment.dto';
 import { ApiTags } from '@nestjs/swagger';
+import {
+  PermissionsGuard,
+  RequirePermissions,
+} from '@core/auth/guards/permissions.guard';
+import { ProjectAccessGuard } from '@core/auth/guards/project.guard';
+import { Permission } from '@shared/enums/permissions.enum';
 
 @ApiTags('Comments')
 @Controller('comments')
+@UseGuards(JwtAuthGuard, PermissionsGuard, ProjectAccessGuard)
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.ADMIN_ACCESS)
   async findAll(): Promise<Comment[]> {
     return await this.commentsService.getAllComments();
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_COMMENT)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Comment> {
     return await this.commentsService.getComment(id);
   }
 
   @Get('/issues/:issueId')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.VIEW_COMMENT)
   async findByIssue(
     @Param('issueId', ParseIntPipe) issueId: number,
   ): Promise<Comment[]> {
@@ -42,13 +49,13 @@ export class CommentsController {
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.CREATE_COMMENT)
   async create(@Body() payload: CreateCommentDto): Promise<Comment> {
     return await this.commentsService.create(payload);
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.EDIT_COMMENT)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateCommentDto,
@@ -57,7 +64,7 @@ export class CommentsController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @RequirePermissions(Permission.DELETE_COMMENT)
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return await this.commentsService.delete(id);
   }
