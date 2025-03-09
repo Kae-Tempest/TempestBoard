@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,12 +15,15 @@ export class ProjectInvitation {
   id: number;
 
   @Column()
+  @Index()
   email: string;
 
-  @OneToMany(() => Project, (project: Project) => project.id)
+  @ManyToOne(() => Project)
+  @Index()
   project: Project;
 
   @Column({ length: 100, unique: true })
+  @Index()
   token: string;
 
   @Column('boolean')

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -28,8 +29,8 @@ export class ActivitiesController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string): Promise<Activity> {
-    return this.activitiesService.findOne(parseInt(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Activity> {
+    return this.activitiesService.findOne(id);
   }
 
   @Post('/')
@@ -41,15 +42,15 @@ export class ActivitiesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateActivityDto,
   ): Promise<Activity> {
-    return this.activitiesService.update(parseInt(id), payload);
+    return this.activitiesService.update(id, payload);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: string): Promise<void> {
-    await this.activitiesService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.activitiesService.delete(id);
   }
 }

@@ -2,16 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'reset_password' })
+@Index(['email', 'created_at'])
 export class ResetPassword {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
+  @Index()
   email: string;
 
   @Column()
@@ -29,5 +32,4 @@ export class ResetPassword {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
-  z;
 }

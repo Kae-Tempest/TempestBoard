@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,11 +15,13 @@ export class Tag {
   id: number;
 
   @Column()
+  @Index()
   name: string;
 
-  @ManyToOne(() => Project, (project: Project) => project.id, {
+  @ManyToOne(() => Project, {
     onDelete: 'CASCADE',
   })
+  @Index()
   project: Project;
 
   @CreateDateColumn({

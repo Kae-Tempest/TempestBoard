@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UploadedFile,
@@ -30,38 +31,38 @@ export class UsersController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async getOne(@Param('id') id: string): Promise<User> {
-    return await this.usersService.findOneById(parseInt(id));
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return await this.usersService.findOneById(id);
   }
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateUserDto,
   ): Promise<User> {
-    return await this.usersService.update(parseInt(id), payload);
+    return await this.usersService.update(id, payload);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteOne(@Param('id') id: string): Promise<User> {
-    return await this.usersService.delete(parseInt(id));
+  async deleteOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return await this.usersService.delete(id);
   }
 
-  @Post(':userId/avatar')
+  @Post(':id/avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('avatar'))
   async uploadAvatar(
-    @Param('userId') userId: string,
+    @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<User> {
-    return this.usersService.updateThumbnail(parseInt(userId), file);
+    return this.usersService.updateThumbnail(id, file);
   }
 
-  @Delete(':userId/avatar')
+  @Delete(':id/avatar')
   @UseGuards(JwtAuthGuard)
-  async deleteAvatar(@Param('userId') userId: string): Promise<User> {
-    return this.usersService.deleteThumbnail(parseInt(userId));
+  async deleteAvatar(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.deleteThumbnail(id);
   }
 }

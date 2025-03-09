@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -28,8 +29,8 @@ export class StatesController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  getById(@Param('id') id: string): Promise<State> {
-    return this.stateService.findOne(parseInt(id));
+  getById(@Param('id', ParseIntPipe) id: number): Promise<State> {
+    return this.stateService.findOne(id);
   }
 
   @Post('/')
@@ -41,15 +42,15 @@ export class StatesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateStateDto: UpdateStateDto,
   ): Promise<State> {
-    return this.stateService.update(parseInt(id), updateStateDto);
+    return this.stateService.update(id, updateStateDto);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: string): Promise<void> {
-    return this.stateService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.stateService.delete(id);
   }
 }

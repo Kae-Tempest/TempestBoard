@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToOne,
@@ -15,17 +17,21 @@ import { Milestone } from '@shared/entities/Milestone.entity';
 import { State } from '@shared/entities/State.entity';
 
 @Entity('issues')
+@Index(['project', 'ticket_id'])
+@Index(['project', 'status'])
+@Index(['assigned', 'status'])
+@Index(['creator', 'created_at'])
 export class Issue {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user: User) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   creator: User;
 
-  @OneToOne(() => User, (user: User) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   assigned: User;
 
-  @ManyToOne(() => Project, (project: Project) => project.id)
+  @ManyToOne(() => Project)
   project: Project;
 
   @Column()
@@ -43,15 +49,20 @@ export class Issue {
   @Column()
   priority: string;
 
-  @OneToOne(() => State, (state: State) => state.name)
+  @OneToOne(() => State, (state: State) => state.issues)
   status: State;
 
   @ManyToMany(() => Tag, (tag: Tag) => tag.id, {
     nullable: true,
   })
+  @JoinTable({
+    name: 'issue_tags',
+    joinColumn: { name: 'issue_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
+  })
   tags: Tag[];
 
-  @ManyToOne(() => Milestone, (milestone: Milestone) => milestone.id, {
+  @ManyToOne(() => Milestone, (milestone: Milestone) => milestone.issues, {
     nullable: true,
   })
   milestone: Milestone;

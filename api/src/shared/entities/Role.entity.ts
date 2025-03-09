@@ -2,14 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Project } from '@shared/entities/Project.entity';
-import { User } from '@shared/entities/User.entity';
+import { Permission } from '@shared/entities/Permission.entity';
 
 @Entity('roles')
+@Index(['project', 'name'], { unique: true })
 export class Role {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,13 +21,24 @@ export class Role {
   @Column()
   name: string;
 
-  @ManyToOne(() => Project, (project: Project) => project.id, {
+  @ManyToOne(() => Project, {
     onDelete: 'CASCADE',
   })
   project: Project;
 
-  @ManyToOne(() => User, (user: User) => user.id, { onDelete: 'CASCADE' })
-  users: User[];
+  @ManyToMany(() => Permission, (permission: Permission) => permission.roles)
+  @JoinTable({
+    name: 'role_permissions',
+    joinColumn: {
+      name: 'roles_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'permission_id',
+      referencedColumnName: 'id',
+    },
+  })
+  permissions: Permission[];
 
   @CreateDateColumn({
     type: 'timestamp',

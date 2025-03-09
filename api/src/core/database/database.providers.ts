@@ -9,6 +9,7 @@ import { Role } from '@shared/entities/Role.entity';
 import { State } from '@shared/entities/State.entity';
 import { Comment } from '@shared/entities/Comment.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Permission } from '@shared/entities/Permission.entity';
 
 function appConfig(): TypeOrmModuleOptions {
   return {
@@ -26,6 +27,7 @@ function appConfig(): TypeOrmModuleOptions {
       Issue,
       Milestone,
       ProjectInvitation,
+      Permission,
       Role,
       State,
       Tag,

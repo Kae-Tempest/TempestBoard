@@ -2,8 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,10 +15,12 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Issue, (issue: Issue) => issue.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Issue, { onDelete: 'CASCADE' })
+  @Index()
   issue: Issue;
 
-  @OneToOne(() => User, (user: User) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @Index()
   creator: User;
 
   @Column('text')
@@ -27,7 +29,7 @@ export class Comment {
   @Column('boolean', { default: false })
   is_answer: boolean;
 
-  @ManyToOne(() => Comment, (comment) => comment.id, {
+  @ManyToOne(() => Comment, {
     nullable: true,
     onDelete: 'CASCADE',
   })

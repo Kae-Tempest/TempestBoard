@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -28,8 +29,8 @@ export class MilestonesController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string): Promise<Milestone> {
-    return this.milestoneService.findById(parseInt(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Milestone> {
+    return this.milestoneService.findById(id);
   }
 
   @Post('/')
@@ -43,15 +44,15 @@ export class MilestonesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateMilestoneDto: UpdateMilestoneDto,
   ): Promise<Milestone> {
-    return this.milestoneService.update(parseInt(id), updateMilestoneDto);
+    return this.milestoneService.update(id, updateMilestoneDto);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: string): Promise<void> {
-    return this.milestoneService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.milestoneService.delete(id);
   }
 }

@@ -8,11 +8,12 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStragy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersService } from 'src/app/users/users.service';
+import { ResetPassword } from '@shared/entities/ResetPassword.entity';
 
 @Module({
   imports: [
     PassportModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, ResetPassword]),
     JwtModule.register({
       secret: process.env.SECRET,
       signOptions: {

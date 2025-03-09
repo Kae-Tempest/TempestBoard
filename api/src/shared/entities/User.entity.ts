@@ -2,22 +2,27 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('users')
+@Index(['email'], { unique: true })
+@Index(['username'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 100 })
+  @Index()
   username: string;
 
   @Column()
   password: string;
 
   @Column()
+  @Index()
   email: string;
 
   @Column({ nullable: true })

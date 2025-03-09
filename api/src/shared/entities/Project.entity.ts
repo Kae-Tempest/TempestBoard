@@ -2,22 +2,31 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '@shared/entities/User.entity';
 
 @Entity('projects')
+@Index(['creator', 'created_at'])
+@Index(['name'], { unique: true })
 export class Project {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user: User) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   creator: User;
 
-  @ManyToOne(() => User, (user: User) => user.id)
+  @ManyToMany(() => User, (user: User) => user.id)
+  @JoinTable({
+    name: 'project_users',
+    joinColumn: { name: 'project_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
   users: User[];
 
   @Column()

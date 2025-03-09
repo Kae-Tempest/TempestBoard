@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -28,14 +29,16 @@ export class CommentsController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string): Promise<Comment> {
-    return await this.commentsService.getComment(parseInt(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Comment> {
+    return await this.commentsService.getComment(id);
   }
 
   @Get('/issues/:issueId')
   @UseGuards(JwtAuthGuard)
-  async findByIssue(@Param('issueId') issueId: string): Promise<Comment[]> {
-    return await this.commentsService.getIssueComment(parseInt(issueId));
+  async findByIssue(
+    @Param('issueId', ParseIntPipe) issueId: number,
+  ): Promise<Comment[]> {
+    return await this.commentsService.getIssueComment(issueId);
   }
 
   @Post('/')
@@ -47,15 +50,15 @@ export class CommentsController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateCommentDto,
   ): Promise<Comment> {
-    return await this.commentsService.update(parseInt(id), payload);
+    return await this.commentsService.update(id, payload);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: string): Promise<void> {
-    return await this.commentsService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return await this.commentsService.delete(id);
   }
 }

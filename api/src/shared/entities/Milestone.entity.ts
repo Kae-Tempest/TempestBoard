@@ -2,13 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Project } from '@shared/entities/Project.entity';
+import { Issue } from '@shared/entities/Issue.entity';
 
 @Entity('milestones')
+@Index(['project', 'start_date'])
+@Index(['project', 'delivery_date'])
 export class Milestone {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,8 +21,11 @@ export class Milestone {
   @Column()
   name: string;
 
-  @OneToMany(() => Project, (project: Project) => project.id)
+  @ManyToOne(() => Project)
   project: Project;
+
+  @OneToMany(() => Issue, (issue: Issue) => issue.milestone)
+  issues: Issue[];
 
   @Column('text')
   description: string;
@@ -25,7 +33,7 @@ export class Milestone {
   @Column('timestamp')
   start_date: Date;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   delivery_date: Date;
 
   @CreateDateColumn({

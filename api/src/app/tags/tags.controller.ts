@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -26,8 +27,8 @@ export class TagsController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  public async getTag(@Param('id') id: string): Promise<Tag> {
-    return this.tagService.getOne(parseInt(id));
+  public async getTag(@Param('id', ParseIntPipe) id: number): Promise<Tag> {
+    return this.tagService.getOne(id);
   }
 
   @Post('/')
@@ -39,15 +40,15 @@ export class TagsController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   public async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateTagDto,
   ): Promise<Tag> {
-    return this.tagService.update(parseInt(id), payload);
+    return this.tagService.update(id, payload);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  public async delete(@Param('id') id: string): Promise<void> {
-    await this.tagService.delete(parseInt(id));
+  public async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.tagService.delete(id);
   }
 }

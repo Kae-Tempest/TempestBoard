@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -26,8 +27,8 @@ export class RolesController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async getById(@Param('id') id: string): Promise<Role> {
-    return this.rolesService.getById(parseInt(id));
+  async getById(@Param('id', ParseIntPipe) id: number): Promise<Role> {
+    return this.rolesService.getById(id);
   }
 
   @Post('/')
@@ -39,15 +40,15 @@ export class RolesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateRoleDto,
   ): Promise<Role> {
-    return this.rolesService.update(parseInt(id), payload);
+    return this.rolesService.update(id, payload);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') id: string): Promise<void> {
-    await this.rolesService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.rolesService.delete(id);
   }
 }

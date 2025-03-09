@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -28,14 +29,14 @@ export class IssuesController {
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async getById(@Param('id') id: string): Promise<Issue> {
-    return await this.issuesService.findOne(parseInt(id));
+  async getById(@Param('id', ParseIntPipe) id: number): Promise<Issue> {
+    return await this.issuesService.findOne(id);
   }
 
   @Get('/user/:id')
   @UseGuards(JwtAuthGuard)
-  async getUser(@Param('id') userId: string): Promise<Issue[]> {
-    return await this.issuesService.findAllByUser(parseInt(userId));
+  async getUser(@Param('id', ParseIntPipe) userId: number): Promise<Issue[]> {
+    return await this.issuesService.findAllByUser(userId);
   }
 
   @Post('/')
@@ -47,15 +48,15 @@ export class IssuesController {
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async updateIssue(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateIssueDto: UpdateIssueDto,
   ): Promise<Issue> {
-    return await this.issuesService.update(parseInt(id), updateIssueDto);
+    return await this.issuesService.update(id, updateIssueDto);
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteIssue(@Param('id') id: string): Promise<void> {
-    await this.issuesService.delete(parseInt(id));
+  async deleteIssue(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.issuesService.delete(id);
   }
 }

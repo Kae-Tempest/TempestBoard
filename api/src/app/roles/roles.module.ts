@@ -5,11 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from '@shared/entities/Project.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { Role } from '@shared/entities/Role.entity';
-import { User } from '@shared/entities/User.entity';
+import { Permission } from '@shared/entities/Permission.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, Role, User]),
+    TypeOrmModule.forFeature([Project, Role, Permission]),
     ThrottlerModule.forRoot({ throttlers: [{ ttl: 60000, limit: 10 }] }),
   ],
   controllers: [RolesController],
