@@ -1,0 +1,47 @@
+<section id="register">
+  <form class="register" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <header>
+      <h1>Register</h1>
+      <img [src]="imagePath" alt="logo" />
+    </header>
+    <input
+      type="text"
+      placeholder="Username"
+      min="3"
+      id="username"
+      formControlName="username"
+      [required]="true"
+    />
+    <input
+      type="email"
+      placeholder="Email"
+      id="email"
+      formControlName="email"
+      [required]="true"
+
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      min="6"
+      id="password"
+      formControlName="password"
+      [required]="true"
+
+    />
+    <input
+      type="password"
+      placeholder="Confirm Password"
+      min="6"
+      id="confirm_password"
+      formControlName="password_confirmation"
+      [required]="true"
+    />
+    <div class="actions">
+      <button type="submit">Register</button>
+      <div class="link">
+        <span><a routerLink="/login">Already an Account ?</a></span>
+      </div>
+    </div>
+  </form>
+</section>

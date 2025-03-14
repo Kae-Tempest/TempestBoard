@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${project_name} + ' - TempestBoard Project Invitation'">TempestBoard Project Invitation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .company-name {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="company-name" th:text="${project_name}">Project Name</div>
+</div>
+
+<div class="content">
+    <h1>Welcome to TempestBoard Project Management!</h1>
+
+    <p>Dear colleague,</p>
+
+    <p>You have been invited to join project: <span th:text="${project_name}">Project Name</span> on TempestBoard - our
+        comprehensive project management
+        platform designed to streamline collaboration and enhance productivity!</p>
+
+    <p>With TempestBoard, you can:</p>
+    <ul>
+        <li>View and manage project tasks and timelines</li>
+        <li>Collaborate with team members in real-time</li>
+        <li>Track project progress and milestones</li>
+        <li>Share and access project documents</li>
+        <li>Monitor deadlines and receive notifications</li>
+    </ul>
+
+    <p>Join your colleagues on this project by clicking the button below:</p>
+
+    <div style="text-align: center;">
+        <a th:href="${invitation_link}" class="button">Join Project Now</a>
+    </div>
+
+    <p>This invitation link is exclusively for this project and will expire in 7 days.</p>
+</div>
+
+<div class="footer">
+    <p>© <span th:text="${project_name}">Project Name</span> TempestBoard Project Management</p>
+    <p>This is an automated message. Please do not reply to this email.</p>
+</div>
+</body>
+</html>

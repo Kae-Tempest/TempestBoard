@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --blue_50: #eff6ff;
+  --blue_200: #bfdbfe;
+  --blue_300: #93c5fd;
+  --blue_400: #60a5fa;
+  --blue_500: #3b82f6;
+  --blue_600: #2563eb;
+  --broken_white: #fcfcfc;
+  --neutral_950: #0a0a0a;
+  --red_400: #f87171;
+  --green_400: #4ade80;
+  --green_500: #22c55e;
+  --grey: #404040;
+}
+
+@font-face {
+  font-family: "Kardust";
+  src: url("./app/assets/kardust-family/Kardust.otf") format("opentype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--blue_50);
+  width: 100vw;
+  height: 100vh;
+}
