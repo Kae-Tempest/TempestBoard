@@ -1,4 +1,21 @@
 services:
+
+  haproxy:
+    image: haproxy:2.8-alpine
+    container_name: haproxy-proxy
+    ports:
+      - "80:80"  # HTTP
+      - "443:443" # HTTPS (if needed later)
+      - "8404:8404" # Stats page
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+
   db:
     image: postgres:16-alpine
     command: postgres -c config_file=/etc/postgresql.conf
@@ -32,13 +49,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tempesboard
-#      SPRING_DATASOURCE_USERNAME: postgres
-#      SPRING_DATASOURCE_PASSWORD: root
-#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-#      SPRING_DEVTOOLS_RESTART_ENABLED: 'true'
-#      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: 'true'
     ports:
       - "8080:8080"
       - "35729:35729" # LiveReload port

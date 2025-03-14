@@ -17,4 +17,4 @@ EXPOSE 35729
 ENV PATH="/app/.mvn/wrapper:${PATH}"
 
 # Run Spring Boot in dev mode with devtools enabled
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-XX:TieredStopAtLevel=1'"]
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-XX:TieredStopAtLevel=1'","--debug"]
