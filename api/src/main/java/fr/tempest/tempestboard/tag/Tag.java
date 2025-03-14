@@ -25,6 +25,10 @@ public class Tag {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Long getId() {
         return id;
     }
@@ -65,7 +69,5 @@ public class Tag {
         this.updatedAt = updatedAt;
     }
 
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+
 }

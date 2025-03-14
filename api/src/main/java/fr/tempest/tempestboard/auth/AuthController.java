@@ -9,6 +9,8 @@ import fr.tempest.tempestboard.user.User;
 import fr.tempest.tempestboard.user.UserRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +39,8 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
     }
+
+    Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final ResetPasswordRepository resetPasswordRepository;
     private final AuthenticationManager authenticationManager;
@@ -69,18 +73,13 @@ public class AuthController {
             user.setUsername(registerDto.getUsername());
             user.setEmail(registerDto.getEmail());
             user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-
             User savedUser = userRepository.save(user);
+            userRepository.flush();
 
-            String plainPassword = registerDto.getPassword();
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(savedUser.getEmail(), plainPassword));
-            if (authentication.isAuthenticated()) {
-                Map<String, Object> claims = new HashMap<>();
-                claims.put("token", jwtUtils.generateToken(savedUser.getEmail()));
-                claims.put("type", "Bearer");
-                return new ResponseEntity<>(claims, HttpStatus.OK);
-            }
-            return badRequest;
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("token", jwtUtils.generateToken(savedUser.getEmail()));
+            claims.put("type", "Bearer");
+            return new ResponseEntity<>(claims, HttpStatus.OK);
         } catch (AuthenticationException e) {
             return badRequest;
         }
@@ -88,17 +87,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto user) {
+        logger.info(user.getEmail(), user.getPassword());
+        logger.info("Login attempt for {}", user.getEmail());
+        logger.info("with password {}", user.getPassword());
         try {
+            logger.debug("login {}", user.getEmail());
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            logger.debug(authentication.toString());
             if (authentication.isAuthenticated()) {
+                logger.debug("logged in");
                 Map<String, Object> authData = new HashMap<>();
                 authData.put("token", jwtUtils.generateToken(user.getEmail()));
                 authData.put("type", "Bearer");
                 return ResponseEntity.ok(authData);
             }
-            return unauthorized;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error to authenticate");
         } catch (AuthenticationException e) {
-            return unauthorized;
+            logger.error("Authentication failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error to authenticate or Invalid email or password");
         }
     }
 

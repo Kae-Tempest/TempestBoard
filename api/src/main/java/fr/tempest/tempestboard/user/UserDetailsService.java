@@ -38,7 +38,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                user.getAdmin(),
+                true,
                 true, true, true,
                 authorities
         );
