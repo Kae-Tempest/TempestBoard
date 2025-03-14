@@ -19,18 +19,62 @@ services:
       test: [ "CMD", "pg_isready" ]
       timeout: 5s
       retries: 300
-  api:
+    networks:
+      - app-network
+
+
+
+  backend:
     build:
       context: ./api
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./api:/usr/src/app
+      dockerfile: Dockerfile
+    container_name: springboot-dev
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tempesboard
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: root
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#      SPRING_DEVTOOLS_RESTART_ENABLED: 'true'
+#      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: 'true'
+    ports:
+      - "8080:8080"
+      - "35729:35729" # LiveReload port
+    volumes:
+      - ./api:/app
+      - maven-repo:/root/.m2
+    networks:
+      - app-network
+
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: angular-dev
+    depends_on:
+      - backend
+    ports:
+      - "4200:4200" # Angular dev server port
+      - "49153:49153" # Webpack dev server websocket port
+    volumes:
+      - ./frontend:/app
+      - node_modules:/app/node_modules
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+  maven-repo:
+  node_modules:
+
+networks:
+  app-network:
+    driver: bridge
+
 
 #networks:
 #  docker-monitoring_public:
