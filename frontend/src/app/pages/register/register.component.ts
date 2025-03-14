@@ -41,14 +41,12 @@ export class RegisterComponent {
       return;
     }
     this.service.http
-      .post(
-        `http://localhost:8080/api/auth/register`,
-        JSON.stringify({
-          username: username.value,
-          password: password.value,
-          email: email.value,
-        }),
-      )
+      .post(`http://localhost/api/api/auth/register`, {
+        username: username.value,
+        password: password.value,
+        email: email.value,
+        created_at: new Date().toISOString(),
+      })
       .subscribe((data) => {
         console.log(data);
       });
