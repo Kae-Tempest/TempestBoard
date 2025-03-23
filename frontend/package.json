@@ -1,0 +1,36 @@
+{
+  "name": "tempestboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.483.0",
+    "vue": "^3.5.13",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.13.11",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/tsconfig": "^0.7.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-vue": "^10.0.0",
+    "globals": "^16.0.0",
+    "pinia": "^3.0.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "prettier": "^3.5.3",
+    "sass": "^1.86.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.2.0",
+    "vue-eslint-parser": "^10.1.1",
+    "vue-tsc": "^2.2.4"
+  }
+}

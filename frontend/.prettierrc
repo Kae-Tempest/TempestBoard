@@ -1,0 +1,8 @@
+{
+  "printWidth": 120,
+  "useTabs": true,
+  "quoteProps": "consistent",
+  "bracketSameLine": true,
+  "arrowParens": "avoid",
+  "vueIndentScriptAndStyle": true
+}
