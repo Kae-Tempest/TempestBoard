@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import { ContentType } from "../enums/content-type.enum";
-import { ResponseType } from "../enums/response-type.enum";
+import { ContentType } from "@enums/content-type.enum";
+import { ResponseType } from "@enums/response-type.enum";
 
 interface CustomRequestInit extends RequestInit {
 	query?: Record<string, any>;
@@ -11,9 +11,8 @@ export async function useCustomFetch<T>(
 	url: string,
 	options?: CustomRequestInit,
 	contentType = ContentType.applicationJson,
-	responseType = ResponseType.json
+	responseType = ResponseType.json,
 ) {
-
 	const apiBase = import.meta.env.VITE_API_BASE || "";
 	const newURL = new URL(`${apiBase}${url}`);
 
@@ -34,8 +33,8 @@ export async function useCustomFetch<T>(
 	}
 
 	let headers = {
-		Accept: "application/json",
-		"Content-Type": contentType
+		"Accept": "application/json",
+		"Content-Type": contentType,
 	};
 
 	// When uploading a file, the content type should be removed
@@ -48,52 +47,50 @@ export async function useCustomFetch<T>(
 	if (options?.headers) {
 		headers = {
 			...headers,
-			...options.headers
+			...options.headers,
 		};
 	}
 
-	try {
-		const resp = await fetch(newURL, {
-			...options,
-			headers,
-			credentials: "include"
-		});
-		if (resp.status === 204) return resp.statusText as T;
+	// try {
+	const resp = await fetch(newURL, {
+		...options,
+		headers,
+		credentials: "include",
+	});
+	if (resp.status === 204) return resp.statusText as T;
 
-		if (!resp.ok) {
-			let errorDetail: string;
-			try {
-				const errorData = await resp.json();
-				errorDetail = errorData.detail || resp.statusText;
-			} catch (e) {
-				errorDetail = resp.statusText;
-			}
-
-			// Format error message for useHandleError
-			const errorMessage = JSON.stringify({
-				code: resp.status,
-				detail: errorDetail
-			});
-
-
-			throw new Error(errorMessage);
+	if (!resp.ok) {
+		let errorDetail: string;
+		try {
+			const errorData = await resp.json();
+			errorDetail = errorData.detail || resp.statusText;
+		} catch (e) {
+			errorDetail = resp.statusText;
 		}
-		// Handle successful response based on responseType
-		if (responseType === ResponseType.json) {
-			return await resp.json();
-		} else if (responseType === ResponseType.blob) {
-			return await resp.blob() as T;
-		} else if (responseType === ResponseType.text) {
-			return await resp.text() as T;
-		}
-		return resp;
 
-	} catch (error) {
-		// Handle unknown errors
-		const unknownError = JSON.stringify({
-			code: 500,
-			detail: "An unexpected error occurred"
+		// Format error message for useHandleError
+		const errorMessage = JSON.stringify({
+			code: resp.status,
+			detail: errorDetail,
 		});
-		throw new Error(unknownError);
+
+		throw new Error(errorMessage);
 	}
+	// Handle successful response based on responseType
+	if (responseType === ResponseType.json) {
+		return await resp.json();
+	} else if (responseType === ResponseType.blob) {
+		return (await resp.blob()) as T;
+	} else if (responseType === ResponseType.text) {
+		return (await resp.text()) as T;
+	}
+	return resp;
+	// } catch (error) {
+	// 	// Handle unknown errors
+	// 	const unknownError = JSON.stringify({
+	// 		code: 500,
+	// 		detail: "An unexpected error occurred: " + error,
+	// 	});
+	// 	throw new Error(unknownError);
+	// }
 }

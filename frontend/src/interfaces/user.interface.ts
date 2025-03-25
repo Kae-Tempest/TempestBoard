@@ -1,7 +1,7 @@
 import type { Role } from "./role.interface";
 
 export interface User {
-	id: number;
+	ID: number;
 	username: string;
 	email: string;
 	firstName?: string;

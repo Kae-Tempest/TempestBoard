@@ -1,80 +1,79 @@
 <script lang="ts" setup>
-	import Navbar from "../components/Navbar.vue";
+	import Navbar from "@components/Navbar.vue";
 	import { CalendarFold, Pencil, Plus, Settings, Trash, User } from "lucide-vue-next";
 	import { ref } from "vue";
-	import CreateModal from "../components/Modal/Project/CreateModal.vue";
+	import CreateModal from "@components/Modal/Project/CreateModal.vue";
 
-	const projects = ref(
-		[
-			{
+	const projects = ref([
+		{
+			id: 1,
+			name: "TempestBoard",
+			owner: {
 				id: 1,
-				name: "TempestBoard",
-				owner: {
-					id: 1,
-					username: "kae",
-					email: "kae.tempest@gloupi.com",
-					roles: [],
-					admin: false
-				},
-				description:
-					"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur corporis cumque dolorum est ipsum, nam perferendis repellat tempora veritatis? Accusantium autem dolores molestias nobis quos voluptate voluptatum? Aperiam assumenda commodi consectetur dolore, doloremque dolores dolorum expedita, fuga illo iusto minus nisi placeat quas quasi rerum sit tempora totam voluptates?",
-				users: [
-					{
-						id: 1,
-						username: "kae",
-						email: "kae.tempest@gloupi.com",
-						roles: [],
-						admin: false
-					}
-				],
-				createdAt: new Date(),
-				updatedAt: new Date()
+				username: "kae",
+				email: "kae.tempest@gloupi.com",
+				roles: [],
+				admin: false,
 			},
-			{
-				id: 1,
-				name: "TempestBoard",
-				owner: {
+			description:
+				"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur corporis cumque dolorum est ipsum, nam perferendis repellat tempora veritatis? Accusantium autem dolores molestias nobis quos voluptate voluptatum? Aperiam assumenda commodi consectetur dolore, doloremque dolores dolorum expedita, fuga illo iusto minus nisi placeat quas quasi rerum sit tempora totam voluptates?",
+			users: [
+				{
 					id: 1,
 					username: "kae",
 					email: "kae.tempest@gloupi.com",
 					roles: [],
-					admin: false
+					admin: false,
 				},
-				users: [
-					{
-						id: 1,
-						username: "kae",
-						email: "kae.tempest@gloupi.com",
-						roles: [],
-						admin: false
-					}
-				],
-				createdAt: new Date(),
-				updatedAt: new Date()
+			],
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		},
+		{
+			id: 1,
+			name: "TempestBoard",
+			owner: {
+				id: 1,
+				username: "kae",
+				email: "kae.tempest@gloupi.com",
+				roles: [],
+				admin: false,
 			},
-			{
-				id: 1,
-				name: "TempestBoard",
-				owner: {
+			users: [
+				{
 					id: 1,
 					username: "kae",
 					email: "kae.tempest@gloupi.com",
 					roles: [],
-					admin: false
+					admin: false,
 				},
-				users: [
-					{
-						id: 1,
-						username: "kae",
-						email: "kae.tempest@gloupi.com",
-						roles: [],
-						admin: false
-					}
-				],
-				createdAt: new Date(),
-				updatedAt: new Date()
-			}
-		]);
+			],
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		},
+		{
+			id: 1,
+			name: "TempestBoard",
+			owner: {
+				id: 1,
+				username: "kae",
+				email: "kae.tempest@gloupi.com",
+				roles: [],
+				admin: false,
+			},
+			users: [
+				{
+					id: 1,
+					username: "kae",
+					email: "kae.tempest@gloupi.com",
+					roles: [],
+					admin: false,
+				},
+			],
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		},
+	]);
 
 	const modalRef = ref<InstanceType<typeof CreateModal> | null>(null);
 
@@ -83,7 +82,6 @@
 			modalRef.value.openModal();
 		}
 	};
-
 </script>
 
 <template>
@@ -94,14 +92,14 @@
 			<div class="container">
 				<header>
 					<h1 class="title">Project</h1>
-					<hr class="separator">
+					<hr class="separator" />
 				</header>
 				<main>
 					<button class="create-button" @click="openModalFromParent()">
 						<Plus />
 					</button>
 					<div class="project-list">
-						<div v-for="project in projects" class="card">
+						<div v-for="project in projects" :key="project.id" class="card">
 							<div class="media">
 								<div class="bg"></div>
 							</div>
@@ -113,7 +111,7 @@
 										project.createdAt?.toLocaleString("en-GB", {
 											day: "numeric",
 											month: "short",
-											year: "numeric"
+											year: "numeric",
 										})
 									}}
 								</div>

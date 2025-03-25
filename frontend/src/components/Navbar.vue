@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-	import LogoBack from "../assets/images/logo_text_black.svg";
-	import defaultUser from "../assets/images/user.png";
+	import LogoBack from "@img/logo_text_black.svg";
+	import defaultUser from "@img/user.png";
 	import { Search, SquarePen } from "lucide-vue-next";
 	import { onBeforeUnmount, onMounted, ref } from "vue";
 	import ProjectMenu from "./Menu/ProjectMenu.vue";
@@ -16,12 +16,12 @@
 				username: "kae",
 				email: "kae.tempest@gloupi.com",
 				roles: [],
-				admin: false
+				admin: false,
 			},
 			users: [],
 			createdAt: new Date(),
-			updatedAt: new Date()
-		}
+			updatedAt: new Date(),
+		},
 	]);
 
 	const openDropdown = () => {
@@ -41,7 +41,6 @@
 	onBeforeUnmount(() => {
 		document.removeEventListener("click", handleClickOutside);
 	});
-
 </script>
 
 <template>
@@ -52,7 +51,7 @@
 				<div class="dropdown-trigger" @click="openDropdown()">
 					<img :src="defaultUser" alt="user thumbnail" class="dropdown-thumbnail" />
 				</div>
-				<div :class="{ 'active': isOpen }" class="dropdown-menu">
+				<div :class="{ active: isOpen }" class="dropdown-menu">
 					<menu>
 						<li>Profile</li>
 						<RouterLink to="/project">
@@ -78,7 +77,7 @@
 			<menu>
 				<li>My Issue</li>
 				<li>
-					<menu v-for="project in projects" class="menu">
+					<menu v-for="project in projects" :key="project.id" class="menu">
 						<ProjectMenu :project="project" />
 					</menu>
 				</li>

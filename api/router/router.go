@@ -22,9 +22,11 @@ func chain(h http.Handler, middlewares ...func(http.Handler) http.Handler) http.
 func Router(s *http.ServeMux, a *core.App) {
 	s.HandleFunc("/login", a.Controllers.Auth.HandleLogin)
 	s.HandleFunc("/register", a.Controllers.Auth.HandleRegister)
-	s.Handle("/user/me", chain(
+	s.Handle("/users/me", chain(
 		http.HandlerFunc(a.Controllers.User.Me),
-		middleware.AuthMiddleware,
-	))
+		middleware.AuthMiddleware))
+	s.Handle("/projects", chain(
+		http.HandlerFunc(a.Controllers.Project.Create),
+		middleware.AuthMiddleware))
 
 }

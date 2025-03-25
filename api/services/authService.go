@@ -137,7 +137,7 @@ func (s *AuthService) RegisterService(w http.ResponseWriter, r *http.Request) {
 
 func creatToken(userID uint) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": userID,
+		"sub": fmt.Sprintf("%d", userID),
 		"iss": "tempestboard",
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 		"iat": time.Now().Unix(),

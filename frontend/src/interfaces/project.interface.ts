@@ -10,3 +10,11 @@ export interface Project {
 	createdAt?: Date;
 	updatedAt?: Date;
 }
+
+export interface ProjectPayload {
+	name: string;
+	description?: string;
+	owner: number;
+	thumbnail?: File | null;
+	state: string;
+}
