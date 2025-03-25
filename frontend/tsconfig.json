@@ -1,36 +1,11 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
-  "compilerOptions": {
-    "types": [
-      "node"
-    ],
-    "paths": {
-      "@img/*": [
-        "./src/assets/images/*"
-      ],
-      "@interfaces/*": [
-        "./src/interfaces/*"
-      ],
-      "@pages/*": [
-        "./src/pages/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "@enums/*": [
-        "./src/enums/*"
-      ],
-      "@composable/*": [
-        "./src/composable/*"
-      ]
-    }
-  }
-}
+        "files": [],
+        "references": [
+          {
+            "path": "./tsconfig.app.json"
+          },
+          {
+            "path": "./tsconfig.node.json"
+          }
+        ],
+      }
