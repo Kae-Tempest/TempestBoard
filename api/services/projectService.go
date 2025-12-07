@@ -2,11 +2,11 @@ package services
 
 import (
 	"database/sql"
-	"fmt"
-	"gorm.io/gorm"
 	"net/http"
 	"tempestboard/core/utils"
 	"tempestboard/models"
+
+	"gorm.io/gorm"
 )
 
 type ProjectService struct {
@@ -20,6 +20,7 @@ func NewProjectService(db *gorm.DB) *ProjectService {
 func (s *ProjectService) CreateProject(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
 	var p models.Project
@@ -28,8 +29,8 @@ func (s *ProjectService) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	err := utils.BodyDecoder(r, &dto)
 	if err != nil {
-		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if dto.OwnerID == 0 {
@@ -46,7 +47,6 @@ func (s *ProjectService) CreateProject(w http.ResponseWriter, r *http.Request) {
 	if dto.Thumbnail != nil {
 		filePath, err := utils.SaveFileToDisk(dto.Thumbnail, "thumbnail", dto.Name, dto.ThumbnailExt)
 		if err != nil {
-			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

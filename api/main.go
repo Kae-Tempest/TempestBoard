@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +11,8 @@ import (
 	"tempestboard/database"
 	"tempestboard/models"
 	"tempestboard/router"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -21,8 +22,8 @@ func main() {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
 
-	app, err := newApp()
-	if err != nil {
+	app, appErr := app()
+	if appErr != nil {
 		fmt.Printf("Failed to initialize application: %v\n", err)
 		os.Exit(1)
 	}
@@ -39,7 +40,7 @@ func main() {
 	}
 }
 
-func newApp() (*core.App, error) {
+func app() (*core.App, error) {
 	db, err := database.NewConnection()
 	if err != nil {
 		return nil, fmt.Errorf("database connection error: %v", err)

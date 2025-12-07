@@ -2,32 +2,21 @@ package services
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"net/http"
 	"os"
 	"tempestboard/core/utils"
 	"tempestboard/models"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 var secretKey = []byte(os.Getenv("SECRET_KEY"))
 
 type AuthService struct {
 	db *gorm.DB
-}
-
-type loginDto struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type registerDto struct {
-	Username        string `json:"username" binding:"required"`
-	Email           string `json:"email" binding:"required"`
-	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirm_password" binding:"required"`
 }
 
 func NewAuthService(db *gorm.DB) *AuthService {
@@ -37,24 +26,27 @@ func NewAuthService(db *gorm.DB) *AuthService {
 func (s *AuthService) LoginService(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
-	var a loginDto
+	var a models.LoginDto
 	var u models.User
 
 	err := utils.BodyDecoder(r, &a)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	s.db.First(&u, "email = ?", a.Email)
 
 	match := checkPasswordHash(a.Password, u.Password)
 	if !match {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 
-	token, err := creatToken(u.ID)
-	if err != nil {
+	token, tokenErr := creatToken(u.ID)
+	if tokenErr != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
@@ -79,18 +71,19 @@ func (s *AuthService) LoginService(w http.ResponseWriter, r *http.Request) {
 func (s *AuthService) RegisterService(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
-	var a registerDto
+	var a models.RegisterDto
 	var u models.User
 
 	err := utils.BodyDecoder(r, &a)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	if a.Password != a.ConfirmPassword {
-		fmt.Printf("Passwords do not match, %s, %s\n", a.Password, a.ConfirmPassword)
 		http.Error(w, "Passwords isn't same", http.StatusBadRequest)
 		return
 	}
@@ -98,6 +91,7 @@ func (s *AuthService) RegisterService(w http.ResponseWriter, r *http.Request) {
 	hashedPwd, err := hashPassword(a.Password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	u.Email = a.Email

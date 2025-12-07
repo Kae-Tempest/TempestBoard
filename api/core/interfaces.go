@@ -1,8 +1,9 @@
 package core
 
 import (
-	"gorm.io/gorm"
 	"tempestboard/controllers"
+
+	"gorm.io/gorm"
 )
 
 type App struct {

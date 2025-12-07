@@ -2,14 +2,15 @@ package database
 
 import (
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"os"
 	"strconv"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func NewConnection() (*gorm.DB, error) {
-	
+
 	port, err := strconv.ParseInt(os.Getenv("DB_PORT"), 10, 64)
 	if err != nil {
 		return nil, err
@@ -22,9 +23,9 @@ func NewConnection() (*gorm.DB, error) {
 		os.Getenv("DB_NAME"),
 		port)
 
-	db, err := gorm.Open(postgres.New(postgres.Config{
+	db, dbErr := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
-	return db, err
+	return db, dbErr
 }
