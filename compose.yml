@@ -1,0 +1,84 @@
+services:
+
+  haproxy:
+    image: haproxy:2.8-alpine
+    container_name: haproxy-threads
+    ports:
+      - "80:80"  # HTTP
+      - "443:443" # HTTPS (if needed later)
+      - "8404:8404" # Stats page
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - TempestBoard
+
+  db:
+    image: postgres:16-alpine
+    command: postgres -c config_file=/etc/postgresql.conf
+    shm_size: '4gb'
+    ulimits:
+      nofile:
+        soft: 98304
+        hard: 98304
+    ports:
+      - "6932:5432"
+    volumes:
+      - ./docker/postgresql/postgresql.conf:/etc/postgresql.conf
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    restart: always
+    networks:
+      - TempestBoard
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      timeout: 5s
+      retries: 300
+
+  api:
+    build:
+      context: ./api
+    container_name: api-go
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./api/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api:/app
+    tty: true
+    networks:
+      - TempestBoard
+      - docker-monitoring_public
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: web
+    networks:
+      - TempestBoard
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  TempestBoard:
+    driver: bridge
+    name: TempestBoard
+  docker-monitoring_public:
+    external: true
+    name: docker-monitoring_public
