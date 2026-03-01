@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -9,9 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var DB *sqlx.DB
-
-func InitDB() error {
+func InitDB() (*sqlx.DB, error) {
 	dbUser := os.Getenv("DB_USER")
 	dbName := os.Getenv("DB_NAME")
 	dbPass := os.Getenv("DB_PASS")
@@ -29,12 +27,11 @@ func InitDB() error {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPass, dbName, dbSSLMode)
 
-	var err error
-	DB, err = sqlx.Connect("postgres", dsn)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %w", err)
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	log.Println("Database connection established")
-	return nil
+	return db, nil
 }

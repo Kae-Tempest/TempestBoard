@@ -41,7 +41,7 @@ services:
 
   api:
     build:
-      context: ./api
+      context: ./api/deploy
     container_name: api-go
     depends_on:
       db:

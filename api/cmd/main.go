@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	i "tempestboard.com/m/v2/internal"
 )
 
 func main() {
@@ -16,14 +17,15 @@ func main() {
 		slog.Warn("Could not load .env file", "error", err)
 	}
 
-	if err := InitDB(); err != nil {
+	db, err := i.InitDB()
+	if err != nil {
 		slog.Error("Failed to connect to database", "error", err)
 		os.Exit(1)
 	}
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))
 
 	ctx := context.Background()
-	shutdown, err := SetupOTelSDK(ctx)
+	shutdown, err := i.SetupOTelSDK(ctx)
 	if err != nil {
 		logger.Error("Failed to initialize OpenTelemetry: %v\n", err)
 		os.Exit(1)
@@ -32,9 +34,9 @@ func main() {
 		_ = shutdown(context.Background())
 	}()
 
-	accountRepo := NewAccountRepository(DB)
-	accountService := NewAccountService(accountRepo, logger)
-	AccountHandler := NewAccountHandler(accountService)
+	accountRepo := i.NewAccountRepository(db)
+	accountService := i.NewAccountService(accountRepo, logger)
+	AccountHandler := i.NewAccountHandler(accountService)
 
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
