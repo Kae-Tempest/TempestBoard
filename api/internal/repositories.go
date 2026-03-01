@@ -47,3 +47,45 @@ func (r *accountRepository) Update(ctx context.Context, user *User) error {
 		user.Email, user.Username, user.FirstName, user.LastName, user.ID)
 	return err
 }
+
+func (r *accountRepository) UpdatePassword(ctx context.Context, password string, id string) error {
+	_, err := r.db.ExecContext(ctx,
+		`UPDATE users SET password = $1 WHERE id = $2`,
+		password, id)
+	return err
+}
+
+type passwordResetTokenRepository struct {
+	db *sqlx.DB
+}
+
+func NewPasswordResetTokenRepository(db *sqlx.DB) PasswordResetTokenRepository {
+	return &passwordResetTokenRepository{db: db}
+}
+
+func (r *passwordResetTokenRepository) Create(ctx context.Context, token *PasswordResetToken) error {
+	_, err := r.db.ExecContext(ctx, `INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)`,
+		token.UserID, token.Token, token.ExpiresAt)
+	return err
+}
+
+func (r *passwordResetTokenRepository) GetByToken(ctx context.Context, token string) (*PasswordResetToken, error) {
+	var rt PasswordResetToken
+	err := r.db.GetContext(ctx, &rt, `SELECT * FROM password_reset_tokens WHERE token = $1`, token)
+	if err != nil {
+		return nil, err
+	}
+
+	var u User
+	err = r.db.GetContext(ctx, &u, `SELECT * FROM users WHERE id = $1`, rt.UserID)
+	if err != nil {
+		return nil, err
+	}
+	rt.User = u
+	return &rt, nil
+}
+
+func (r *passwordResetTokenRepository) DeleteByUserID(ctx context.Context, userID uint) error {
+	_, err := r.db.ExecContext(ctx, `DELETE FROM password_reset_tokens WHERE user_id = $1`, userID)
+	return err
+}

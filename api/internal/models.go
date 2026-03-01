@@ -163,3 +163,27 @@ type CommentDto struct {
 	IsResolved    bool   `json:"is_resolved"`
 	Attachments   string `json:"attachments"`
 }
+
+type PasswordResetToken struct {
+	AutoIncr
+	UserID    uint      `json:"user_id" db:"user_id"`
+	User      User      `json:"-"`
+	Token     string    `json:"token" db:"token"`
+	ExpiresAt time.Time `json:"expires_at" db:"expires_at"`
+}
+
+type ForgotPasswordDto struct {
+	Email string `json:"email" binding:"required"`
+}
+
+type ResetPasswordDto struct {
+	Token           string `json:"token" binding:"required"`
+	NewPassword     string `json:"new_password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" binding:"required"`
+}
+
+type PasswordDto struct {
+	NewPassword        string `json:"new_password"`
+	ConfirmNewPassWord string `json:"confirm_new_password"`
+	CurrentPassword    string `json:"current_password"`
+}

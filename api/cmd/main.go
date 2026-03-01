@@ -35,11 +35,20 @@ func main() {
 	}()
 
 	accountRepo := i.NewAccountRepository(db)
-	accountService := i.NewAccountService(accountRepo, logger)
+	resetRepo := i.NewPasswordResetTokenRepository(db)
+	emailService := i.NewEmailService(logger)
+	accountService := i.NewAccountService(accountRepo, resetRepo, emailService, logger)
 	AccountHandler := i.NewAccountHandler(accountService)
 
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
+	mux.Handle("POST /register", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Register), "Register"))
+	mux.Handle("POST /forgot-password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ForgotPassword), "ForgotPassword"))
+	mux.Handle("POST /reset-password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ResetPassword), "ResetPassword"))
+
+	// Protected routes
+	mux.Handle("GET /users/me", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Me), "Me")))
+	mux.Handle("PUT /users/update-password", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.UpdatePassword), "UpdatePassword")))
 
 	slog.Info("Server listening on :8080")
 
