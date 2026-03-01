@@ -34,3 +34,16 @@ func (r *accountRepository) GetByEmail(ctx context.Context, email string) (*User
 	}
 	return &user, nil
 }
+
+func (r *accountRepository) Create(ctx context.Context, user *User) error {
+	_, err := r.db.ExecContext(ctx, `INSERT INTO users (email, password, username) VALUES ($1, $2, $3)`,
+		user.Email, user.Password, user.Username)
+	return err
+}
+
+func (r *accountRepository) Update(ctx context.Context, user *User) error {
+	_, err := r.db.ExecContext(ctx,
+		`UPDATE users SET email = $1, username = $2, first_name = $3, last_name = $4 WHERE id = $5`,
+		user.Email, user.Username, user.FirstName, user.LastName, user.ID)
+	return err
+}

@@ -57,3 +57,33 @@ func (h *AccountHandler) Login(w http.ResponseWriter, r *http.Request) {
 		span.RecordError(err)
 	}
 }
+
+func (h *AccountHandler) Register(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("account-handler").Start(r.Context(), "Register")
+	defer span.End()
+
+	var req RegisterDto
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token, err := h.service.Register(ctx, req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+
+	h.setTokenCookie(w, token)
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write([]byte("{}")); err != nil {
+		span.RecordError(err)
+	}
+}

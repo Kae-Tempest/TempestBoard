@@ -49,3 +49,26 @@ func (s *AccountService) Login(ctx context.Context, email, password string) (str
 
 	return s.createToken(user.ID)
 }
+
+func (s *AccountService) Register(ctx context.Context, req RegisterDto) (string, error) {
+	if req.Password != req.ConfirmPassword {
+		return "", errors.New("passwords do not match")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
+	if err != nil {
+		return "", err
+	}
+
+	user := &User{
+		Username: req.Username,
+		Email:    req.Email,
+		Password: string(hashedPassword),
+	}
+
+	if err := s.repo.Create(ctx, user); err != nil {
+		return "", err
+	}
+
+	return s.createToken(user.ID)
+}
