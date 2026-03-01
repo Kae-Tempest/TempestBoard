@@ -16,6 +16,18 @@ func NewAccountHandler(service *AccountService) *AccountHandler {
 	return &AccountHandler{service: service}
 }
 
+func (h *AccountHandler) setTokenCookie(w http.ResponseWriter, token string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "token",
+		Value:    token,
+		MaxAge:   86400,
+		Path:     "/",
+		Secure:   false,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+}
+
 func (h *AccountHandler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer("account-handler").Start(r.Context(), "Login")
 	defer span.End()
