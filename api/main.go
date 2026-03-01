@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 func main() {
@@ -31,7 +32,12 @@ func main() {
 		_ = shutdown(context.Background())
 	}()
 
+	accountRepo := NewAccountRepository(DB)
+	accountService := NewAccountService(accountRepo, logger)
+	AccountHandler := NewAccountHandler(accountService)
+
 	mux := http.NewServeMux()
+	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
 
 	slog.Info("Server listening on :8080")
 
