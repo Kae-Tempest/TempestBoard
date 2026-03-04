@@ -6,6 +6,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+/////////////////////////
+// ACCOUNT REPOSITORY //
+////////////////////////
+
 type accountRepository struct {
 	db *sqlx.DB
 }
@@ -17,7 +21,7 @@ func NewAccountRepository(db *sqlx.DB) UserRepository {
 func (r *accountRepository) GetByID(ctx context.Context, id string) (*User, error) {
 	var user User
 
-	err := r.db.GetContext(ctx, `SELECT * FROM users WHERE id = $1`, id)
+	err := r.db.GetContext(ctx, &user, `SELECT * FROM users WHERE id = $1`, id)
 
 	if err != nil {
 		return nil, err
@@ -27,7 +31,7 @@ func (r *accountRepository) GetByID(ctx context.Context, id string) (*User, erro
 
 func (r *accountRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
 	var user User
-	err := r.db.GetContext(ctx, `SELECT * FROM users WHERE email = $1`, email)
+	err := r.db.GetContext(ctx, &user, `SELECT * FROM users WHERE email = $1`, email)
 
 	if err != nil {
 		return nil, err
@@ -54,6 +58,10 @@ func (r *accountRepository) UpdatePassword(ctx context.Context, password string,
 		password, id)
 	return err
 }
+
+//////////////////////////
+// PASSWORD REPOSITORY //
+/////////////////////////
 
 type passwordResetTokenRepository struct {
 	db *sqlx.DB
@@ -88,4 +96,87 @@ func (r *passwordResetTokenRepository) GetByToken(ctx context.Context, token str
 func (r *passwordResetTokenRepository) DeleteByUserID(ctx context.Context, userID uint) error {
 	_, err := r.db.ExecContext(ctx, `DELETE FROM password_reset_tokens WHERE user_id = $1`, userID)
 	return err
+}
+
+/////////////////////////
+// PROJECT REPOSITORY //
+////////////////////////
+
+type projectRepository struct {
+	db *sqlx.DB
+}
+
+func NewProjectRepository(db *sqlx.DB) ProjectRepository {
+	return &projectRepository{db: db}
+}
+
+func (r *projectRepository) GetByID(ctx context.Context, id string) (*Project, error) {
+	var p Project
+
+	err := r.db.GetContext(ctx, &p, `SELECT * FROM projects WHERE id = $1`, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
+}
+
+func (r *projectRepository) GetByName(ctx context.Context, name string) ([]*Project, error) {
+	var p []*Project
+
+	err := r.db.SelectContext(ctx, &p, `SELECT * FROM projects WHERE name LIKE '%' || $1 || '%'`, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (r *projectRepository) GetByOwner(ctx context.Context, ownerID string) ([]*Project, error) {
+	var p []*Project
+
+	err := r.db.SelectContext(ctx, &p, `SELECT * FROM projects WHERE owner_id = $1`, ownerID)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (r *projectRepository) GetByTagName(ctx context.Context, tagName string) ([]*Project, error) {
+	var p []*Project
+
+	err := r.db.SelectContext(ctx, &p, `SELECT * FROM projects WHERE tag_name = $1`, tagName)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (r *projectRepository) GetByState(ctx context.Context, state string) ([]*Project, error) {
+	var p []*Project
+
+	err := r.db.SelectContext(ctx, &p, `SELECT * FROM projects WHERE state = $1`, state)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (r *projectRepository) Create(ctx context.Context, project *Project) error {
+	return nil
+}
+
+func (r *projectRepository) Update(ctx context.Context, project *Project) error {
+	return nil
+}
+
+func (r *projectRepository) Delete(ctx context.Context, projectID string) error {
+	return nil
+}
+
+func (r *projectRepository) DeleteThumbnail(ctx context.Context, projectID string) error {
+	return nil
 }

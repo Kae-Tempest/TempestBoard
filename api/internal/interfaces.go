@@ -1,6 +1,8 @@
 package internal
 
-import "context"
+import (
+	"context"
+)
 
 type UserRepository interface {
 	GetByID(ctx context.Context, id string) (*User, error)
@@ -14,4 +16,16 @@ type PasswordResetTokenRepository interface {
 	Create(ctx context.Context, token *PasswordResetToken) error
 	GetByToken(ctx context.Context, token string) (*PasswordResetToken, error)
 	DeleteByUserID(ctx context.Context, userID uint) error
+}
+
+type ProjectRepository interface {
+	GetByID(ctx context.Context, id string) (*Project, error)
+	GetByOwner(ctx context.Context, ownerID string) ([]*Project, error)
+	GetByName(ctx context.Context, name string) ([]*Project, error)
+	GetByTagName(ctx context.Context, tagName string) ([]*Project, error)
+	GetByState(ctx context.Context, state string) ([]*Project, error)
+	Create(ctx context.Context, project *Project) error
+	Update(ctx context.Context, project *Project) error
+	Delete(ctx context.Context, projectID string) error
+	DeleteThumbnail(ctx context.Context, projectID string) error
 }

@@ -39,6 +39,7 @@ func main() {
 	emailService := i.NewEmailService(logger)
 	accountService := i.NewAccountService(accountRepo, resetRepo, emailService, logger)
 	AccountHandler := i.NewAccountHandler(accountService)
+	// projectRepo := i.NewProjectRepository(db)
 
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
