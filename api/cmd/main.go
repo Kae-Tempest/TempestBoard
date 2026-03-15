@@ -39,7 +39,9 @@ func main() {
 	emailService := i.NewEmailService(logger)
 	accountService := i.NewAccountService(accountRepo, resetRepo, emailService, logger)
 	AccountHandler := i.NewAccountHandler(accountService)
-	// projectRepo := i.NewProjectRepository(db)
+	projectRepo := i.NewProjectRepository(db)
+	projectService := i.NewProjectService(projectRepo, accountRepo, logger)
+	ProjectHandler := i.NewProjectHandler(projectService)
 
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
@@ -50,6 +52,8 @@ func main() {
 	// Protected routes
 	mux.Handle("GET /users/me", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Me), "Me")))
 	mux.Handle("PUT /users/update-password", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.UpdatePassword), "UpdatePassword")))
+
+	mux.Handle("GET /project/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.GetByID), "GetByID")))
 
 	slog.Info("Server listening on :8080")
 

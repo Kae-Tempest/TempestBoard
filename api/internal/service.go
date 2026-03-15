@@ -3,12 +3,14 @@ package internal
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"log/slog"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -195,5 +197,92 @@ func (s *AccountService) UpdatePassword(ctx context.Context, req PasswordDto, us
 		return err
 	}
 
+	return nil
+}
+
+type ProjectService struct {
+	repo     ProjectRepository
+	userRepo UserRepository
+	log      *slog.Logger
+}
+
+func NewProjectService(repo ProjectRepository, userRepo UserRepository, log *slog.Logger) *ProjectService {
+	return &ProjectService{repo: repo, userRepo: userRepo, log: log}
+}
+
+func (s *ProjectService) GetByID(ctx context.Context, id string) (*Project, error) {
+	return s.repo.GetByID(ctx, id)
+}
+
+func (s *ProjectService) GetByOwner(ctx context.Context, ownerID string) ([]*Project, error) {
+	return s.repo.GetByOwner(ctx, ownerID)
+}
+
+func (s *ProjectService) GetByName(ctx context.Context, name string) ([]*Project, error) {
+	return s.repo.GetByName(ctx, name)
+}
+
+func (s *ProjectService) GetByTagName(ctx context.Context, tagName string) ([]*Project, error) {
+	return s.repo.GetByTagName(ctx, tagName)
+}
+
+func (s *ProjectService) Create(ctx context.Context, project ProjectDto) (*Project, error) {
+
+	user, err := s.userRepo.GetByID(ctx, strconv.Itoa(int(project.OwnerID)))
+
+	if err != nil {
+		return nil, err
+	}
+
+	cp := &Project{
+		OwnerID:     uint(project.OwnerID),
+		Users:       []User{*user},
+		Name:        project.Name,
+		Description: project.Description,
+		State:       project.State,
+		TagName:     strings.ToUpper(project.Name[:3]),
+		Thumbnail:   sql.NullString{},
+	}
+
+	if err := s.repo.Create(ctx, cp); err != nil {
+		return nil, err
+	}
+
+	p, err := s.repo.GetByName(ctx, cp.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return p[0], nil
+}
+
+func (s *ProjectService) Update(ctx context.Context, project *Project) (*Project, error) {
+	p, err := s.repo.GetByID(ctx, strconv.Itoa(int(project.ID)))
+	if err != nil {
+		return nil, err
+	}
+
+	if p.Name != project.Name {
+		p.TagName = strings.ToUpper(project.Name[:3])
+	}
+
+	p.Name = project.Name
+	p.State = project.State
+	p.Description = project.Description
+	p.Users = project.Users
+
+	if err := s.repo.Update(ctx, p); err != nil {
+		return nil, err
+	}
+
+	return p, nil
+
+}
+
+func (s *ProjectService) Delete(ctx context.Context, ID string) error {
+	err := s.repo.Delete(ctx, ID)
+	if err != nil {
+		return err
+	}
 	return nil
 }

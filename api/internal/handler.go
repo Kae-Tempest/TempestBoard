@@ -205,3 +205,30 @@ func (h *AccountHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	})
 	w.WriteHeader(http.StatusOK)
 }
+
+type ProjectHandler struct {
+	service *ProjectService
+}
+
+func NewProjectHandler(service *ProjectService) *ProjectHandler {
+	return &ProjectHandler{service: service}
+}
+
+func (h *ProjectHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "GetByID")
+
+	p, err := h.service.GetByID(ctx, r.PathValue("id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+}

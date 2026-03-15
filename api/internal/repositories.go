@@ -166,17 +166,48 @@ func (r *projectRepository) GetByState(ctx context.Context, state string) ([]*Pr
 }
 
 func (r *projectRepository) Create(ctx context.Context, project *Project) error {
-	return nil
+	_, err := r.db.ExecContext(ctx, `
+			WITH inserted_project AS (
+			    INSERT INTO projects (name, description, tag_name, state, owner_id)
+			    VALUES ($1, $2, $3, $4, $5)
+			    RETURNING id
+			)
+			INSERT INTO project_users (project_id, user_id)
+			SELECT id, $5
+			FROM inserted_project;
+		`,
+		project.Name, project.Description, project.TagName, project.State, project.OwnerID)
+	return err
 }
 
 func (r *projectRepository) Update(ctx context.Context, project *Project) error {
+	_, err := r.db.ExecContext(ctx, `
+		    WITH updated_project AS (
+		    	UPDATE projects
+		    	SET name = $1, description = $2, tag_name = $3, state = $4
+		    	WHERE id = $5
+		    	RETURNING id
+		    ),
+		    deleted AS (
+				DELETE FROM project_users
+		    	WHERE project_id = (SELECT id FROM updated_project)
+		    )
+		    INSERT INTO project_users (project_id, user_id)
+		    SELECT (SELECT id FROM updated_project), UNNEST($6::int[])
+		`,
+		project.Name, project.Description, project.TagName, project.State, project.ID, project.Users)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (r *projectRepository) Delete(ctx context.Context, projectID string) error {
-	return nil
+	_, err := r.db.ExecContext(ctx, `DELETE FROM projects WHERE id = $1`, projectID)
+	return err
 }
 
 func (r *projectRepository) DeleteThumbnail(ctx context.Context, projectID string) error {
-	return nil
+	_, err := r.db.ExecContext(ctx, `UPDATE projects SET thumbnail = NULL WHERE id = $1`, projectID)
+	return err
 }
