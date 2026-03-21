@@ -211,3 +211,70 @@ func (r *projectRepository) DeleteThumbnail(ctx context.Context, projectID strin
 	_, err := r.db.ExecContext(ctx, `UPDATE projects SET thumbnail = NULL WHERE id = $1`, projectID)
 	return err
 }
+
+////////////////////////
+/// ISSUE REPOSITORY ///
+////////////////////////
+
+type issueRepository struct {
+	db *sqlx.DB
+}
+
+func NewIssueRepository(db *sqlx.DB) IssueRepository {
+	return &issueRepository{db: db}
+}
+
+func (r *issueRepository) GetByID(ctx context.Context, id string) (*Issue, error) {
+	var i Issue
+
+	err := r.db.GetContext(ctx, &i, "SELECT * FROM issues WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &i, nil
+}
+
+func (r *issueRepository) GetAll(ctx context.Context, userId string) ([]*Issue, error) {
+	var i []*Issue
+
+	err := r.db.SelectContext(ctx, &i, "SELECT * FROM issues WHERE creator_id = $1 OR assigned_id = $1", userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return i, nil
+}
+
+func (r *issueRepository) Create(ctx context.Context, issue *Issue) error {
+	_, err := r.db.ExecContext(ctx, `INSERT INTO issues 
+    (creator_id, assigned_id, project_id, issue_number, description, priority_id, state_id, attachment) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+		issue.CreatorID, issue.AssignedID, issue.ProjectID, issue.IssueNumber, issue.Description, issue.Priority.ID, issue.State.ID, issue.Attachment.String)
+	return err
+}
+
+func (r *issueRepository) Update(ctx context.Context, issue *Issue) error {
+	_, err := r.db.ExecContext(ctx, `UPDATE issues SET description = $1, priority_id = $2, state_id = $3, attachment = $4, assigned_id = $5 WHERE id = $6`,
+		issue.Description, issue.Priority.ID, issue.State.ID, issue.Attachment.String, issue.AssignedID, issue.ID)
+	return err
+}
+
+func (r *issueRepository) Delete(ctx context.Context, issueID string) error {
+	_, err := r.db.ExecContext(ctx, `DELETE FROM issues WHERE id = $1`, issueID)
+	return err
+}
+
+func (r *issueRepository) DeleteAttachment(ctx context.Context, issueID string) error {
+	_, err := r.db.ExecContext(ctx, `UPDATE issues SET attachment = NULL WHERE id = $1`, issueID)
+	return err
+}
+
+func (r *issueRepository) GetProjectIssueNumber(ctx context.Context, projectID string) (int16, error) {
+	var issueNumber int16
+	err := r.db.GetContext(ctx, &issueNumber, `SELECT COUNT(*) FROM issues WHERE project_id = $1`, projectID)
+	if err != nil {
+		return 0, err
+	}
+	return issueNumber, nil
+}

@@ -35,25 +35,44 @@ func main() {
 	}()
 
 	accountRepo := i.NewAccountRepository(db)
+
 	resetRepo := i.NewPasswordResetTokenRepository(db)
 	emailService := i.NewEmailService(logger)
+
 	accountService := i.NewAccountService(accountRepo, resetRepo, emailService, logger)
 	AccountHandler := i.NewAccountHandler(accountService)
+
 	projectRepo := i.NewProjectRepository(db)
 	projectService := i.NewProjectService(projectRepo, accountRepo, logger)
 	ProjectHandler := i.NewProjectHandler(projectService)
 
+	issueRepo := i.NewIssueRepository(db)
+	issueService := i.NewIssueService(issueRepo, logger)
+	IssueHandler := i.NewIssueHandler(issueService)
+
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
 	mux.Handle("POST /register", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Register), "Register"))
-	mux.Handle("POST /forgot-password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ForgotPassword), "ForgotPassword"))
-	mux.Handle("POST /reset-password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ResetPassword), "ResetPassword"))
+	mux.Handle("POST /forgot_password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ForgotPassword), "ForgotPassword"))
+	mux.Handle("POST /reset_password", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.ResetPassword), "ResetPassword"))
 
 	// Protected routes
 	mux.Handle("GET /users/me", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Me), "Me")))
-	mux.Handle("PUT /users/update-password", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.UpdatePassword), "UpdatePassword")))
+	mux.Handle("PUT /users/update_password", i.Auth(otelhttp.NewHandler(http.HandlerFunc(AccountHandler.UpdatePassword), "UpdatePassword")))
 
 	mux.Handle("GET /project/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.GetByID), "GetByID")))
+	mux.Handle("GET /project/owner/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.GetByOwner), "GetByOwner")))
+	mux.Handle("GET /project/name/{name}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.GetByName), "GetByName")))
+	mux.Handle("GET /project/tag_name", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.GetByTagName), "GetByTagName")))
+	mux.Handle("POST /project/create", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.Create), "Create")))
+	mux.Handle("PUT /project/update", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.Update), "Update")))
+	mux.Handle("DELETE /project/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(ProjectHandler.Delete), "Delete")))
+
+	mux.Handle("GET /issues/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.GetByID), "GetByID")))
+	mux.Handle("GET /issues/user/{user_id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.GetAll), "GetAll")))
+	mux.Handle("POST /issues/create", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Create), "Create")))
+	mux.Handle("PUT /issues/update", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Update), "Update")))
+	mux.Handle("DELETE /issues/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Delete), "Delete")))
 
 	slog.Info("Server listening on :8080")
 

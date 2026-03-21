@@ -189,7 +189,7 @@ func (h *AccountHandler) UpdatePassword(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *AccountHandler) Logout(w http.ResponseWriter, r *http.Request) {
@@ -231,4 +231,244 @@ func (h *ProjectHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		span.SetStatus(codes.Error, err.Error())
 		return
 	}
+}
+
+func (h *ProjectHandler) GetByOwner(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "GetByOwner")
+
+	p, err := h.service.GetByOwner(ctx, r.PathValue("id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+}
+
+func (h *ProjectHandler) GetByName(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "GetByName")
+
+	p, err := h.service.GetByName(ctx, r.PathValue("name"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+}
+
+func (h *ProjectHandler) GetByTagName(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "GetByTagName")
+
+	p, err := h.service.GetByTagName(ctx, r.PathValue("tag_name"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+}
+
+func (h *ProjectHandler) Create(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "Create")
+
+	var req ProjectDto
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	p, err := h.service.Create(ctx, req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		span.RecordError(err)
+	}
+}
+
+func (h *ProjectHandler) Update(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "Update")
+
+	var req Project
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	_, err := h.service.Update(ctx, &req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *ProjectHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("project-handler").Start(r.Context(), "Delete")
+
+	err := h.service.Delete(ctx, r.PathValue("id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type IssueHandler struct {
+	service *IssueService
+}
+
+func NewIssueHandler(service *IssueService) *IssueHandler {
+	return &IssueHandler{service: service}
+}
+
+func (h *IssueHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("issue-handler").Start(r.Context(), "GetByID")
+
+	issues, err := h.service.GetByID(ctx, r.PathValue("id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(issues); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+	}
+}
+
+func (h *IssueHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("issue-handler").Start(r.Context(), "GetAll")
+
+	issues, err := h.service.GetAll(ctx, r.PathValue("user_id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(issues); err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+	}
+}
+
+func (h *IssueHandler) Create(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("issue-handler").Start(r.Context(), "Create")
+
+	var req IssueDto
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	issues, err := h.service.Create(ctx, req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(issues); err != nil {
+		span.RecordError(err)
+	}
+}
+
+func (h *IssueHandler) Update(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("issue-handler").Start(r.Context(), "Update")
+
+	var req Issue
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	_, err := h.service.Update(ctx, &req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *IssueHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("issue-handler").Start(r.Context(), "Delete")
+
+	err := h.service.Delete(ctx, r.PathValue("id"))
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"error": err.Error()}); err != nil {
+			span.RecordError(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

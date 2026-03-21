@@ -286,3 +286,71 @@ func (s *ProjectService) Delete(ctx context.Context, ID string) error {
 	}
 	return nil
 }
+
+type IssueService struct {
+	repo IssueRepository
+	slog *slog.Logger
+}
+
+func NewIssueService(repo IssueRepository, slog *slog.Logger) *IssueService {
+	return &IssueService{repo: repo, slog: slog}
+}
+
+func (s *IssueService) GetByID(ctx context.Context, id string) (*Issue, error) {
+	return s.repo.GetByID(ctx, id)
+}
+
+func (s *IssueService) GetAll(ctx context.Context, userID string) ([]*Issue, error) {
+	return s.repo.GetAll(ctx, userID)
+}
+
+func (s *IssueService) Delete(ctx context.Context, issueID string) error {
+	return s.repo.Delete(ctx, issueID)
+}
+
+func (s *IssueService) DeleteAttachment(ctx context.Context, issueID string) error {
+	return s.repo.DeleteAttachment(ctx, issueID)
+}
+
+func (s *IssueService) Create(ctx context.Context, issue IssueDto) (*Issue, error) {
+	if issue.Title == "" || issue.Description.String == "" {
+		return nil, errors.New("title and description are required")
+	}
+	Issue := &Issue{
+		Title:       issue.Title,
+		Description: issue.Description,
+		ProjectID:   issue.ProjectID,
+		CreatorID:   issue.CreatorID,
+		AssignedID:  issue.AssignedID,
+		IssueNumber: 0,
+		Attachment:  sql.NullString{},
+	}
+
+	in, err := s.repo.GetProjectIssueNumber(ctx, strconv.Itoa(int(issue.ProjectID)))
+	if err != nil {
+		return nil, err
+	}
+	Issue.IssueNumber = in + 1
+
+	if err := s.repo.Create(ctx, Issue); err != nil {
+		return nil, err
+	}
+	return Issue, nil
+}
+
+func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, error) {
+	Issue, err := s.repo.GetByID(ctx, strconv.Itoa(int(issue.ID)))
+	if err != nil {
+		return nil, err
+	}
+	Issue.Title = issue.Title
+	Issue.Description = issue.Description
+	Issue.AssignedID = issue.AssignedID
+	Issue.State = issue.State
+	Issue.Priority = issue.Priority
+	if err := s.repo.Update(ctx, Issue); err != nil {
+		return nil, err
+	}
+
+	return Issue, nil
+}

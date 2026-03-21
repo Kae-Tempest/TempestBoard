@@ -70,6 +70,7 @@ type Issue struct {
 	AssignedID  uint           `json:"assigned_id" db:"assigned_id"`
 	ProjectID   uint           `json:"project_id" db:"project_id"`
 	IssueNumber int16          `json:"issue_number" db:"issue_number"`
+	Title       string         `json:"title"`
 	Description sql.NullString `json:"description,omitempty" db:"description"`
 	Priority    Priority       `json:"priority" db:"priority"`
 	State       State          `json:"state" db:"state"`
@@ -81,6 +82,7 @@ type IssueDto struct {
 	AssignedID    uint           `json:"assigned_id"`
 	ProjectID     uint           `json:"project_id"`
 	IssueNumber   int16          `json:"issue_number"`
+	Title         string         `json:"title"`
 	Description   sql.NullString `json:"description,omitempty"`
 	Priority      Priority       `json:"priority"`
 	State         State          `json:"state"`
