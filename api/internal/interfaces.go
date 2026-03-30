@@ -39,3 +39,21 @@ type IssueRepository interface {
 	DeleteAttachment(ctx context.Context, issueID string) error
 	GetProjectIssueNumber(ctx context.Context, projectID string) (int16, error)
 }
+
+type StateRepository interface {
+	GetByID(ctx context.Context, id string) (*State, error)
+	GetByProject(ctx context.Context, project_id string) ([]*State, error)
+	GetByName(ctx context.Context, name string) (*State, error)
+	GetByState(ctx context.Context, state string) ([]*State, error)
+	Create(ctx context.Context, state *State) error
+	Update(ctx context.Context, state *State) error
+	Delete(ctx context.Context, stateID string) error
+}
+
+type PriorityRepository interface {
+	GetByID(ctx context.Context, id string) (*Priority, error)
+	GetByProject(ctx context.Context, project_id string) ([]*Priority, error)
+	Create(ctx context.Context, priority *Priority) error
+	Update(ctx context.Context, priority *Priority) error
+	Delete(ctx context.Context, priorityID string) error
+}

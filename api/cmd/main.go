@@ -50,6 +50,14 @@ func main() {
 	issueService := i.NewIssueService(issueRepo, logger)
 	IssueHandler := i.NewIssueHandler(issueService)
 
+	stateRepo := i.NewStateRepository(db)
+	stateService := i.NewStateService(stateRepo, logger)
+	StateHandler := i.NewStateHandler(stateService)
+
+	priorityRepo := i.NewPriorityRepository(db)
+	priorityService := i.NewPriorityService(priorityRepo, logger)
+	PriorityHandler := i.NewPriorityHandler(priorityService)
+
 	mux := http.NewServeMux()
 	mux.Handle("POST /login", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Login), "Login"))
 	mux.Handle("POST /register", otelhttp.NewHandler(http.HandlerFunc(AccountHandler.Register), "Register"))
@@ -73,6 +81,20 @@ func main() {
 	mux.Handle("POST /issues/create", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Create), "Create")))
 	mux.Handle("PUT /issues/update", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Update), "Update")))
 	mux.Handle("DELETE /issues/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(IssueHandler.Delete), "Delete")))
+
+	mux.Handle("GET /states/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.GetByID), "GetByID")))
+	mux.Handle("GET /states/project/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.GetByProject), "GetByProject")))
+	mux.Handle("GET /states/name/{name}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.GetByName), "GetByName")))
+	mux.Handle("GET /states/state/{state)", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.GetByState), "GetByState")))
+	mux.Handle("POST /states/create", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.Create), "Create")))
+	mux.Handle("PUT /states/update", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.Update), "Update")))
+	mux.Handle("DELETE /states/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(StateHandler.Delete), "Delete")))
+
+	mux.Handle("GET /priorities/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(PriorityHandler.GetByID), "GetByID")))
+	mux.Handle("GET /priorities/project/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(PriorityHandler.GetByProject), "GetByProject")))
+	mux.Handle("POST /priorities/create", i.Auth(otelhttp.NewHandler(http.HandlerFunc(PriorityHandler.Create), "Create")))
+	mux.Handle("PUT /priorities/update", i.Auth(otelhttp.NewHandler(http.HandlerFunc(PriorityHandler.Update), "Update")))
+	mux.Handle("DELETE /priorities/{id}", i.Auth(otelhttp.NewHandler(http.HandlerFunc(PriorityHandler.Delete), "Delete")))
 
 	slog.Info("Server listening on :8080")
 

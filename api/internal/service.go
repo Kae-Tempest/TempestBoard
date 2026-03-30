@@ -354,3 +354,109 @@ func (s *IssueService) Update(ctx context.Context, issue *Issue) (*Issue, error)
 
 	return Issue, nil
 }
+
+type StateService struct {
+	repo StateRepository
+	slog *slog.Logger
+}
+
+func NewStateService(repo StateRepository, slog *slog.Logger) *StateService {
+	return &StateService{repo: repo, slog: slog}
+}
+
+func (s *StateService) GetByID(ctx context.Context, id string) (*State, error) {
+	return s.repo.GetByID(ctx, id)
+}
+
+func (s *StateService) GetByProject(ctx context.Context, projectID string) ([]*State, error) {
+	return s.repo.GetByProject(ctx, projectID)
+}
+
+func (s *StateService) GetByName(ctx context.Context, name string) (*State, error) {
+	return s.repo.GetByName(ctx, name)
+}
+
+func (s *StateService) GetByState(ctx context.Context, state string) ([]*State, error) {
+	return s.repo.GetByState(ctx, state)
+}
+
+func (s *StateService) Create(ctx context.Context, state StateDto) (*State, error) {
+	State := &State{
+		ProjectID:  state.ProjectID,
+		Name:       state.Name,
+		IsDefault:  state.IsDefault,
+		IsActive:   state.IsActive,
+		IsBacklog:  state.IsBacklog,
+		IsCanceled: state.IsCanceled,
+		Issues:     []Issue{},
+	}
+	if err := s.repo.Create(ctx, State); err != nil {
+		return nil, err
+	}
+	return State, nil
+}
+
+func (s *StateService) Update(ctx context.Context, state *State) (*State, error) {
+	State, err := s.repo.GetByID(ctx, strconv.Itoa(int(state.ID)))
+	if err != nil {
+		return nil, err
+	}
+	State.Name = state.Name
+	State.IsActive = state.IsActive
+	State.IsBacklog = state.IsBacklog
+	State.IsCanceled = state.IsCanceled
+	if err := s.repo.Update(ctx, State); err != nil {
+		return nil, err
+	}
+	return State, nil
+}
+
+func (s *StateService) Delete(ctx context.Context, id string) error {
+	return s.repo.Delete(ctx, id)
+}
+
+type PriorityService struct {
+	repo PriorityRepository
+	slog *slog.Logger
+}
+
+func NewPriorityService(repo PriorityRepository, slog *slog.Logger) *PriorityService {
+	return &PriorityService{repo: repo, slog: slog}
+}
+
+func (s *PriorityService) GetByID(ctx context.Context, id string) (*Priority, error) {
+	return s.repo.GetByID(ctx, id)
+}
+
+func (s *PriorityService) GetByProject(ctx context.Context, projectID string) ([]*Priority, error) {
+	return s.repo.GetByProject(ctx, projectID)
+}
+
+func (s *PriorityService) Create(ctx context.Context, priority PriorityDto) (*Priority, error) {
+	Priority := &Priority{
+		ProjectID: priority.ProjectID,
+		Name:      priority.Name,
+		Color:     priority.Color,
+	}
+	if err := s.repo.Create(ctx, Priority); err != nil {
+		return nil, err
+	}
+	return Priority, nil
+}
+
+func (s *PriorityService) Update(ctx context.Context, priority *Priority) (*Priority, error) {
+	Priority, err := s.repo.GetByID(ctx, strconv.Itoa(int(priority.ID)))
+	if err != nil {
+		return nil, err
+	}
+	Priority.Name = priority.Name
+	Priority.Color = priority.Color
+	if err := s.repo.Update(ctx, Priority); err != nil {
+		return nil, err
+	}
+	return Priority, nil
+}
+
+func (s *PriorityService) Delete(ctx context.Context, id string) error {
+	return s.repo.Delete(ctx, id)
+}

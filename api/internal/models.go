@@ -71,10 +71,10 @@ type Issue struct {
 	ProjectID   uint           `json:"project_id" db:"project_id"`
 	IssueNumber int16          `json:"issue_number" db:"issue_number"`
 	Title       string         `json:"title"`
-	Description sql.NullString `json:"description,omitempty" db:"description"`
+	Description sql.NullString `json:"description" db:"description"`
 	Priority    Priority       `json:"priority" db:"priority"`
 	State       State          `json:"state" db:"state"`
-	Attachment  sql.NullString `json:"attachment,omitempty" db:"attachment"`
+	Attachment  sql.NullString `json:"attachment" db:"attachment"`
 }
 
 type IssueDto struct {
@@ -83,7 +83,7 @@ type IssueDto struct {
 	ProjectID     uint           `json:"project_id"`
 	IssueNumber   int16          `json:"issue_number"`
 	Title         string         `json:"title"`
-	Description   sql.NullString `json:"description,omitempty"`
+	Description   sql.NullString `json:"description"`
 	Priority      Priority       `json:"priority"`
 	State         State          `json:"state"`
 	Attachment    sql.NullString `json:"attachment"`
@@ -129,18 +129,18 @@ type Milestone struct {
 	Name        string         `json:"name" db:"name"`
 	ProjectID   uint           `json:"project_id" db:"project_id"`
 	Issues      []Issue        `json:"issues"`
-	Description sql.NullString `json:"description,omitempty" db:"description"`
+	Description sql.NullString `json:"description" db:"description"`
 	StartDate   time.Time      `json:"start_date" db:"start_date"`
-	DueDate     sql.NullTime   `json:"due_date,omitempty" db:"due_date"`
+	DueDate     sql.NullTime   `json:"due_date" db:"due_date"`
 }
 
 type MilestoneDto struct {
 	Name        string         `json:"name"`
 	ProjectID   uint           `json:"project_id"`
 	Issues      []Issue        `json:"issues"`
-	Description sql.NullString `json:"description,omitempty"`
+	Description sql.NullString `json:"description"`
 	StartDate   time.Time      `json:"start_date"`
-	DueDate     sql.NullTime   `json:"due_date,omitempty"`
+	DueDate     sql.NullTime   `json:"due_date"`
 }
 
 type Comment struct {

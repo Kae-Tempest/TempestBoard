@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -277,4 +278,122 @@ func (r *issueRepository) GetProjectIssueNumber(ctx context.Context, projectID s
 		return 0, err
 	}
 	return issueNumber, nil
+}
+
+////////////////////////
+/// STATE REPOSITORY ///
+////////////////////////
+
+type stateRepository struct {
+	db *sqlx.DB
+}
+
+func NewStateRepository(db *sqlx.DB) StateRepository {
+	return &stateRepository{db: db}
+}
+
+var allowedState = map[string]bool{
+	"is_active":   true,
+	"is_default":  true,
+	"is_backlog":  true,
+	"is_canceled": true,
+}
+
+func (r *stateRepository) GetByID(ctx context.Context, id string) (*State, error) {
+	var s State
+	err := r.db.GetContext(ctx, &s, `SELECT * FROM states WHERE id = $1`, id)
+	if err != nil {
+		return nil, err
+	}
+	return &s, nil
+}
+func (r *stateRepository) GetByProject(ctx context.Context, projectID string) ([]*State, error) {
+	var states []*State
+	err := r.db.SelectContext(ctx, &states, `SELECT * FROM states WHERE project_id = $1`, projectID)
+	if err != nil {
+		return nil, err
+	}
+	return states, nil
+}
+func (r *stateRepository) GetByName(ctx context.Context, name string) (*State, error) {
+	var s State
+	err := r.db.GetContext(ctx, &s, `SELECT * FROM states WHERE name = $1`, name)
+	if err != nil {
+		return nil, err
+	}
+	return &s, nil
+}
+func (r *stateRepository) GetByState(ctx context.Context, state string) ([]*State, error) {
+	var states []*State
+
+	if !allowedState[state] {
+		return nil, fmt.Errorf("invalid State: %s", state)
+	}
+	query := fmt.Sprintf("SELECT * FROM states WHERE %s = true", state)
+	err := r.db.SelectContext(ctx, &states, query, state)
+	if err != nil {
+		return nil, err
+	}
+	return states, nil
+}
+func (r *stateRepository) Create(ctx context.Context, state *State) error {
+	_, err := r.db.ExecContext(ctx, `INSERT INTO states (project_id, name, is_default, is_active, is_backlog, is_canceled) VALUES ($1, $2, $3, $4, $5, $6)`,
+		state.ProjectID, state.Name, state.IsDefault, state.IsActive, state.IsBacklog, state.IsCanceled)
+	return err
+}
+func (r *stateRepository) Update(ctx context.Context, state *State) error {
+	_, err := r.db.ExecContext(ctx, `UPDATE states SET name = $1, is_active = $2, is_backlog = $3, is_canceled = $4 WHERE id = $5`,
+		state.Name, state.IsActive, state.IsBacklog, state.IsCanceled, state.ID)
+	return err
+}
+func (r *stateRepository) Delete(ctx context.Context, stateID string) error {
+	_, err := r.db.ExecContext(ctx, `DELETE FROM states WHERE id = $1`, stateID)
+	return err
+}
+
+////////////////////////
+/// Priority REPOSITORY ///
+////////////////////////
+
+type priorityRepository struct {
+	db *sqlx.DB
+}
+
+func NewPriorityRepository(db *sqlx.DB) PriorityRepository {
+	return &priorityRepository{db: db}
+}
+
+func (r *priorityRepository) GetByID(ctx context.Context, id string) (*Priority, error) {
+	var p Priority
+	err := r.db.GetContext(ctx, &p, `SELECT * FROM priorities WHERE id = $1`, id)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
+
+func (r *priorityRepository) GetByProject(ctx context.Context, projectID string) ([]*Priority, error) {
+	var p []*Priority
+	err := r.db.SelectContext(ctx, &p, `SELECT * FROM priorities WHERE project_id = $1`, projectID)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+func (r *priorityRepository) Create(ctx context.Context, priority *Priority) error {
+	_, err := r.db.ExecContext(ctx, `INSERT INTO priorities (project_id, name, color) VALUES ($1, $2, $3)`,
+		priority.ProjectID, priority.Name, priority.Color)
+	return err
+}
+
+func (r *priorityRepository) Update(ctx context.Context, priority *Priority) error {
+	_, err := r.db.ExecContext(ctx, `UPDATE priorities SET name = $2, color = $3 WHERE id = $4`,
+		priority.Name, priority.Color, priority.ID)
+	return err
+}
+
+func (r *priorityRepository) Delete(ctx context.Context, priorityID string) error {
+	_, err := r.db.ExecContext(ctx, `DELETE FROM priorities WHERE id = $1`, priorityID)
+	return err
 }
